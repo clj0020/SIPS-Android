@@ -61,7 +61,7 @@ class TestAthleteFragment : BaseFragment<FragmentTestAthleteBinding, TestAthlete
     }
 
     override fun testSaved() {
-        // TODO: Show success
+        showSuccess("Test Saved", "Test was successfully added to database.")
         goBack()
     }
 
@@ -90,7 +90,7 @@ class TestAthleteFragment : BaseFragment<FragmentTestAthleteBinding, TestAthlete
     }
 
     override fun handleError(throwable: Throwable) {
-        // TODO: Handle error for adding athlete
+        showError("Error", throwable.message!!)
     }
 
     /** For handling toolbar_main actions  */

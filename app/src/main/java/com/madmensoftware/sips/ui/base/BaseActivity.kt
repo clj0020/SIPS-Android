@@ -10,9 +10,11 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.databinding.DataBindingUtil
 import android.databinding.ViewDataBinding
+import android.graphics.Color
 import android.support.annotation.Nullable
 import android.support.v7.app.AppCompatActivity
 import android.view.inputmethod.InputMethodManager
+import cn.pedant.SweetAlert.SweetAlertDialog
 import com.madmensoftware.sips.ui.login.LoginActivity
 import com.madmensoftware.sips.util.CommonUtils
 import com.madmensoftware.sips.util.NetworkUtils
@@ -26,7 +28,9 @@ abstract class BaseActivity<T: ViewDataBinding, V : BaseViewModel<*>> : AppCompa
     // TODO
     // this can probably depend on isLoading variable of BaseViewModel,
     // since its going to be common for all the activities
-    private var mProgressDialog: ProgressDialog? = null
+    private lateinit var mLoadingDialog: SweetAlertDialog
+
+
     var viewDataBinding: T ?= null
         private set
     private var mViewModel: V ?= null
@@ -85,12 +89,6 @@ abstract class BaseActivity<T: ViewDataBinding, V : BaseViewModel<*>> : AppCompa
         }
     }
 
-    fun hideLoading() {
-        if (mProgressDialog != null && mProgressDialog!!.isShowing) {
-            mProgressDialog!!.cancel()
-        }
-    }
-
     fun openActivityOnTokenExpire() {
         startActivity(LoginActivity.newIntent(this))
         finish()
@@ -108,8 +106,15 @@ abstract class BaseActivity<T: ViewDataBinding, V : BaseViewModel<*>> : AppCompa
     }
 
     fun showLoading() {
-        hideLoading()
-        mProgressDialog = CommonUtils.showLoadingDialog(this)
+        mLoadingDialog = SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE)
+        mLoadingDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+        mLoadingDialog.setTitleText("Loading");
+        mLoadingDialog.setCancelable(false);
+        mLoadingDialog.show()
+    }
+
+    fun hideLoading() {
+        mLoadingDialog.hide()
     }
 
     private fun performDataBinding() {

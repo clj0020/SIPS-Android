@@ -19,6 +19,7 @@ import com.madmensoftware.sips.ui.main.MainActivity
 class AddAthleteFragment : BaseFragment<FragmentAddAthleteBinding, AddAthleteViewModel>(), AddAthleteNavigator {
 
 
+
     @Inject
     override lateinit var viewModel: AddAthleteViewModel
         internal set
@@ -69,6 +70,7 @@ class AddAthleteFragment : BaseFragment<FragmentAddAthleteBinding, AddAthleteVie
     }
 
     override fun athleteAdded(athlete: Athlete) {
+        showSuccess("Athlete Added", "")
         goBack()
     }
 
@@ -77,7 +79,7 @@ class AddAthleteFragment : BaseFragment<FragmentAddAthleteBinding, AddAthleteVie
     }
 
     override fun handleError(throwable: Throwable) {
-        // TODO: Handle error for adding athlete
+        showError("There was an error!", throwable.message!!)
     }
 
     /** For handling toolbar_main actions  */

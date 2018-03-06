@@ -52,6 +52,7 @@ ext.calligraphy_version = "2.3.0"
 ext.glide_version = "4.6.1"
 ext.reactive_sensors_version = "0.2.0"
 ext.rx_countdown_timer_version = "0.1.0"
+ext.sweet_alert_dialog_version = "1.5.1"
 
 
 
@@ -116,6 +117,9 @@ dependencies {
 
     // Reactive Sensors
     implementation "com.github.pwittchen:reactivesensors-rx2:$reactive_sensors_version"
+
+    // Sweet Alert Dialog
+    implementation "com.github.f0ris.sweetalert:library:$sweet_alert_dialog_version"
 
     // RXCountdown timer
     implementation "com.github.wardellbagby:RxCountDownTimer:$rx_countdown_timer_version"

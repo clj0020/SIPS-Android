@@ -14,4 +14,5 @@ interface AddAthleteNavigator {
     fun athleteAdded(athlete: Athlete)
 
     fun goBack()
+
 }
