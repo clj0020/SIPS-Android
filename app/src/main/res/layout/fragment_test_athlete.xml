@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="isLoading"
+            type="boolean" />
+        <variable
+            name="viewModel"
+            type="com.madmensoftware.sips.ui.athlete_test.TestAthleteViewModel" />
+        <variable
+            name="isTestSelected"
+            type="boolean" />
+        <variable
+            name="isClockStarted"
+            type="boolean" />
+    </data>
+
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.design.widget.CoordinatorLayout
+            android:id="@+id/testing_holder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="@{!isTestSelected ? View.GONE : View.VISIBLE}">
+
+            <TextView
+                android:id="@+id/test_title_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="30sp"
+                android:layout_gravity="top"/>
+
+            <TextView
+                android:id="@+id/time_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                style="@style/TextStyle.Heading"
+                android:text="00:00:00"
+                android:textColor="@android:color/black"
+                android:textSize="50sp" />
+
+            <Button
+                android:id="@+id/start_athlete_test_button"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_gravity="bottom|center_horizontal"
+                android:text="@string/start_test"
+                app:layout_anchor="@id/time_text"
+                app:layout_anchorGravity="bottom|center_horizontal"
+                android:theme="@style/Button.Primary"
+                android:onClick="@{() -> viewModel.onStartTestClicked()}"
+                android:visibility="@{isClockStarted ? View.GONE : View.VISIBLE}"
+                tools:layout_editor_absoluteY="-3dp" />
+
+            <Button
+                android:id="@+id/stop_athlete_test_button"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_gravity="bottom|center_horizontal"
+                android:text="@string/stop_test"
+                android:theme="@style/Button.Primary"
+                android:onClick="@{() -> viewModel.onStopTestClicked()}"
+                android:visibility="@{!isClockStarted ? View.GONE : View.VISIBLE}"
+                app:layout_anchor="@id/time_text"
+                app:layout_anchorGravity="bottom|center_horizontal"
+                tools:layout_editor_absoluteY="5dp" />
+
+        </android.support.design.widget.CoordinatorLayout>
+
+        <android.support.design.widget.CoordinatorLayout
+            android:id="@+id/test_selector_holder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="@{isTestSelected ? View.GONE : View.VISIBLE}">
+
+            <TextView
+                android:id="@+id/choose_test_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|center_horizontal"
+                android:layout_marginBottom="60dp"
+                android:text="@string/choose_test"
+                android:textColor="@android:color/black"
+                android:textSize="50sp" />
+
+            <Button
+                android:id="@+id/one_leg_squat_hold_button"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:theme="@style/Button.Primary"
+                app:layout_anchor="@id/choose_test_text"
+                app:layout_anchorGravity="bottom|center_horizontal"
+                android:layout_gravity="bottom|center_horizontal"
+                android:onClick="@{() -> viewModel.onOneSquatHoldButtonClick()}"
+                android:text="@string/one_leg_squat_hold"/>
+
+            <Button
+                android:id="@+id/single_leg_jump_button"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:theme="@style/Button.Primary"
+                app:layout_anchor="@id/one_leg_squat_hold_button"
+                app:layout_anchorGravity="bottom|center_horizontal"
+                android:layout_gravity="bottom|center_horizontal"
+                android:text="@string/single_leg_jump"
+                android:onClick="@{() -> viewModel.onSingleLegJumpButtonClick()}"/>
+
+
+
+        </android.support.design.widget.CoordinatorLayout>
+
+
+
+
+    </android.support.design.widget.CoordinatorLayout>
+
+
+
+</layout>
