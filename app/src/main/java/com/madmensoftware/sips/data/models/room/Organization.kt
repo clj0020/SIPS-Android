@@ -18,12 +18,19 @@ class Organization {
     var createdAt: String? = null
 
     @Expose
-    @PrimaryKey(autoGenerate = true)
-    var id: Long? = null
+    @PrimaryKey
+    @ColumnInfo(name = "id")
+    var id: String = ""
 
     @Expose
     @SerializedName("title")
     @ColumnInfo(name = "title")
     var title: String? = null
+
+    @Expose
+    @SerializedName("creator")
+    @ColumnInfo(name = "creator")
+    var creator: String? = null
+
 
 }

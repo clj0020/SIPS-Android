@@ -43,7 +43,7 @@ class TestAthleteFragment : BaseFragment<FragmentTestAthleteBinding, TestAthlete
     override fun onCreate(@Nullable savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel.navigator = this
-        viewModel.athleteId = getArguments()!!.getLong(TestAthleteFragment.KEY_ATHLETE_ID)
+        viewModel.athleteId = getArguments()!!.getString(TestAthleteFragment.KEY_ATHLETE_ID)
         viewModel.mReactiveSensors = mReactiveSensors
         viewModel.mSensorHelper = mSensorHelper
     }
@@ -118,9 +118,9 @@ class TestAthleteFragment : BaseFragment<FragmentTestAthleteBinding, TestAthlete
         val KEY_ATHLETE_ID = "athleteId"
 
 
-        fun newInstance(athleteId: Long): TestAthleteFragment {
+        fun newInstance(athleteId: String): TestAthleteFragment {
             val args = Bundle()
-            args.putLong(KEY_ATHLETE_ID, athleteId)
+            args.putString(KEY_ATHLETE_ID, athleteId)
             val fragment = TestAthleteFragment()
             fragment.arguments = args
             return fragment

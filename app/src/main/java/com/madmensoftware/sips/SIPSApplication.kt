@@ -6,6 +6,7 @@ import javax.inject.Inject
 import dagger.android.HasActivityInjector
 import android.app.Application
 import com.androidnetworking.AndroidNetworking
+import com.facebook.stetho.Stetho
 import com.madmensoftware.sips.di.DaggerAppComponent
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig
 
@@ -35,6 +36,8 @@ class SIPSApplication : Application(), HasActivityInjector {
                 .inject(this)
 
         AndroidNetworking.initialize(applicationContext)
+        Stetho.initializeWithDefaults(applicationContext)
+
         if (BuildConfig.DEBUG) {
             AndroidNetworking.enableLogging(com.androidnetworking.interceptors.HttpLoggingInterceptor.Level.BODY)
         }

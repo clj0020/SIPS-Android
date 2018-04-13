@@ -29,7 +29,7 @@ class AthleteListViewModel(dataManager: DataManager,
     fun fetchAthletes() {
         setIsLoading(true)
         compositeDisposable.add(dataManager
-                .getAllAthletes()
+                .getAthleteList()
                 .subscribeOn(schedulerProvider.io())
                 .observeOn(schedulerProvider.ui())
                 .subscribe({ athleteList ->

@@ -13,19 +13,18 @@ import javax.inject.Singleton
 @Singleton
 class ApiHeader @Inject constructor(val publicApiHeader: PublicApiHeader, val protectedApiHeader: ProtectedApiHeader) {
 
-    class ProtectedApiHeader(@field:Expose
-                             @field:SerializedName("api_key")
-                             var apiKey: String?, @field:Expose
-                             @field:SerializedName("user_id")
-                             var userId: Long?,
-                             @field:Expose
-                             @field:SerializedName("access_token")
-                             var accessToken: String?)
+    class ProtectedApiHeader(
+                             @field: Expose
+                             @field: SerializedName("Authorization")
+                             var accessToken: String?,
+                             @field: Expose
+                             @field: SerializedName("Content-Type")
+                             var contentType: String? = "application/json"
+                             )
 
-    class PublicApiHeader @Inject constructor(
-            @param:ApiInfo
-            @field:Expose
-            @field:SerializedName("api_key")
-            var apiKey: String?
+    class PublicApiHeader(
+            @field: Expose
+            @field: SerializedName("Content-Type")
+            var contentType: String? = "application/json"
     )
 }

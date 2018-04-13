@@ -6,7 +6,6 @@ import dagger.android.AndroidInjection
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.annotation.LayoutRes
-import android.app.ProgressDialog
 import android.content.Context
 import android.databinding.DataBindingUtil
 import android.databinding.ViewDataBinding

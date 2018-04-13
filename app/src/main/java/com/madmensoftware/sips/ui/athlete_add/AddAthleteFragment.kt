@@ -19,7 +19,6 @@ import com.madmensoftware.sips.ui.main.MainActivity
 class AddAthleteFragment : BaseFragment<FragmentAddAthleteBinding, AddAthleteViewModel>(), AddAthleteNavigator {
 
 
-
     @Inject
     override lateinit var viewModel: AddAthleteViewModel
         internal set
@@ -59,8 +58,8 @@ class AddAthleteFragment : BaseFragment<FragmentAddAthleteBinding, AddAthleteVie
             athlete.first_name = firstName
             athlete.last_name = lastName
             athlete.email = email
-            athlete.createdAt = "January 21 2018" // TODO: Hardcoded
-            athlete.updatedAt = "January 21 2018" // TODO: Hardcoded data
+//            athlete.createdAt = "January 21 2018" // TODO: Hardcoded
+//            athlete.updatedAt = "January 21 2018" // TODO: Hardcoded data
 //            athlete.organizationId = 0 // TODO: Hardcoded
 
             viewModel.addAthlete(athlete)

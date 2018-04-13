@@ -18,7 +18,7 @@ import com.madmensoftware.sips.data.models.room.User
 /**
  * Created by clj00 on 3/2/2018.
  */
-@Database(entities = arrayOf(User::class, Athlete::class, TestData::class, Organization::class), version = 1)
+@Database(entities = arrayOf(User::class, Athlete::class, TestData::class, Organization::class), version = 2, exportSchema = false)
 @TypeConverters(DateConverter::class, SensorDataConverter::class)
 abstract class AppDatabase : RoomDatabase() {
 

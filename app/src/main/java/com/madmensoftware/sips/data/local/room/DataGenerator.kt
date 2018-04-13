@@ -16,7 +16,7 @@ object DataGenerator {
 
     fun generateAthletes(): List<Athlete> {
         val athletes = ArrayList<Athlete>(FIRST.size * SECOND.size)
-        val rnd = Random()
+//        val rnd = Random()
         for (i in FIRST.indices) {
             for (j in SECOND.indices) {
                 val athlete = Athlete()

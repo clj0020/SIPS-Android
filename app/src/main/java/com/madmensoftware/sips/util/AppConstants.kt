@@ -9,7 +9,7 @@ object AppConstants {
 
     val DB_NAME = "sips_auburn.db"
 
-    val NULL_INDEX = -1L
+    val NULL_INDEX = ""
 
     val PREF_NAME = "sips_auburn_pref"
 

@@ -21,42 +21,66 @@ constructor(context: Context, @PreferenceInfo prefFileName: String) : Preference
         get() = mPrefs.getString(PREF_KEY_ACCESS_TOKEN, null)
         set(accessToken) = mPrefs.edit().putString(PREF_KEY_ACCESS_TOKEN, accessToken).apply()
 
-    override var currentUserEmail: String?
-        get() = mPrefs.getString(PREF_KEY_CURRENT_USER_EMAIL, null)
-        set(email) = mPrefs.edit().putString(PREF_KEY_CURRENT_USER_EMAIL, email).apply()
-
-    override var currentUserId: Long?
+    override var currentUserId: String?
         get() {
-            val userId = mPrefs.getLong(PREF_KEY_CURRENT_USER_ID, AppConstants.NULL_INDEX)
+            val userId = mPrefs.getString(PREF_KEY_CURRENT_USER_ID, AppConstants.NULL_INDEX)
             return if (userId == AppConstants.NULL_INDEX) null else userId
         }
         set(userId) {
             val id = userId ?: AppConstants.NULL_INDEX
-            mPrefs.edit().putLong(PREF_KEY_CURRENT_USER_ID, id).apply()
+            mPrefs.edit().putString(PREF_KEY_CURRENT_USER_ID, id).apply()
         }
+
+    override var currentUserFirstName: String?
+        get() = mPrefs.getString(PREF_KEY_CURRENT_USER_FIRST_NAME, null)
+        set(userFirstName) = mPrefs.edit().putString(PREF_KEY_CURRENT_USER_FIRST_NAME, userFirstName).apply()
+
+    override var currentUserOrganizationId: String?
+        get() {
+            val organizationId = mPrefs.getString(PREF_KEY_CURRENT_USER_ORGANIZATION, AppConstants.NULL_INDEX)
+            return if (organizationId == AppConstants.NULL_INDEX) null else organizationId
+        }
+        set(userId) {
+            val organizationId = currentUserOrganizationId
+            mPrefs.edit().putString(PREF_KEY_CURRENT_USER_ORGANIZATION, userId).apply()
+        }
+
+
+    override var currentUserLastName: String?
+        get() = mPrefs.getString(PREF_KEY_CURRENT_USER_LAST_NAME, null)
+        set(userLastName) = mPrefs.edit().putString(PREF_KEY_CURRENT_USER_LAST_NAME, userLastName).apply()
+
+    override var currentUserEmail: String?
+        get() = mPrefs.getString(PREF_KEY_CURRENT_USER_EMAIL, null)
+        set(email) = mPrefs.edit().putString(PREF_KEY_CURRENT_USER_EMAIL, email).apply()
 
     override val currentUserLoggedInMode: Int
         get() = mPrefs.getInt(PREF_KEY_USER_LOGGED_IN_MODE,
                 DataManager.LoggedInMode.LOGGED_IN_MODE_LOGGED_OUT.type)
-
-    override var currentUserName: String?
-        get() = mPrefs.getString(PREF_KEY_CURRENT_USER_NAME, null)
-        set(userName) = mPrefs.edit().putString(PREF_KEY_CURRENT_USER_NAME, userName).apply()
 
     override var currentUserProfilePicUrl: String?
         get() = mPrefs.getString(PREF_KEY_CURRENT_USER_PROFILE_PIC_URL, null)
         set(profilePicUrl) =
             mPrefs.edit().putString(PREF_KEY_CURRENT_USER_PROFILE_PIC_URL, profilePicUrl).apply()
 
-    override var currentUserOrganizationId: Long?
-        get() {
-            val organizationId = mPrefs.getLong(PREF_KEY_ORGANIZATION_ID, AppConstants.NULL_INDEX)
-            return if (organizationId == AppConstants.NULL_INDEX) null else organizationId
-        }
-        set(organizationId) {
-            val id = organizationId ?: AppConstants.NULL_INDEX
-            mPrefs.edit().putLong(PREF_KEY_ORGANIZATION_ID, id).apply()
-        }
+    //    override var currentUserOrganization: Any?
+//        get() {
+//            val organizationId = mPrefs.getLong(PREF_KEY_ORGANIZATION_ID, AppConstants.NULL_INDEX)
+//            return if (organizationId == AppConstants.NULL_INDEX) null else organizationId
+//        }
+//        set(organizationId) {
+//            val id = organizationId ?: AppConstants.NULL_INDEX
+//            mPrefs.edit().putLong(PREF_KEY_ORGANIZATION_ID, id).apply()
+//        }
+
+    override var currentUserStatus: String?
+        get() = mPrefs.getString(PREF_KEY_CURRENT_USER_STATUS, null)
+        set(status) = mPrefs.edit().putString(PREF_KEY_CURRENT_USER_STATUS, status).apply()
+
+    override var currentUserKind: String?
+        get() = mPrefs.getString(PREF_KEY_CURRENT_USER_KIND, null)
+        set(kind) = mPrefs.edit().putString(PREF_KEY_CURRENT_USER_KIND, kind).apply()
+
 
     init {
         mPrefs = context.getSharedPreferences(prefFileName, Context.MODE_PRIVATE)
@@ -74,7 +98,15 @@ constructor(context: Context, @PreferenceInfo prefFileName: String) : Preference
 
         private val PREF_KEY_CURRENT_USER_ID = "PREF_KEY_CURRENT_USER_ID"
 
-        private val PREF_KEY_CURRENT_USER_NAME = "PREF_KEY_CURRENT_USER_NAME"
+        private val PREF_KEY_CURRENT_USER_FIRST_NAME = "PREF_KEY_CURRENT_USER_FIRST_NAME"
+
+        private val PREF_KEY_CURRENT_USER_LAST_NAME = "PREF_KEY_CURRENT_USER_LAST_NAME"
+
+        private val PREF_KEY_CURRENT_USER_ORGANIZATION = "PREF_KEY_CURRENT_USER_ORGANIZATION"
+
+        private val PREF_KEY_CURRENT_USER_STATUS = "PREF_KEY_CURRENT_USER_STATUS"
+
+        private val PREF_KEY_CURRENT_USER_KIND = "PREF_KEY_CURRENT_USER_KIND"
 
         private val PREF_KEY_CURRENT_USER_PROFILE_PIC_URL = "PREF_KEY_CURRENT_USER_PROFILE_PIC_URL"
 

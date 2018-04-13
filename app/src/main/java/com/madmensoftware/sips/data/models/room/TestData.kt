@@ -19,8 +19,9 @@ import java.util.*
 class TestData {
 
     @Expose
-    @PrimaryKey(autoGenerate = true)
-    var id: Long = 0
+    @PrimaryKey
+    @ColumnInfo(name = "id")
+    var id: String = ""
 
     @Expose
     @SerializedName("created_at")
@@ -30,7 +31,7 @@ class TestData {
     @Expose
     @SerializedName("athlete_id")
     @ColumnInfo(name = "athlete_id")
-    var athleteId: Long ?= 0
+    var athleteId: String = ""
 
     @Expose
     @SerializedName("tested_at")

@@ -101,7 +101,7 @@ class AthleteListAdapter(val mAthleteList: MutableList<Athlete>?) : RecyclerView
             mBinding.executePendingBindings()
         }
 
-        override fun onItemClick(id: Long) {
+        override fun onItemClick(id: String) {
             (itemView.context as MainActivity).viewModel.onAthleteDetails(id)
         }
     }

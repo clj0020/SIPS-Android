@@ -1,6 +1,7 @@
 package com.madmensoftware.sips.data
 
 import android.content.Context
+import android.util.Log
 import com.google.gson.Gson
 import com.madmensoftware.sips.data.local.prefs.PreferencesHelper
 import com.madmensoftware.sips.data.local.room.DbHelper
@@ -8,11 +9,15 @@ import com.madmensoftware.sips.data.models.api.LoginRequest
 import com.madmensoftware.sips.data.models.api.LoginResponse
 import com.madmensoftware.sips.data.models.api.LogoutResponse
 import com.madmensoftware.sips.data.models.room.Athlete
+import com.madmensoftware.sips.data.models.room.Organization
 import com.madmensoftware.sips.data.models.room.TestData
 import com.madmensoftware.sips.data.models.room.User
 import com.madmensoftware.sips.data.remote.ApiHeader
 import com.madmensoftware.sips.data.remote.ApiHelper
+import com.madmensoftware.sips.util.SchedulerProvider
+import io.reactivex.Completable
 import io.reactivex.Observable
+import io.reactivex.Scheduler
 import io.reactivex.Single
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -26,7 +31,9 @@ import javax.inject.Singleton
 class AppDataManager @Inject constructor(private val mContext: Context,
                                          private val mDbHelper: DbHelper,
                                          private val mPreferencesHelper: PreferencesHelper,
+                                         private val schedulerProvider: SchedulerProvider,
                                          private val mApiHelper: ApiHelper, private val mGson: Gson) : DataManager {
+
 
     override var accessToken: String?
         get() = mPreferencesHelper.accessToken
@@ -47,7 +54,13 @@ class AppDataManager @Inject constructor(private val mContext: Context,
             mPreferencesHelper.currentUserEmail = email
         }
 
-    override var currentUserId: Long?
+    override var currentUserOrganizationId: String?
+        get() = mPreferencesHelper.currentUserOrganizationId
+        set(organization) {
+            mPreferencesHelper.currentUserOrganizationId = organization
+        }
+
+    override var currentUserId: String?
         get() = mPreferencesHelper.currentUserId
         set(userId) {
             mPreferencesHelper.currentUserId = userId
@@ -56,10 +69,16 @@ class AppDataManager @Inject constructor(private val mContext: Context,
     override val currentUserLoggedInMode: Int
         get() = mPreferencesHelper.currentUserLoggedInMode
 
-    override var currentUserName: String?
-        get() = mPreferencesHelper.currentUserName
-        set(userName) {
-            mPreferencesHelper.currentUserName = userName
+    override var currentUserFirstName: String?
+        get() = mPreferencesHelper.currentUserFirstName
+        set(userFirstName) {
+            mPreferencesHelper.currentUserFirstName = userFirstName
+        }
+
+    override var currentUserLastName: String?
+        get() = mPreferencesHelper.currentUserLastName
+        set(userLastName) {
+            mPreferencesHelper.currentUserLastName = userLastName
         }
 
     override var currentUserProfilePicUrl: String?
@@ -68,10 +87,17 @@ class AppDataManager @Inject constructor(private val mContext: Context,
             mPreferencesHelper.currentUserProfilePicUrl = profilePicUrl
         }
 
-    override var currentUserOrganizationId: Long?
-        get() = mPreferencesHelper.currentUserOrganizationId
-        set(organizationId) {
-            mPreferencesHelper.currentUserOrganizationId = organizationId
+
+    override var currentUserStatus: String?
+        get() = mPreferencesHelper.currentUserStatus
+        set(status) {
+            mPreferencesHelper.currentUserStatus = status
+        }
+
+    override var currentUserKind: String?
+        get() = mPreferencesHelper.currentUserKind
+        set(status) {
+            mPreferencesHelper.currentUserKind = status
         }
 
     override fun doFacebookLoginApiCall(request: LoginRequest.FacebookLoginRequest): Single<LoginResponse> {
@@ -82,13 +108,18 @@ class AppDataManager @Inject constructor(private val mContext: Context,
         return mApiHelper.doGoogleLoginApiCall(request)
     }
 
-    override fun doLogoutApiCall(): Single<LogoutResponse> {
-        return mApiHelper.doLogoutApiCall()
+//    override fun doLogoutCall(): Single<LogoutResponse> {
+//        return mPreferencesHelper.doLogoutApiCall()
+//    }
+
+    override fun logout() {
+        setUserAsLoggedOut()
     }
 
     override fun doServerLoginApiCall(request: LoginRequest.ServerLoginRequest): Single<LoginResponse> {
         return mApiHelper.doServerLoginApiCall(request)
     }
+
 
     override fun setCurrentUserLoggedInMode(mode: DataManager.LoggedInMode) {
         mPreferencesHelper.setCurrentUserLoggedInMode(mode)
@@ -99,37 +130,66 @@ class AppDataManager @Inject constructor(private val mContext: Context,
     }
 
     override fun setUserAsLoggedOut() {
-        updateUserInfo(null, null,
-                DataManager.LoggedInMode.LOGGED_IN_MODE_LOGGED_OUT, null, null, null, null)
+        updateUserInfo("",null, DataManager.LoggedInMode.LOGGED_IN_MODE_LOGGED_OUT, null, null, null, null, null, null)
     }
 
-    override fun updateApiHeader(userId: Long?, accessToken: String?) {
-        mApiHelper.apiHeader.protectedApiHeader.userId = userId
+    override fun updateApiHeader(accessToken: String?) {
         mApiHelper.apiHeader.protectedApiHeader.accessToken = accessToken
     }
 
-    override fun updateUserInfo(accessToken: String?, userId: Long?, loggedInMode: DataManager.LoggedInMode, userName: String?, email: String?, profilePicPath: String?, organizationId: Long?) {
+    override fun updateUserInfo(_id: String, accessToken: String?, loggedInMode: DataManager.LoggedInMode,
+                                first_name: String?, last_name: String?, email: String?,
+                                status: String?, organizationId: String?, kind: String?) {
 
         this.accessToken = accessToken
-        currentUserId = userId
         setCurrentUserLoggedInMode(loggedInMode)
-        currentUserName = userName
-        currentUserEmail = email
-        currentUserProfilePicUrl = profilePicPath
-        currentUserOrganizationId = organizationId
+        this.currentUserId = _id
+        this.currentUserFirstName = first_name
+        this.currentUserLastName = last_name
+        this.currentUserEmail = email
+        this.currentUserStatus = status
+        this.currentUserOrganizationId = organizationId
+        this.currentUserKind = kind
 
-        updateApiHeader(userId, accessToken)
+        updateApiHeader(accessToken)
     }
 
-    override fun getAllAthletes(): Observable<List<Athlete>> {
-        return mDbHelper.getAllAthletes()
+    override fun getAthleteList(): Observable<List<Athlete>?> {
+        val remoteSource: Single<List<Athlete>> = mApiHelper.getAthletesFromOrganizationServer().subscribeOn(schedulerProvider.io())
+
+        return mDbHelper.getAllAthletesFromOrganization(this.currentUserOrganizationId!!)
+                .flatMap { listFromLocal: List<Athlete> ->
+                    remoteSource
+                            .observeOn(schedulerProvider.computation())
+                            .toObservable()
+                            .filter { apiAthleteList: List<Athlete> ->
+                                apiAthleteList != listFromLocal
+                            }
+                            .flatMapSingle { apiAthleteList ->
+                                mDbHelper.saveAthleteList(apiAthleteList)
+                                        .andThen(Single.just(apiAthleteList))
+                            }
+                            .startWith(listFromLocal)
+                }
     }
 
-    override fun getAthlete(athleteId: Long): Observable<Athlete> {
+    override fun getAthletesFromOrganizationServer(): Single<List<Athlete>> {
+        return mApiHelper.getAthletesFromOrganizationServer()
+    }
+
+    override fun getAllAthletesFromOrganization(organizationId: String): Observable<List<Athlete>> {
+        return mDbHelper.getAllAthletesFromOrganization(organizationId)
+    }
+
+    override fun saveAthleteList(athleteList: List<Athlete>): Completable {
+        return mDbHelper.saveAthleteList(athleteList)
+    }
+
+    override fun getAthlete(athleteId: String): Observable<Athlete> {
         return mDbHelper.getAthlete(athleteId)
     }
 
-    override fun getTestDataForAthleteId(athleteId: Long?): Observable<List<TestData>> {
+    override fun getTestDataForAthleteId(athleteId: String): Observable<List<TestData>> {
         return mDbHelper.getTestDataForAthleteId(athleteId)
     }
 
@@ -145,8 +205,10 @@ class AppDataManager @Inject constructor(private val mContext: Context,
         return mDbHelper.saveAthlete(athlete)
     }
 
-    override fun saveAthleteList(athleteList: List<Athlete>): Observable<Boolean> {
-        return mDbHelper.saveAthleteList(athleteList)
+    override fun saveOrganization(organization: Organization): Observable<Boolean> {
+        return mDbHelper.saveOrganization(organization)
     }
+
+
 
 }

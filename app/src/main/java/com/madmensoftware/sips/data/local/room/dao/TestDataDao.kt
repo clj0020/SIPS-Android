@@ -22,6 +22,6 @@ interface TestDataDao {
     fun loadAll(): List<TestData>
 
     @Query("SELECT * FROM test_data WHERE athlete_id = :athleteId")
-    fun loadAllByAthleteId(athleteId: Long?): List<TestData>
+    fun loadAllByAthleteId(athleteId: String): List<TestData>
 
 }

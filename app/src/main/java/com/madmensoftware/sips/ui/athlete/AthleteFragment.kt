@@ -58,7 +58,7 @@ class AthleteFragment : BaseFragment<FragmentAthleteBinding, AthleteViewModel>()
 
         setUp()
 
-        val athleteId: Long = arguments!!.getLong(KEY_ATHLETE_ID)
+        val athleteId: String = arguments!!.getString(KEY_ATHLETE_ID)
 
         subscribeToAthleteLiveData(athleteId)
     }
@@ -68,7 +68,7 @@ class AthleteFragment : BaseFragment<FragmentAthleteBinding, AthleteViewModel>()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    private fun subscribeToAthleteLiveData(athleteId: Long) {
+    private fun subscribeToAthleteLiveData(athleteId: String) {
         viewModel.athleteId = athleteId
 
         viewModel.fetchAthlete()
@@ -117,11 +117,11 @@ class AthleteFragment : BaseFragment<FragmentAthleteBinding, AthleteViewModel>()
         mLayoutManager.detachAndScrapAttachedViews(mFragmentAthleteBinding!!.testDataListRecyclerView.Recycler())
     }
 
-    override fun showTestAthleteFragment(athleteId: Long) {
+    override fun showTestAthleteFragment(athleteId: String) {
         (activity as MainActivity).viewModel.onTestAthlete(athleteId)
     }
 
-    override fun showEditAthleteFragment(athleteId: Long) {
+    override fun showEditAthleteFragment(athleteId: String) {
         (activity as MainActivity).viewModel.onEditAthlete(athleteId)
     }
 
@@ -154,9 +154,9 @@ class AthleteFragment : BaseFragment<FragmentAthleteBinding, AthleteViewModel>()
         val TAG = AthleteFragment::class.java.simpleName
         val KEY_ATHLETE_ID = "athleteId"
 
-        fun newInstance(athleteId: Long): AthleteFragment {
+        fun newInstance(athleteId: String): AthleteFragment {
             val args = Bundle()
-            args.putLong(KEY_ATHLETE_ID, athleteId)
+            args.putString(KEY_ATHLETE_ID, athleteId)
             val fragment = AthleteFragment()
             fragment.setArguments(args)
             return fragment

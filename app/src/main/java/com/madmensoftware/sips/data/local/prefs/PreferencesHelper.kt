@@ -11,17 +11,23 @@ interface PreferencesHelper {
 
     var accessToken: String?
 
-    var currentUserEmail: String?
+    var currentUserId: String?
 
-    var currentUserId: Long?
+    var currentUserFirstName: String?
+
+    var currentUserLastName: String?
+
+    var currentUserEmail: String?
 
     val currentUserLoggedInMode: Int
 
-    var currentUserName: String?
-
     var currentUserProfilePicUrl: String?
 
-    var currentUserOrganizationId: Long?
+    var currentUserOrganizationId: String?
+
+    var currentUserStatus: String?
+
+    var currentUserKind: String?
 
     fun setCurrentUserLoggedInMode(mode: DataManager.LoggedInMode)
 

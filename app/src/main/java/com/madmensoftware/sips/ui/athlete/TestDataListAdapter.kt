@@ -93,7 +93,7 @@ class TestDataListAdapter(val mTestDataList: MutableList<TestData>?) : RecyclerV
             mBinding.executePendingBindings()
         }
 
-        override fun onItemClick(id: Long) {
+        override fun onItemClick(id: String) {
 //            (itemView.context.applicationContext as MainActivity).showAthleteFragment(athleteId)
         }
     }

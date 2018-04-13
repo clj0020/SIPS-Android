@@ -23,7 +23,7 @@ class TestAthleteViewModel(dataManager: DataManager, schedulerProvider: Schedule
     private val ONE_LEG_SQUAT_HOLD = 0
     private val SINGLE_LEG_JUMP = 1
 
-    var athleteId: Long ?= null
+    var athleteId: String ?= null
 
     // Test Variables
     var mTestId: Int ?= null
@@ -125,7 +125,7 @@ class TestAthleteViewModel(dataManager: DataManager, schedulerProvider: Schedule
 
     fun uploadTestData(accelerometerData: ArrayList<Array<Float>>, gyroscopeData: ArrayList<Array<Float>>, magnometerData: ArrayList<Array<Float>>) {
         val testData = TestData()
-        testData.athleteId = this.athleteId
+        testData.athleteId = this.athleteId!!
         testData.accelerometerArray = accelerometerData
         testData.gyroscopeArray = gyroscopeData
         testData.magnetometerArray = magnometerData
@@ -138,10 +138,10 @@ class TestAthleteViewModel(dataManager: DataManager, schedulerProvider: Schedule
                 .subscribeOn(schedulerProvider.io())
                 .observeOn(schedulerProvider.ui())
                 .subscribe({isFinished ->
+                    setIsLoading(false)
                     if (isFinished != null) {
                         navigator!!.testSaved()
                     }
-                    setIsLoading(false)
                 }, {throwable ->
                     navigator!!.handleError(throwable)
                 })

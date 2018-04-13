@@ -8,11 +8,11 @@ import com.google.gson.annotations.SerializedName
  * Created by clj00 on 3/2/2018.
  */
 @Entity(tableName = "athletes",
-        indices= arrayOf(Index(value = ["organization_id"])),
+        indices= arrayOf(Index(value = ["organization"])),
         foreignKeys = arrayOf(ForeignKey(
                 entity = Organization::class,
                 parentColumns = arrayOf("id"),
-                childColumns = arrayOf("organization_id"),
+                childColumns = arrayOf("organization"),
                 onDelete = ForeignKey.CASCADE)
         ))
 class Athlete {
@@ -20,16 +20,21 @@ class Athlete {
     @Expose
     @SerializedName("created_at")
     @ColumnInfo(name = "created_at")
-    var createdAt: String? = null
+    var created_at: String? = null
+//
+//    @Expose
+//    @PrimaryKey(autoGenerate = true)
+//    var id: Long? = null
 
     @Expose
-    @PrimaryKey(autoGenerate = true)
-    var id: Long? = null
+    @PrimaryKey
+    @ColumnInfo(name = "id")
+    var id: String = ""
 
     @Expose
-    @SerializedName("organization_id")
-    @ColumnInfo(name = "organization_id")
-    var organizationId: Long ?= null
+    @SerializedName("organization")
+    @ColumnInfo(name = "organization")
+    var organization: String ?= null
 
     @Expose
     @SerializedName("first_name")
@@ -42,15 +47,28 @@ class Athlete {
     var last_name: String? = null
 
     @Expose
-    @SerializedName("updated_at")
-    @ColumnInfo(name = "updated_at")
-    var updatedAt: String? = null
+    @SerializedName("status")
+    @ColumnInfo(name = "status")
+    var status: String? = null
 
     @Expose
     @SerializedName("email")
     @ColumnInfo(name = "email")
     var email: String ?= null
 
+    @Expose
+    @SerializedName("date_of_birth")
+    @ColumnInfo(name = "date_of_birth")
+    var date_of_birth: String ?= null
 
+    @Expose
+    @SerializedName("height")
+    @ColumnInfo(name = "height")
+    var height: Int ?= null
+
+    @Expose
+    @SerializedName("weight")
+    @ColumnInfo(name = "weight")
+    var weight: Int ?= null
 
 }

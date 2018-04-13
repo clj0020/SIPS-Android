@@ -21,17 +21,25 @@ class User {
     @ColumnInfo(name = "created_at")
     var createdAt: String? = null
 
+    @Expose
     @PrimaryKey
-    var id: Long? = null
+    @ColumnInfo(name = "id")
+    var id: String = ""
 
     @Expose
     @SerializedName("organization_id")
     @ColumnInfo(name = "organization_id")
-    var organizationId: Long ?= 0
+    var organizationId: String = ""
 
-    var name: String? = null
+    @Expose
+    @SerializedName("first_name")
+    @ColumnInfo(name = "first_name")
+    var first_name: String? = null
 
-    @ColumnInfo(name = "updated_at")
-    var updatedAt: String? = null
+    @Expose
+    @SerializedName("last_name")
+    @ColumnInfo(name = "last_name")
+    var last_name: String? = null
+
 
 }

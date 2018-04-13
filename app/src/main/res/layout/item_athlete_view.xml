@@ -47,7 +47,7 @@
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
                     android:layout_marginTop="20dp"
-                    android:text="@{viewModel.firstName + ' '  + viewModel.lastName}"
+                    android:text="@{viewModel.first_name + ' '  + viewModel.last_name}"
                     tools:text="Carson Jones" />
 
                 <RelativeLayout
@@ -67,14 +67,14 @@
                         <!--android:text="@{viewModel.author}"-->
                         <!--tools:text="Amit Shekhar" />-->
 
-                    <TextView
-                        android:id="@+id/createdAtTextView"
-                        style="@style/TextStyle.Title.Sub"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:text="@{viewModel.createdAt}"
-                        tools:text="23 Jan 2017" />
+                    <!--<TextView-->
+                        <!--android:id="@+id/createdAtTextView"-->
+                        <!--style="@style/TextStyle.Title.Sub"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_alignParentRight="true"-->
+                        <!--android:text="@{viewModel.createdAt}"-->
+                        <!--tools:text="23 Jan 2017" />-->
                 </RelativeLayout>
 
                 <!--<TextView-->

@@ -13,8 +13,8 @@ interface UserDao {
     @Delete
     fun delete(user: User)
 
-    @Query("SELECT * FROM users WHERE name LIKE :name LIMIT 1")
-    fun findByName(name: String): User
+    @Query("SELECT * FROM users WHERE first_name LIKE :first_name LIMIT 1")
+    fun findByName(first_name: String): User
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(user: User)

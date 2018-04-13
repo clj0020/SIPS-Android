@@ -24,7 +24,7 @@ class MainViewModel(dataManager: DataManager, schedulerProvider: SchedulerProvid
 
     val userProfilePicUrl = ObservableField<String>()
 
-    val organizationId = ObservableField<Long>()
+    val organizationId = ObservableField<String>()
 
     val backStackLiveData: MutableLiveData<Data> = MutableLiveData<Data>()
 
@@ -36,7 +36,7 @@ class MainViewModel(dataManager: DataManager, schedulerProvider: SchedulerProvid
 //        backStackLiveData.value = Data.AthletesData
 //    }
 
-    fun onAthleteDetails(athleteId: Long) {
+    fun onAthleteDetails(athleteId: String) {
         backStackLiveData.value = Data.AthleteData(athleteId)
     }
 
@@ -44,11 +44,11 @@ class MainViewModel(dataManager: DataManager, schedulerProvider: SchedulerProvid
         backStackLiveData.value = Data.AddAthleteData
     }
 
-    fun onTestAthlete(athleteId: Long) {
+    fun onTestAthlete(athleteId: String) {
         backStackLiveData.value = Data.TestAthleteData(athleteId)
     }
 
-    fun onEditAthlete(athleteId: Long) {
+    fun onEditAthlete(athleteId: String) {
         backStackLiveData.value = Data.EditAthleteData(athleteId)
     }
 
@@ -69,23 +69,24 @@ class MainViewModel(dataManager: DataManager, schedulerProvider: SchedulerProvid
 
     fun logout() {
         setIsLoading(true)
-        compositeDisposable.add(dataManager.doLogoutApiCall()
-                .doOnSuccess({
-                    dataManager.setUserAsLoggedOut()
-                })
-                .subscribeOn(schedulerProvider.io())
-                .observeOn(schedulerProvider.ui())
-                .subscribe({
-                    setIsLoading(false)
-                    navigator!!.openLoginActivity()
-                }, { throwable: Throwable ->
-                    setIsLoading(false)
-                    navigator!!.handleError(throwable)
-                }))
+        dataManager.logout()
+        navigator!!.openLoginActivity()
+//                .doOnSuccess({
+//                    dataManager.setUserAsLoggedOut()
+//                })
+//                .subscribeOn(schedulerProvider.io())
+//                .observeOn(schedulerProvider.ui())
+//                .subscribe({
+//                    setIsLoading(false)
+//                    navigator!!.openLoginActivity()
+//                }, { throwable: Throwable ->
+//                    setIsLoading(false)
+//                    navigator!!.handleError(throwable)
+//                }))
     }
 
     fun onNavMenuCreated() {
-        val currentUserName = dataManager.currentUserName
+        val currentUserName = dataManager.currentUserFirstName + " " + dataManager.currentUserLastName
         if (!TextUtils.isEmpty(currentUserName)) {
             userName.set(currentUserName)
         }
@@ -108,10 +109,10 @@ class MainViewModel(dataManager: DataManager, schedulerProvider: SchedulerProvid
 
     interface Data {
         object AthletesData : Data
-        data class AthleteData(val athleteId: Long) : Data
+        data class AthleteData(val athleteId: String) : Data
         object AddAthleteData : Data
-        data class TestAthleteData(val athleteId: Long) : Data
-        data class EditAthleteData(val athleteId: Long) : Data
+        data class TestAthleteData(val athleteId: String) : Data
+        data class EditAthleteData(val athleteId: String) : Data
     }
 
 

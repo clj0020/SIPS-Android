@@ -21,3 +21,7 @@
 #-renamesourcefileattribute SourceFile
 -dontwarn com.google.errorprone.annotations.**
 -dontwarn **
+-dontwarn okhttp3.**
+-dontwarn okio.**
+-dontwarn javax.annotation.**
+-dontwarn org.conscrypt.**

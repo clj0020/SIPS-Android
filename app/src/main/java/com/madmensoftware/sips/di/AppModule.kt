@@ -38,11 +38,11 @@ class AppModule {
         return appApiHelper
     }
 
-    @Provides
-    @ApiInfo
-    internal fun provideApiKey(): String {
-        return BuildConfig.API_KEY
-    }
+//    @Provides
+//    @ApiInfo
+//    internal fun provideApiKey(): String {
+//        return BuildConfig.API_KEY
+//    }
 
     @Provides
     @Singleton
@@ -113,13 +113,17 @@ class AppModule {
 
     @Provides
     @Singleton
-    internal fun provideProtectedApiHeader(@ApiInfo apiKey: String,
-                                           preferencesHelper: PreferencesHelper): ApiHeader.ProtectedApiHeader {
+    internal fun provideProtectedApiHeader(preferencesHelper: PreferencesHelper): ApiHeader.ProtectedApiHeader {
         return ApiHeader.ProtectedApiHeader(
-                apiKey,
-                preferencesHelper.currentUserId,
                 preferencesHelper.accessToken)
     }
+
+    @Provides
+    @Singleton
+    internal fun providePublicApiHeader(): ApiHeader.PublicApiHeader {
+        return ApiHeader.PublicApiHeader()
+    }
+
 
     @Provides
     internal fun provideSchedulerProvider(): SchedulerProvider {

@@ -1,8 +1,8 @@
 package com.madmensoftware.sips.data.remote
 
-import com.madmensoftware.sips.data.models.api.LoginRequest
-import com.madmensoftware.sips.data.models.api.LoginResponse
-import com.madmensoftware.sips.data.models.api.LogoutResponse
+import com.madmensoftware.sips.data.models.api.*
+import com.madmensoftware.sips.data.models.room.Athlete
+import io.reactivex.Observable
 import io.reactivex.Single
 
 /**
@@ -16,7 +16,10 @@ interface ApiHelper {
 
     fun doGoogleLoginApiCall(request: LoginRequest.GoogleLoginRequest): Single<LoginResponse>
 
-    fun doLogoutApiCall(): Single<LogoutResponse>
+//    fun doLogoutApiCall(): Single<LogoutResponse>
 
     fun doServerLoginApiCall(request: LoginRequest.ServerLoginRequest): Single<LoginResponse>
+
+    fun getAthletesFromOrganizationServer(): Single<List<Athlete>>
+
 }

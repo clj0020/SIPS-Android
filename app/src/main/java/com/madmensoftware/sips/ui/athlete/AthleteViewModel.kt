@@ -15,7 +15,7 @@ import com.madmensoftware.sips.util.SchedulerProvider
 class AthleteViewModel(dataManager: DataManager,
                            schedulerProvider: SchedulerProvider) : BaseViewModel<AthleteNavigator>(dataManager, schedulerProvider) {
 
-    var athleteId: Long ?= null
+    var athleteId: String = ""
 
     val athleteLiveData: MutableLiveData<Athlete> = MutableLiveData()
 
@@ -30,7 +30,7 @@ class AthleteViewModel(dataManager: DataManager,
     fun fetchAthlete() {
         setIsLoading(true)
         compositeDisposable.add(dataManager
-                .getAthlete(this.athleteId!!)
+                .getAthlete(this.athleteId)
                 .subscribeOn(schedulerProvider.io())
                 .observeOn(schedulerProvider.ui())
                 .subscribe({athlete ->
@@ -66,11 +66,11 @@ class AthleteViewModel(dataManager: DataManager,
                 }))
     }
 
-    fun onTestAthleteButtonClick(athleteId: Long) {
+    fun onTestAthleteButtonClick(athleteId: String) {
         navigator!!.showTestAthleteFragment(athleteId)
     }
 
-    fun onEditAthleteButtonClick(athleteId: Long) {
+    fun onEditAthleteButtonClick(athleteId: String) {
         navigator!!.showEditAthleteFragment(athleteId)
     }
 }

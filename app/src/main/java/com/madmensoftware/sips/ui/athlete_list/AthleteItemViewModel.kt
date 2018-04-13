@@ -8,31 +8,31 @@ import com.madmensoftware.sips.data.models.room.Athlete
  */
 class AthleteItemViewModel(private val mAthlete: Athlete, val mListener: AthleteItemViewModelListener) {
 
-    val createdAt: ObservableField<String>
+//    val createdAt: ObservableField<String>
 
-    val firstName: ObservableField<String>
+    val first_name: ObservableField<String>
 
-    val lastName: ObservableField<String>
+    val last_name: ObservableField<String>
 
-    val updatedAt: ObservableField<String>
+//    val updatedAt: ObservableField<String>
 
     val email: ObservableField<String>
 
 
     init {
-        createdAt = ObservableField(mAthlete.createdAt!!)
-        firstName = ObservableField(mAthlete.first_name!!)
-        lastName = ObservableField(mAthlete.last_name!!)
-        updatedAt = ObservableField(mAthlete.updatedAt!!)
+//        createdAt = ObservableField(mAthlete.created_at!!)
+        first_name = ObservableField(mAthlete.first_name!!)
+        last_name = ObservableField(mAthlete.last_name!!)
+//        updatedAt = ObservableField(mAthlete.updatedAt!!)
         email = ObservableField(mAthlete.email!!)
     }
 
     fun onItemClick() {
-        mListener.onItemClick(mAthlete.id!!)
+        mListener.onItemClick(mAthlete.id)
     }
 
     interface AthleteItemViewModelListener {
 
-        fun onItemClick(id: Long)
+        fun onItemClick(id: String)
     }
 }

@@ -11,7 +11,7 @@ interface AthleteNavigator {
 
     fun updateTestDataList(testDataList: List<TestData>)
 
-    fun showTestAthleteFragment(athleteId: Long)
+    fun showTestAthleteFragment(athleteId: String)
 
-    fun showEditAthleteFragment(athleteId: Long)
+    fun showEditAthleteFragment(athleteId: String)
 }
