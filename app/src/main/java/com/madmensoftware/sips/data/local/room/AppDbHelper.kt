@@ -50,7 +50,7 @@ class AppDbHelper @Inject constructor(internal val appDatabase: AppDatabase) : D
     }
 
 
-    override fun getAthlete(athleteId: String): Observable<Athlete> {
+    override fun getAthleteFromDatabase(athleteId: String): Observable<Athlete> {
         return Observable.fromCallable<Athlete> {
             appDatabase.athleteDao().loadAthleteById(athleteId)
         }
@@ -77,8 +77,8 @@ class AppDbHelper @Inject constructor(internal val appDatabase: AppDatabase) : D
         }
     }
 
-    override fun saveAthlete(athlete: Athlete): Observable<Boolean> {
-        return Observable.fromCallable {
+    override fun saveAthlete(athlete: Athlete): Completable {
+        return Completable.fromCallable {
             appDatabase.athleteDao().insert(athlete)
             true
         }
@@ -87,11 +87,12 @@ class AppDbHelper @Inject constructor(internal val appDatabase: AppDatabase) : D
     override fun saveAthleteList(athleteList: List<Athlete>): Completable {
         return Completable.fromCallable {
             appDatabase.athleteDao().insertAll(athleteList)
+            true
         }
     }
 
-    override fun saveOrganization(organization: Organization): Observable<Boolean> {
-        return Observable.fromCallable {
+    override fun saveOrganization(organization: Organization): Completable {
+        return Completable.fromCallable {
             appDatabase.organizationDao().insert(organization)
             true
         }

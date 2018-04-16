@@ -11,7 +11,7 @@ import com.google.gson.annotations.SerializedName
         indices= arrayOf(Index(value = ["organization"])),
         foreignKeys = arrayOf(ForeignKey(
                 entity = Organization::class,
-                parentColumns = arrayOf("id"),
+                parentColumns = arrayOf("_id"),
                 childColumns = arrayOf("organization"),
                 onDelete = ForeignKey.CASCADE)
         ))
@@ -28,13 +28,13 @@ class Athlete {
 
     @Expose
     @PrimaryKey
-    @ColumnInfo(name = "id")
-    var id: String = ""
+    @ColumnInfo(name = "_id")
+    var _id: String = ""
 
     @Expose
     @SerializedName("organization")
     @ColumnInfo(name = "organization")
-    var organization: String ?= null
+    var organization: String = ""
 
     @Expose
     @SerializedName("first_name")

@@ -15,7 +15,7 @@ class TestDataItemViewModel(private val mTestData: TestData, val mListener: Test
     }
 
     fun onItemClick() {
-        mListener.onItemClick(mTestData.id)
+        mListener.onItemClick(mTestData._id)
     }
 
     interface TestDataItemViewModelListener {

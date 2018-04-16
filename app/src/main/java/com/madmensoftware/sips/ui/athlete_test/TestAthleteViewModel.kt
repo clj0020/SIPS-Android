@@ -5,6 +5,7 @@ import android.arch.lifecycle.MutableLiveData
 import android.hardware.Sensor
 import com.github.pwittchen.reactivesensors.library.ReactiveSensors
 import com.madmensoftware.sips.data.DataManager
+import com.madmensoftware.sips.data.models.api.TestDataRequest
 import com.madmensoftware.sips.data.models.room.TestData
 import com.madmensoftware.sips.ui.base.BaseViewModel
 import com.madmensoftware.sips.util.SchedulerProvider
@@ -37,9 +38,9 @@ class TestAthleteViewModel(dataManager: DataManager, schedulerProvider: Schedule
     lateinit var mReactiveSensors: ReactiveSensors
     lateinit var mSensorHelper: SensorHelper
 
-    private var mAccelerometerData: ArrayList<Array<Float>> = ArrayList<Array<Float>>()
-    private var mGyroscopeData: ArrayList<Array<Float>> = ArrayList<Array<Float>>()
-    private var mMagnometerData: ArrayList<Array<Float>> = ArrayList<Array<Float>>()
+    private var mAccelerometerData: ArrayList<TestDataRequest.SensorData> = ArrayList<TestDataRequest.SensorData>()
+    private var mGyroscopeData: ArrayList<TestDataRequest.SensorData> = ArrayList<TestDataRequest.SensorData>()
+    private var mMagnometerData: ArrayList<TestDataRequest.SensorData> = ArrayList<TestDataRequest.SensorData>()
 
     private lateinit var mAccelerometerSubscription: Disposable
     private lateinit var mGyroscopeSubscription: Disposable
@@ -123,18 +124,25 @@ class TestAthleteViewModel(dataManager: DataManager, schedulerProvider: Schedule
         }
     }
 
-    fun uploadTestData(accelerometerData: ArrayList<Array<Float>>, gyroscopeData: ArrayList<Array<Float>>, magnometerData: ArrayList<Array<Float>>) {
-        val testData = TestData()
-        testData.athleteId = this.athleteId!!
-        testData.accelerometerArray = accelerometerData
-        testData.gyroscopeArray = gyroscopeData
-        testData.magnetometerArray = magnometerData
-        testData.createdAt = Calendar.getInstance().time.toString()
-        testData.testedAt = Calendar.getInstance().time
+    fun uploadTestData(accelerometerData: ArrayList<TestDataRequest.SensorData>, gyroscopeData: ArrayList<TestDataRequest.SensorData>, magnometerData: ArrayList<TestDataRequest.SensorData>) {
+//        val testData = TestData()
+//        testData.athleteId = this.athleteId!!
+//        testData.accelerometerArray = accelerometerData
+//        testData.gyroscopeArray = gyroscopeData
+//        testData.magnetometerArray = magnometerData
+//        testData.createdAt = Calendar.getInstance().time.toString()
+//        testData.testedAt = Calendar.getInstance().time
+
+        val testDataRequest = TestDataRequest.UploadTestDataRequest(
+                athleteId = this.athleteId,
+                accelerometer_data = accelerometerData,
+                magnometer_data = magnometerData,
+                gyroscope_data = gyroscopeData
+        )
 
         setIsLoading(true)
         compositeDisposable.add(dataManager
-                .saveTestData(testData)
+                .saveTestDataServer(testDataRequest)
                 .subscribeOn(schedulerProvider.io())
                 .observeOn(schedulerProvider.ui())
                 .subscribe({isFinished ->

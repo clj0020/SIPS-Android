@@ -25,7 +25,7 @@ interface DbHelper {
 
 //    fun getAllAthletes(): Observable<List<Athlete>>
 
-    fun getAthlete(athleteId: String): Observable<Athlete>
+    fun getAthleteFromDatabase(athleteId: String): Observable<Athlete>
 
     fun getTestDataForAthleteId(athleteId: String): Observable<List<TestData>>
 
@@ -33,11 +33,11 @@ interface DbHelper {
 
     fun saveTestDataList(testDataList: List<TestData>): Observable<Boolean>
 
-    fun saveAthlete(athlete: Athlete): Observable<Boolean>
+    fun saveAthlete(athlete: Athlete): Completable
 
     fun saveAthleteList(athleteList: List<Athlete>): Completable
 
-    fun saveOrganization(organization: Organization): Observable<Boolean>
+    fun saveOrganization(organization: Organization): Completable
 
     fun getAllAthletesFromOrganization(organizationId: String): Observable<List<Athlete>>
 }

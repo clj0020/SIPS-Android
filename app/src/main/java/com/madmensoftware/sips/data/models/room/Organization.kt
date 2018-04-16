@@ -19,8 +19,8 @@ class Organization {
 
     @Expose
     @PrimaryKey
-    @ColumnInfo(name = "id")
-    var id: String = ""
+    @ColumnInfo(name = "_id")
+    var _id: String = ""
 
     @Expose
     @SerializedName("title")

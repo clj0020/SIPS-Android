@@ -13,6 +13,8 @@ import com.madmensoftware.sips.ui.base.BaseViewModel
 import com.madmensoftware.sips.util.CommonUtils
 import com.madmensoftware.sips.util.SchedulerProvider
 import io.reactivex.Observable
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
 
 
 /**
@@ -39,8 +41,39 @@ class LoginViewModel(dataManager: DataManager, schedulerProvider: SchedulerProvi
                 .doServerLoginApiCall(LoginRequest.ServerLoginRequest(email, password))
                 .subscribeOn(schedulerProvider.io())
                 .observeOn(schedulerProvider.ui())
-                .doOnSuccess({response ->
-                    Log.i("OrganizationId: ", response.user!!.organization!!._id)
+//                .flatMap({response: LoginResponse ->
+//
+//                    val organization = Organization()
+//                    organization._id = response.user!!.organization!!._id
+//                    organization.title = response.user!!.organization!!.title
+//                    organization.createdAt = response.user!!.organization!!.createdAt
+//                    organization.creator = response.user!!.organization!!.creator
+//
+//                    val _newAthleteList = mutableListOf<Athlete>()
+//                    for (athlete in response.athletes!!) {
+//                        val newAthlete = Athlete()
+//                        newAthlete._id = athlete._id
+//                        newAthlete.first_name = athlete.first_name
+//                        newAthlete.last_name = athlete.last_name
+//                        newAthlete.email = athlete.email
+//                        newAthlete.status = athlete.status
+//                        newAthlete.date_of_birth = athlete.date_of_birth
+//                        newAthlete.height = athlete.height
+//                        newAthlete.weight = athlete.weight
+//                        newAthlete.created_at = athlete.created_at
+//                        newAthlete.organization = response.user!!.organization!!._id
+//
+//                        _newAthleteList.add(newAthlete)
+//                    }
+//
+////                    return@flatMap Single.concat(
+////                            dataManager.saveOrganization(organization),
+////                            dataManager.saveAthleteList(_newAthleteList.toList())
+////                    )
+//
+//                    return@flatMap dataManager.saveOrganization(organization)
+//                })
+                .doOnSuccess({response: LoginResponse ->
 
                     dataManager.updateUserInfo(
                             _id = response.user!!._id,
@@ -52,10 +85,31 @@ class LoginViewModel(dataManager: DataManager, schedulerProvider: SchedulerProvi
                             status = response.user!!.status,
                             organizationId = response.user!!.organization!!._id,
                             kind = response.user!!.kind)
+
                 })
                 .subscribe({ response: LoginResponse ->
-                    setIsLoading(false)
-                    navigator!!.openMainActivity()
+                    val organization = Organization()
+                    organization._id = response.user!!.organization!!._id
+                    organization.title = response.user!!.organization!!.title
+                    organization.createdAt = response.user!!.organization!!.createdAt
+                    organization.creator = response.user!!.organization!!.creator
+
+                    dataManager.saveOrganization(organization).doOnComplete {
+                        setIsLoading(false)
+                        navigator!!.openMainActivity()
+                    }.doOnError({throwable ->
+                        setIsLoading(false)
+                        navigator!!.handleError(throwable)
+                    }).doFinally({
+                        setIsLoading(false)
+                        navigator!!.openMainActivity()
+                    }).doAfterTerminate({
+                        setIsLoading(false)
+                        navigator!!.openMainActivity()
+                    }).subscribeOn(schedulerProvider.io()).observeOn(schedulerProvider.ui()).subscribe({
+                        setIsLoading(false)
+                        navigator!!.openMainActivity()
+                    })
                 }, { throwable ->
                     setIsLoading(false)
                     navigator!!.handleError(throwable)

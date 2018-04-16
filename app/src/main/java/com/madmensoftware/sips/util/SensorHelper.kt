@@ -8,6 +8,7 @@ import com.github.pwittchen.reactivesensors.library.ReactiveSensorEvent
 import com.github.pwittchen.reactivesensors.library.ReactiveSensorFilter
 import com.github.pwittchen.reactivesensors.library.ReactiveSensors
 import com.github.pwittchen.reactivesensors.library.SensorNotFoundException
+import com.madmensoftware.sips.data.models.api.TestDataRequest
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
 import java.util.*
@@ -17,15 +18,15 @@ import java.util.*
  */
 class SensorHelper(private val reactiveSensors: ReactiveSensors, private val schedulerProvider: SchedulerProvider) {
 
-    val mAccelerometerData: ArrayList<Array<Float>>
-    val mGyroscopeData: ArrayList<Array<Float>>
-    val mMagnometerData: ArrayList<Array<Float>>
+    val mAccelerometerData: ArrayList<TestDataRequest.SensorData>
+    val mGyroscopeData: ArrayList<TestDataRequest.SensorData>
+    val mMagnometerData: ArrayList<TestDataRequest.SensorData>
     val mStartTime: Float
 
     init {
-        mAccelerometerData = ArrayList<Array<Float>>()
-        mGyroscopeData = ArrayList<Array<Float>>()
-        mMagnometerData = ArrayList<Array<Float>>()
+        mAccelerometerData = ArrayList<TestDataRequest.SensorData>()
+        mGyroscopeData = ArrayList<TestDataRequest.SensorData>()
+        mMagnometerData = ArrayList<TestDataRequest.SensorData>()
         mStartTime = SystemClock.elapsedRealtime().toFloat()
     }
 
@@ -46,7 +47,13 @@ class SensorHelper(private val reactiveSensors: ReactiveSensors, private val sch
                             val z = event.values[2]
                             val time = SystemClock.elapsedRealtime().toFloat() - mStartTime
 
-                            mAccelerometerData.add(arrayOf(time, x, y, z))
+                            val sensorData = TestDataRequest.SensorData()
+                            sensorData.time = time
+                            sensorData.x = x
+                            sensorData.y = y
+                            sensorData.z = z
+
+                            mAccelerometerData.add(sensorData)
 
                             val format = "%s readings:\n time = %f\n x = %f\n y = %f\n z = %f"
                             val message = String.format(Locale.getDefault(), format, "accelerometer", time, x, y, z)
@@ -78,7 +85,14 @@ class SensorHelper(private val reactiveSensors: ReactiveSensors, private val sch
                             val z = event.values[2]
                             val time = SystemClock.elapsedRealtime().toFloat() - mStartTime
 
-                            mGyroscopeData.add(arrayOf(time, x, y, z))
+
+                            val sensorData = TestDataRequest.SensorData()
+                            sensorData.time = time
+                            sensorData.x = x
+                            sensorData.y = y
+                            sensorData.z = z
+
+                            mGyroscopeData.add(sensorData)
 
                             val format = "%s readings:\n time = %f\n x = %f\n y = %f\n z = %f"
                             val message = String.format(Locale.getDefault(), format, "gyroscope", time, x, y, z)
@@ -110,7 +124,13 @@ class SensorHelper(private val reactiveSensors: ReactiveSensors, private val sch
                             val z = event.values[2]
                             val time = SystemClock.elapsedRealtime().toFloat() - mStartTime
 
-                            mMagnometerData.add(arrayOf(time, x, y, z))
+                            val sensorData = TestDataRequest.SensorData()
+                            sensorData.time = time
+                            sensorData.x = x
+                            sensorData.y = y
+                            sensorData.z = z
+
+                            mMagnometerData.add(sensorData)
 
                             val format = "%s readings:\n time = %f\n x = %f\n y = %f\n z = %f"
                             val message = String.format(Locale.getDefault(), format, "magnometer", time, x, y, z)

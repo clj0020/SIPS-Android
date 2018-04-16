@@ -61,7 +61,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_margin="15dp"
-                    android:onClick="@{() -> viewModel.onTestAthleteButtonClick(athlete.id)}"
+                    android:onClick="@{() -> viewModel.onTestAthleteButtonClick(athlete._id)}"
                     android:padding="10dp"
                     android:text="@string/test"
                     android:textSize="18sp" />
@@ -73,7 +73,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="15dp"
                     android:layout_weight="1"
-                    android:onClick="@{() -> viewModel.onEditAthleteButtonClick(athlete.id)}"
+                    android:onClick="@{() -> viewModel.onEditAthleteButtonClick(athlete._id)}"
                     android:padding="10dp"
                     android:text="@string/edit"
                     android:textSize="18sp" />

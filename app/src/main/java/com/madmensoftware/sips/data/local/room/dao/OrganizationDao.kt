@@ -21,7 +21,7 @@ interface OrganizationDao {
     @Query("SELECT * FROM organizations")
     fun loadAll(): List<Organization>
 
-    @Query("SELECT * FROM organizations WHERE id IN (:organizationId)")
+    @Query("SELECT * FROM organizations WHERE _id IN (:organizationId)")
     fun loadById(organizationId: Long): Organization
 
 }

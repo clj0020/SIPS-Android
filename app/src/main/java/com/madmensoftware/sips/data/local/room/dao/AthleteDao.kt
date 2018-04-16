@@ -24,10 +24,10 @@ interface AthleteDao {
     @Query("SELECT * FROM athletes")
     fun loadAll(): List<Athlete>
 
-    @Query("SELECT * FROM athletes WHERE id = (:athleteIds)")
+    @Query("SELECT * FROM athletes WHERE _id = (:athleteIds)")
     fun loadAthleteById(athleteIds: String): Athlete
 
-    @Query("SELECT * FROM athletes WHERE id = (:organizationId)")
+    @Query("SELECT * FROM athletes WHERE _id = (:organizationId)")
     fun loadAthletesByOrganizationId(organizationId: String): List<Athlete>
 
 }

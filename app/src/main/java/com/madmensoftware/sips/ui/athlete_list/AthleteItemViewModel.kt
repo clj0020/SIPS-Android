@@ -28,7 +28,7 @@ class AthleteItemViewModel(private val mAthlete: Athlete, val mListener: Athlete
     }
 
     fun onItemClick() {
-        mListener.onItemClick(mAthlete.id)
+        mListener.onItemClick(mAthlete._id)
     }
 
     interface AthleteItemViewModelListener {

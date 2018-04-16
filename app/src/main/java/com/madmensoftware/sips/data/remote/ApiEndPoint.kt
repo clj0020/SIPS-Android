@@ -21,5 +21,8 @@ object ApiEndPoint {
 
     val ENDPOINT_GET_ATHLETES_FROM_ORGANIZATION = BuildConfig.BASE_URL + "/athletes/get-athletes-from-organization"
 
+    val ENDPOINT_GET_ATHLETE_BY_ID = BuildConfig.BASE_URL + "/athletes/{athleteId}"
+
+    val ENDPOINT_ADD_TEST_DATA = BuildConfig.BASE_URL + "/testingData/add"
 
 }// This class is not publicly instantiable

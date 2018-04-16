@@ -5,9 +5,7 @@ import android.util.Log
 import com.google.gson.Gson
 import com.madmensoftware.sips.data.local.prefs.PreferencesHelper
 import com.madmensoftware.sips.data.local.room.DbHelper
-import com.madmensoftware.sips.data.models.api.LoginRequest
-import com.madmensoftware.sips.data.models.api.LoginResponse
-import com.madmensoftware.sips.data.models.api.LogoutResponse
+import com.madmensoftware.sips.data.models.api.*
 import com.madmensoftware.sips.data.models.room.Athlete
 import com.madmensoftware.sips.data.models.room.Organization
 import com.madmensoftware.sips.data.models.room.TestData
@@ -33,7 +31,6 @@ class AppDataManager @Inject constructor(private val mContext: Context,
                                          private val mPreferencesHelper: PreferencesHelper,
                                          private val schedulerProvider: SchedulerProvider,
                                          private val mApiHelper: ApiHelper, private val mGson: Gson) : DataManager {
-
 
     override var accessToken: String?
         get() = mPreferencesHelper.accessToken
@@ -186,11 +183,41 @@ class AppDataManager @Inject constructor(private val mContext: Context,
     }
 
     override fun getAthlete(athleteId: String): Observable<Athlete> {
-        return mDbHelper.getAthlete(athleteId)
+        val remoteSource: Single<Athlete> = mApiHelper.getAthleteByIdServer(athleteId).subscribeOn(schedulerProvider.io())
+
+        return mDbHelper.getAthleteFromDatabase(athleteId)
+                .flatMap { athleteFromLocal: Athlete ->
+                    remoteSource
+                            .observeOn(schedulerProvider.computation())
+                            .toObservable()
+                            .filter { apiAthlete: Athlete ->
+                                apiAthlete != athleteFromLocal
+                            }
+                            .flatMapSingle { apiAthlete ->
+                                mDbHelper.saveAthlete(apiAthlete)
+                                        .andThen(Single.just(apiAthlete))
+                            }
+                            .startWith(athleteFromLocal)
+                }
+
+
+    }
+
+    override fun getAthleteFromDatabase(athleteId: String): Observable<Athlete> {
+        return mDbHelper.getAthleteFromDatabase(athleteId)
+    }
+
+    override fun getAthleteByIdServer(athleteId: String): Single<Athlete> {
+        return mApiHelper.getAthleteByIdServer(athleteId)
     }
 
     override fun getTestDataForAthleteId(athleteId: String): Observable<List<TestData>> {
         return mDbHelper.getTestDataForAthleteId(athleteId)
+    }
+
+    override fun saveTestDataServer(request: TestDataRequest.UploadTestDataRequest): Single<TestDataResponse> {
+
+        return mApiHelper.saveTestDataServer(request)
     }
 
     override fun saveTestData(testData: TestData): Observable<Boolean> {
@@ -201,11 +228,11 @@ class AppDataManager @Inject constructor(private val mContext: Context,
         return mDbHelper.saveTestDataList(testDataList)
     }
 
-    override fun saveAthlete(athlete: Athlete): Observable<Boolean> {
+    override fun saveAthlete(athlete: Athlete): Completable {
         return mDbHelper.saveAthlete(athlete)
     }
 
-    override fun saveOrganization(organization: Organization): Observable<Boolean> {
+    override fun saveOrganization(organization: Organization): Completable {
         return mDbHelper.saveOrganization(organization)
     }
 

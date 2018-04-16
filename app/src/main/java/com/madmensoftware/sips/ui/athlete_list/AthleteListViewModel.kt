@@ -22,7 +22,6 @@ class AthleteListViewModel(dataManager: DataManager,
     }
 
     fun addAthleteItemsToList(athletes: List<Athlete>) {
-        athleteObservableList?.clear()
         athleteObservableList?.addAll(athletes)
     }
 

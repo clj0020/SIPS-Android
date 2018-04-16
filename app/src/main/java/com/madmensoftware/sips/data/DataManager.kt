@@ -45,4 +45,5 @@ interface DataManager : DbHelper, ApiHelper, PreferencesHelper {
 
     fun getAthleteList(): Observable<List<Athlete>?>
 
+    fun getAthlete(athleteId: String): Observable<Athlete>
 }

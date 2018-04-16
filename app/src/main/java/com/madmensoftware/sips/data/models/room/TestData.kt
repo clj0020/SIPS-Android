@@ -12,7 +12,7 @@ import java.util.*
         indices= arrayOf(Index(value = ["athlete_id"])),
         foreignKeys = arrayOf(ForeignKey(
                 entity = Athlete::class,
-                parentColumns = arrayOf("id"),
+                parentColumns = arrayOf("_id"),
                 childColumns = arrayOf("athlete_id"),
                 onDelete = ForeignKey.CASCADE)
         ))
@@ -20,8 +20,8 @@ class TestData {
 
     @Expose
     @PrimaryKey
-    @ColumnInfo(name = "id")
-    var id: String = ""
+    @ColumnInfo(name = "_id")
+    var _id: String = ""
 
     @Expose
     @SerializedName("created_at")
@@ -31,7 +31,7 @@ class TestData {
     @Expose
     @SerializedName("athlete_id")
     @ColumnInfo(name = "athlete_id")
-    var athleteId: String = ""
+    var athlete_id: String = ""
 
     @Expose
     @SerializedName("tested_at")
