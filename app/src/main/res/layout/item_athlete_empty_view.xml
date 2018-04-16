@@ -15,7 +15,7 @@
         android:id="@+id/linearLayoutView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
+        android:gravity="center_horizontal"
         android:orientation="vertical">
 
         <!--<ImageView-->
@@ -36,25 +36,25 @@
             android:text="@string/no_athletes_found"
             android:textColor="@color/gray" />
 
-        <TextView
-            style="@style/TextStyle.Title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="30dp"
-            android:text="@string/please_retry"
-            android:textColor="@color/gray" />
+        <!--<TextView-->
+            <!--style="@style/TextStyle.Title"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:layout_marginTop="30dp"-->
+            <!--android:text="@string/please_retry"-->
+            <!--android:textColor="@color/gray" />-->
 
-        <Button
-            android:id="@+id/btn_retry"
-            style="@style/Button.Primary.Quiz.Empty"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="16dp"
-            android:onClick="@{() -> viewModel.onRetryClick()}"
-            android:text="@string/retry"
-            android:textSize="20sp" />
+        <!--<Button-->
+            <!--android:id="@+id/btn_retry"-->
+            <!--style="@style/Button.Primary.Quiz.Empty"-->
+            <!--android:layout_width="150dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:layout_marginTop="16dp"-->
+            <!--android:onClick="@{() -> viewModel.onRetryClick()}"-->
+            <!--android:text="@string/retry"-->
+            <!--android:textSize="20sp" />-->
     </LinearLayout>
 
 </layout>

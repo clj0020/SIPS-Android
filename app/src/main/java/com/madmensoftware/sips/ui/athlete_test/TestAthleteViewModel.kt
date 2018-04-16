@@ -6,6 +6,7 @@ import android.hardware.Sensor
 import com.github.pwittchen.reactivesensors.library.ReactiveSensors
 import com.madmensoftware.sips.data.DataManager
 import com.madmensoftware.sips.data.models.api.TestDataRequest
+import com.madmensoftware.sips.data.models.api.TestDataResponse
 import com.madmensoftware.sips.data.models.room.TestData
 import com.madmensoftware.sips.ui.base.BaseViewModel
 import com.madmensoftware.sips.util.SchedulerProvider
@@ -38,9 +39,9 @@ class TestAthleteViewModel(dataManager: DataManager, schedulerProvider: Schedule
     lateinit var mReactiveSensors: ReactiveSensors
     lateinit var mSensorHelper: SensorHelper
 
-    private var mAccelerometerData: ArrayList<TestDataRequest.SensorData> = ArrayList<TestDataRequest.SensorData>()
-    private var mGyroscopeData: ArrayList<TestDataRequest.SensorData> = ArrayList<TestDataRequest.SensorData>()
-    private var mMagnometerData: ArrayList<TestDataRequest.SensorData> = ArrayList<TestDataRequest.SensorData>()
+    private var mAccelerometerData: ArrayList<TestDataRequest.UploadTestDataRequest.SensorData> = ArrayList<TestDataRequest.UploadTestDataRequest.SensorData>()
+    private var mGyroscopeData: ArrayList<TestDataRequest.UploadTestDataRequest.SensorData> = ArrayList<TestDataRequest.UploadTestDataRequest.SensorData>()
+    private var mMagnometerData: ArrayList<TestDataRequest.UploadTestDataRequest.SensorData> = ArrayList<TestDataRequest.UploadTestDataRequest.SensorData>()
 
     private lateinit var mAccelerometerSubscription: Disposable
     private lateinit var mGyroscopeSubscription: Disposable
@@ -124,7 +125,7 @@ class TestAthleteViewModel(dataManager: DataManager, schedulerProvider: Schedule
         }
     }
 
-    fun uploadTestData(accelerometerData: ArrayList<TestDataRequest.SensorData>, gyroscopeData: ArrayList<TestDataRequest.SensorData>, magnometerData: ArrayList<TestDataRequest.SensorData>) {
+    fun uploadTestData(accelerometerData: ArrayList<TestDataRequest.UploadTestDataRequest.SensorData>, gyroscopeData: ArrayList<TestDataRequest.UploadTestDataRequest.SensorData>, magnometerData: ArrayList<TestDataRequest.UploadTestDataRequest.SensorData>) {
 //        val testData = TestData()
 //        testData.athleteId = this.athleteId!!
 //        testData.accelerometerArray = accelerometerData
@@ -135,9 +136,9 @@ class TestAthleteViewModel(dataManager: DataManager, schedulerProvider: Schedule
 
         val testDataRequest = TestDataRequest.UploadTestDataRequest(
                 athleteId = this.athleteId,
-                accelerometer_data = accelerometerData,
-                magnometer_data = magnometerData,
-                gyroscope_data = gyroscopeData
+                accelerometer_data = accelerometerData.toList(),
+                magnometer_data = magnometerData.toList(),
+                gyroscope_data = gyroscopeData.toList()
         )
 
         setIsLoading(true)
@@ -145,14 +146,21 @@ class TestAthleteViewModel(dataManager: DataManager, schedulerProvider: Schedule
                 .saveTestDataServer(testDataRequest)
                 .subscribeOn(schedulerProvider.io())
                 .observeOn(schedulerProvider.ui())
-                .subscribe({isFinished ->
+                .subscribe({testDataResponse: TestDataResponse ->
                     setIsLoading(false)
-                    if (isFinished != null) {
-                        navigator!!.testSaved()
-                    }
+                    navigator!!.testSaved()
                 }, {throwable ->
+                    setIsLoading(false)
                     navigator!!.handleError(throwable)
                 })
+//                .subscribe({isFinished ->
+//                    setIsLoading(false)
+//                    if (isFinished != null) {
+//                        navigator!!.testSaved()
+//                    }
+//                }, {throwable ->
+//                    navigator!!.handleError(throwable)
+//                })
         )
     }
 

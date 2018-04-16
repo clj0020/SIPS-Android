@@ -22,23 +22,24 @@ class AthleteListViewModel(dataManager: DataManager,
     }
 
     fun addAthleteItemsToList(athletes: List<Athlete>) {
+        athleteObservableList?.clear()
         athleteObservableList?.addAll(athletes)
     }
 
     fun fetchAthletes() {
-        setIsLoading(true)
+        navigator?.setRefreshing(true)
         compositeDisposable.add(dataManager
                 .getAthleteList()
                 .subscribeOn(schedulerProvider.io())
                 .observeOn(schedulerProvider.ui())
                 .subscribe({ athleteList ->
                     if (athleteList != null) {
-                        athleteListLiveData.setValue(athleteList)
+                            athleteListLiveData.setValue(athleteList)
                     }
-                    setIsLoading(false)
+                    navigator?.setRefreshing(false)
                 }, { throwable ->
-                    setIsLoading(false)
-                    navigator!!.handleError(throwable)
+                    navigator?.setRefreshing(false)
+                    navigator?.handleError(throwable)
                 }))
     }
 }

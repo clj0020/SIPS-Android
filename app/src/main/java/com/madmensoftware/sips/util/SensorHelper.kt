@@ -18,15 +18,15 @@ import java.util.*
  */
 class SensorHelper(private val reactiveSensors: ReactiveSensors, private val schedulerProvider: SchedulerProvider) {
 
-    val mAccelerometerData: ArrayList<TestDataRequest.SensorData>
-    val mGyroscopeData: ArrayList<TestDataRequest.SensorData>
-    val mMagnometerData: ArrayList<TestDataRequest.SensorData>
+    val mAccelerometerData: ArrayList<TestDataRequest.UploadTestDataRequest.SensorData>
+    val mGyroscopeData: ArrayList<TestDataRequest.UploadTestDataRequest.SensorData>
+    val mMagnometerData: ArrayList<TestDataRequest.UploadTestDataRequest.SensorData>
     val mStartTime: Float
 
     init {
-        mAccelerometerData = ArrayList<TestDataRequest.SensorData>()
-        mGyroscopeData = ArrayList<TestDataRequest.SensorData>()
-        mMagnometerData = ArrayList<TestDataRequest.SensorData>()
+        mAccelerometerData = ArrayList<TestDataRequest.UploadTestDataRequest.SensorData>()
+        mGyroscopeData = ArrayList<TestDataRequest.UploadTestDataRequest.SensorData>()
+        mMagnometerData = ArrayList<TestDataRequest.UploadTestDataRequest.SensorData>()
         mStartTime = SystemClock.elapsedRealtime().toFloat()
     }
 
@@ -47,7 +47,7 @@ class SensorHelper(private val reactiveSensors: ReactiveSensors, private val sch
                             val z = event.values[2]
                             val time = SystemClock.elapsedRealtime().toFloat() - mStartTime
 
-                            val sensorData = TestDataRequest.SensorData()
+                            val sensorData = TestDataRequest.UploadTestDataRequest.SensorData()
                             sensorData.time = time
                             sensorData.x = x
                             sensorData.y = y
@@ -86,7 +86,7 @@ class SensorHelper(private val reactiveSensors: ReactiveSensors, private val sch
                             val time = SystemClock.elapsedRealtime().toFloat() - mStartTime
 
 
-                            val sensorData = TestDataRequest.SensorData()
+                            val sensorData = TestDataRequest.UploadTestDataRequest.SensorData()
                             sensorData.time = time
                             sensorData.x = x
                             sensorData.y = y
@@ -124,7 +124,7 @@ class SensorHelper(private val reactiveSensors: ReactiveSensors, private val sch
                             val z = event.values[2]
                             val time = SystemClock.elapsedRealtime().toFloat() - mStartTime
 
-                            val sensorData = TestDataRequest.SensorData()
+                            val sensorData = TestDataRequest.UploadTestDataRequest.SensorData()
                             sensorData.time = time
                             sensorData.x = x
                             sensorData.y = y

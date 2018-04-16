@@ -13,6 +13,8 @@ import com.madmensoftware.sips.databinding.FragmentAthleteListBinding
 import com.madmensoftware.sips.ui.base.BaseFragment
 import com.madmensoftware.sips.ui.main.MainActivity
 import javax.inject.Inject
+import android.support.v4.widget.SwipeRefreshLayout
+
 
 /**
  * Created by clj00 on 3/2/2018.
@@ -51,6 +53,10 @@ class AthleteListFragment : BaseFragment<FragmentAthleteListBinding, AthleteList
         viewModel.fetchAthletes()
     }
 
+    override fun setRefreshing(isRefreshing: Boolean) {
+        mFragmentAthleteListBinding!!.athleteListSwipeRefresh.isRefreshing = isRefreshing
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mFragmentAthleteListBinding = viewDataBinding
@@ -77,6 +83,12 @@ class AthleteListFragment : BaseFragment<FragmentAthleteListBinding, AthleteList
         mFragmentAthleteListBinding!!.athleteListRecyclerView.setLayoutManager(layoutManager)
         mFragmentAthleteListBinding!!.athleteListRecyclerView.setItemAnimator(DefaultItemAnimator())
         mFragmentAthleteListBinding!!.athleteListRecyclerView.setAdapter(mAthleteAdapter)
+
+        mFragmentAthleteListBinding!!.athleteListSwipeRefresh.setOnRefreshListener(
+                SwipeRefreshLayout.OnRefreshListener {
+                    mFragmentAthleteListBinding!!.viewModel!!.fetchAthletes()
+                }
+        )
     }
 
     private fun subscribeToLiveData() {
@@ -87,6 +99,8 @@ class AthleteListFragment : BaseFragment<FragmentAthleteListBinding, AthleteList
         }
         )
     }
+
+
 
     override fun handleError(throwable: Throwable) {
         // TODO: handle error

@@ -9,6 +9,10 @@ import com.androidnetworking.AndroidNetworking
 import com.facebook.stetho.Stetho
 import com.madmensoftware.sips.di.DaggerAppComponent
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig
+import com.facebook.stetho.okhttp3.StethoInterceptor
+import okhttp3.OkHttpClient
+
+
 
 
 /**
@@ -35,7 +39,12 @@ class SIPSApplication : Application(), HasActivityInjector {
                 .build()
                 .inject(this)
 
-        AndroidNetworking.initialize(applicationContext)
+        // Adding an Network Interceptor for Debugging purpose :
+        val okHttpClient = OkHttpClient().newBuilder()
+                .addNetworkInterceptor(StethoInterceptor())
+                .build()
+
+        AndroidNetworking.initialize(applicationContext, okHttpClient)
         Stetho.initializeWithDefaults(applicationContext)
 
         if (BuildConfig.DEBUG) {

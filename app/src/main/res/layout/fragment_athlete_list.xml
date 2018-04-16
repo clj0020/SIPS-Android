@@ -24,6 +24,12 @@
             android:gravity="center"
             android:orientation="vertical">
 
+            <android.support.v4.widget.SwipeRefreshLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/athleteListSwipeRefresh"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/athleteListRecyclerView"
                 android:layout_width="match_parent"
@@ -31,6 +37,7 @@
                 app:adapter="@{viewModel.athleteObservableList}"
                 tools:listitem="@layout/item_athlete_view" />
 
+            </android.support.v4.widget.SwipeRefreshLayout>
         </LinearLayout>
 
         <android.support.v4.widget.ContentLoadingProgressBar

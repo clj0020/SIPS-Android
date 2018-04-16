@@ -10,4 +10,6 @@ interface AthleteListNavigator {
     fun handleError(throwable: Throwable)
 
     fun updateAthleteList(athleteList: List<Athlete>)
+
+    fun setRefreshing(isRefreshing: Boolean)
 }

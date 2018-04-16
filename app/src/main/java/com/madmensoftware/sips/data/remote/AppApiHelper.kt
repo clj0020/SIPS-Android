@@ -12,8 +12,15 @@ import io.reactivex.functions.Function
 import io.reactivex.schedulers.Schedulers
 import android.content.ContentValues.TAG
 import android.util.Log
+import com.google.gson.Gson
 import com.madmensoftware.sips.data.models.room.TestData
 import io.reactivex.Observer
+import org.json.JSONObject
+import org.json.JSONException
+
+
+
+
 
 
 /**
@@ -103,9 +110,19 @@ class AppApiHelper @Inject constructor(override val apiHeader: ApiHeader) : ApiH
     }
 
     override fun saveTestDataServer(request: TestDataRequest.UploadTestDataRequest): Single<TestDataResponse> {
+        var gson = Gson()
+        var accelerometer_data = gson.toJson(request.accelerometer_data)
+        var gyroscope_data = gson.toJson(request.gyroscope_data)
+        var magnometer_data = gson.toJson(request.magnometer_data)
+
+
         return Rx2AndroidNetworking.post(ApiEndPoint.ENDPOINT_ADD_TEST_DATA)
                 .addHeaders(apiHeader.protectedApiHeader)
-                .addBodyParameter(request)
+//                .addBodyParameter(request)
+                .addBodyParameter("athleteId", request.athleteId)
+                .addBodyParameter("accelerometer_data", accelerometer_data)
+                .addBodyParameter("gyroscope_data", gyroscope_data)
+                .addBodyParameter("magnometer_data", magnometer_data)
                 .build()
                 .getObjectSingle<TestDataResponse>(TestDataResponse::class.java)
     }

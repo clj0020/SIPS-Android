@@ -12,13 +12,13 @@ object TestDataRequest {
                              val athleteId: String?,
                              @field:Expose
                              @field:SerializedName("accelerometer_data")
-                             val accelerometer_data: ArrayList<SensorData>?,
+                             val accelerometer_data: List<SensorData>?,
                              @field:Expose
                              @field:SerializedName("gyroscope_data")
-                             val gyroscope_data: ArrayList<SensorData>?,
+                             val gyroscope_data: List<SensorData>?,
                              @field:Expose
                              @field:SerializedName("magnometer_data")
-                             val magnometer_data: ArrayList<SensorData>?
+                             val magnometer_data: List<SensorData>?
     ) {
 
         override fun equals(other: Any?): Boolean {
@@ -50,56 +50,58 @@ object TestDataRequest {
             result = 31 * result + (magnometer_data?.hashCode() ?: 0)
             return result
         }
+
+        class SensorData {
+
+            @Expose
+            @SerializedName("time")
+            var time: Number? = null
+
+            @Expose
+            @SerializedName("x")
+            var x: Number? = null
+
+            @Expose
+            @SerializedName("y")
+            var y: Number? = null
+
+            @Expose
+            @SerializedName("z")
+            var z: Number? = null
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+                if (other !is SensorData) {
+                    return false
+                }
+
+                val that = other as SensorData?
+                if (x != that!!.x) {
+                    return false
+                }
+                if (y != that.y) {
+                    return false
+                }
+                if (z != that.z) {
+                    return false
+                }
+                return time == that.time
+            }
+
+            override fun hashCode(): Int {
+                var result = time!!.hashCode()
+                result = 31 * result + x!!.hashCode()
+                result = 31 * result + y!!.hashCode()
+                result = 31 * result + z!!.hashCode()
+                return result
+            }
+        }
+
     }
 
 
-    class SensorData {
-
-        @Expose
-        @SerializedName("time")
-        var time: Float? = null
-
-        @Expose
-        @SerializedName("x")
-        var x: Number? = null
-
-        @Expose
-        @SerializedName("y")
-        var y: Number? = null
-
-        @Expose
-        @SerializedName("z")
-        var z: Number? = null
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
-            }
-            if (other !is SensorData) {
-                return false
-            }
-
-            val that = other as SensorData?
-            if (x != that!!.x) {
-                return false
-            }
-            if (y != that.y) {
-                return false
-            }
-            if (z != that.z) {
-                return false
-            }
-            return time == that.time
-        }
-
-        override fun hashCode(): Int {
-            var result = time!!.hashCode()
-            result = 31 * result + x!!.hashCode()
-            result = 31 * result + y!!.hashCode()
-            result = 31 * result + z!!.hashCode()
-            return result
-        }
-    }
 
 
 }

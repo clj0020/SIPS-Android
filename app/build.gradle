@@ -68,6 +68,7 @@ dependencies {
     implementation "com.android.support.constraint:constraint-layout:1.0.2"
 
     implementation "com.facebook.stetho:stetho:$stetho_version"
+    implementation "com.facebook.stetho:stetho-okhttp3:$stetho_version"
 
     // Android architecture
     implementation "android.arch.lifecycle:runtime:$android_architecture_version"

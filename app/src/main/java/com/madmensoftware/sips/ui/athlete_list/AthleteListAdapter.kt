@@ -9,6 +9,7 @@ import com.madmensoftware.sips.databinding.ItemAthleteViewBinding
 import com.madmensoftware.sips.ui.base.BaseViewHolder
 import com.madmensoftware.sips.ui.main.MainActivity
 
+
 /**
  * Created by clj00 on 3/2/2018.
  */
@@ -66,6 +67,15 @@ class AthleteListAdapter(val mAthleteList: MutableList<Athlete>?) : RecyclerView
         notifyDataSetChanged()
     }
 
+//    fun updateAthleteListItems(athletes: List<Athlete>) {
+//        val diffCallback = AthleteListDiffCallback(this.mAthleteList!!, athletes)
+//        val diffResult = DiffUtil.calculateDiff(diffCallback)
+//
+//        this.mAthleteList.clear()
+//        this.mAthleteList.addAll(athletes)
+//        diffResult.dispatchUpdatesTo(this)
+//    }
+
     fun clearItems() {
         mAthleteList!!.clear()
     }
@@ -77,11 +87,9 @@ class AthleteListAdapter(val mAthleteList: MutableList<Athlete>?) : RecyclerView
     fun setSearchResult(result: List<Athlete>) {
         clearItems()
         addItems(result)
-        notifyDataSetChanged()
     }
 
     interface AthleteAdapterListener {
-
         fun onRetryClick()
     }
 

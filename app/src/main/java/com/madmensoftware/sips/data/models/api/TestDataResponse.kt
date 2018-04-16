@@ -15,16 +15,8 @@ class TestDataResponse {
     var msg: String? = null
 
     @Expose
-    @SerializedName("token")
-    var token: String? = null
-
-    @Expose
-    @SerializedName("user")
-    var user: User? = null
-
-    @Expose
-    @SerializedName("athletes")
-    var athletes: List<Athlete>? = null
+    @SerializedName("testData")
+    var testData: TestData? = null
 
 
     override fun equals(other: Any?): Boolean {
@@ -43,270 +35,21 @@ class TestDataResponse {
         if (msg != that.msg) {
             return false
         }
-        if (token != that.token) {
-            return false
-        }
-        if (athletes != that.athletes) {
-            return false
-        }
-        return user == that.user
+        return testData == that.testData
     }
 
     override fun hashCode(): Int {
         var result = success!!.hashCode()
         result = 31 * result + msg!!.hashCode()
-        result = 31 * result + token!!.hashCode()
-        result = 31 * result + user!!.hashCode()
-        result = 31 * result + athletes!!.hashCode()
+        result = 31 * result + testData!!.hashCode()
         return result
     }
 
-    class User {
-
-        @Expose
-        @SerializedName("_id")
-        var _id: String = ""
-
-        @Expose
-        @SerializedName("first_name")
-        var first_name: String? = null
-
-        @Expose
-        @SerializedName("last_name")
-        var last_name: String? = null
-
-        @Expose
-        @SerializedName("email")
-        var email: String? = null
-
-        @Expose
-        @SerializedName("status")
-        var status: String? = null
-
-        @Expose
-        @SerializedName("created_at")
-        var created_at: Date? = null
-
-        @Expose
-        @SerializedName("kind")
-        var kind: String? = null
-
-        @Expose
-        @SerializedName("organization")
-        var organization: Organization? = null
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
-            }
-            if (other !is User) {
-                return false
-            }
-
-            val that = other as User?
-            if (_id != that!!._id) {
-                return false
-            }
-            if (first_name != that.first_name) {
-                return false
-            }
-            if (last_name != that.last_name) {
-                return false
-            }
-            if (email != that.email) {
-                return false
-            }
-            if (status != that.status) {
-                return false
-            }
-            if (created_at != that.created_at) {
-                return false
-            }
-            if (organization != that.organization) {
-                return false
-            }
-            return kind == that.kind
-        }
-
-        override fun hashCode(): Int {
-            var result = _id.hashCode()
-            result = 31 * result + first_name!!.hashCode()
-            result = 31 * result + last_name!!.hashCode()
-            result = 31 * result + email!!.hashCode()
-            result = 31 * result + status!!.hashCode()
-            result = 31 * result + created_at!!.hashCode()
-            result = 31 * result + kind!!.hashCode()
-            result = 31 * result + organization!!.hashCode()
-            return result
-        }
-    }
-
-
-    class Athlete {
-
-        @Expose
-        @SerializedName("_id")
-        var _id: String = ""
-
-        @Expose
-        @SerializedName("first_name")
-        var first_name: String? = null
-
-        @Expose
-        @SerializedName("last_name")
-        var last_name: String? = null
-
-        @Expose
-        @SerializedName("email")
-        var email: String? = null
-
-        @Expose
-        @SerializedName("status")
-        var status: String? = null
-
-        @Expose
-        @SerializedName("tests")
-        var tests: List<TestData>? = null
-
-        @Expose
-        @SerializedName("date_of_birth")
-        var date_of_birth: String? = null
-
-        @Expose
-        @SerializedName("height")
-        var height: Int? = null
-
-        @Expose
-        @SerializedName("weight")
-        var weight: Int? = null
-
-        @Expose
-        @SerializedName("created_at")
-        var created_at: String? = null
-
-        @Expose
-        @SerializedName("kind")
-        var kind: String? = null
-
-        @Expose
-        @SerializedName("organization")
-        var organization: Organization? = null
-
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
-            }
-            if (other !is Athlete) {
-                return false
-            }
-
-            val that = other as Athlete?
-            if (_id != that!!._id) {
-                return false
-            }
-            if (first_name != that.first_name) {
-                return false
-            }
-            if (last_name != that.last_name) {
-                return false
-            }
-            if (email != that.email) {
-                return false
-            }
-            if (status != that.status) {
-                return false
-            }
-            if (tests != that.tests) {
-                return false
-            }
-            if (date_of_birth != that.date_of_birth) {
-                return false
-            }
-            if (height != that.height) {
-                return false
-            }
-            if (weight != that.weight) {
-                return false
-            }
-            if (created_at != that.created_at) {
-                return false
-            }
-            if (organization != that.organization) {
-                return false
-            }
-            return kind == that.kind
-        }
-
-        override fun hashCode(): Int {
-            var result = _id.hashCode()
-            result = 31 * result + first_name!!.hashCode()
-            result = 31 * result + last_name!!.hashCode()
-            result = 31 * result + email!!.hashCode()
-            result = 31 * result + status!!.hashCode()
-            result = 31 * result + tests!!.hashCode()
-            result = 31 * result + date_of_birth!!.hashCode()
-            result = 31 * result + height!!.hashCode()
-            result = 31 * result + weight!!.hashCode()
-            result = 31 * result + created_at!!.hashCode()
-            result = 31 * result + kind!!.hashCode()
-            result = 31 * result + organization!!.hashCode()
-            return result
-        }
-    }
-
-    class Organization {
-        @Expose
-        @SerializedName("_id")
-        var _id: String = ""
-
-        @Expose
-        @SerializedName("title")
-        var title: String? = null
-
-        @Expose
-        @SerializedName("createdAt")
-        var createdAt: String? = null
-
-        @Expose
-        @SerializedName("creator")
-        var creator: String? = null
-
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
-            }
-            if (other !is Organization) {
-                return false
-            }
-
-            val that = other as Organization?
-            if (_id != that!!._id) {
-                return false
-            }
-            if (title != that.title) {
-                return false
-            }
-            if (creator != that.creator) {
-                return false
-            }
-            return createdAt == that.createdAt
-        }
-
-        override fun hashCode(): Int {
-            var result = _id.hashCode()
-            result = 31 * result + title!!.hashCode()
-            result = 31 * result + creator!!.hashCode()
-            result = 31 * result + createdAt!!.hashCode()
-            return result
-        }
-    }
 
     class TestData {
         @Expose
         @SerializedName("_id")
-        var _id: String = ""
+        var _id: String ?= null
 
         @Expose
         @SerializedName("athlete")
@@ -363,7 +106,7 @@ class TestDataResponse {
         }
 
         override fun hashCode(): Int {
-            var result = _id.hashCode()
+            var result = _id!!.hashCode()
             result = 31 * result + athlete!!.hashCode()
             result = 31 * result + tester!!.hashCode()
             result = 31 * result + accelerometer_data!!.hashCode()
@@ -377,8 +120,12 @@ class TestDataResponse {
     class SensorData {
 
         @Expose
+        @SerializedName("_id")
+        var _id: String? = null
+
+        @Expose
         @SerializedName("time")
-        var time: Date? = null
+        var time: Number? = null
 
         @Expose
         @SerializedName("x")
@@ -401,7 +148,10 @@ class TestDataResponse {
             }
 
             val that = other as SensorData?
-            if (x != that!!.x) {
+            if (_id != that!!._id) {
+                return false
+            }
+            if (x != that.x) {
                 return false
             }
             if (y != that.y) {
@@ -415,6 +165,7 @@ class TestDataResponse {
 
         override fun hashCode(): Int {
             var result = time!!.hashCode()
+            result = 31 * result + _id!!.hashCode()
             result = 31 * result + x!!.hashCode()
             result = 31 * result + y!!.hashCode()
             result = 31 * result + z!!.hashCode()
