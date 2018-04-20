@@ -60,8 +60,12 @@ class TestDataResponse {
         var tester: String? = null
 
         @Expose
+        @SerializedName("testType")
+        var testType: String? = null
+
+        @Expose
         @SerializedName("created_at")
-        var created_at: Date? = null
+        var created_at: String? = null
 
         @Expose
         @SerializedName("accelerometer_data")
@@ -93,6 +97,9 @@ class TestDataResponse {
             if (tester != that.tester) {
                 return false
             }
+            if (testType != that.testType) {
+                return false
+            }
             if (accelerometer_data != that.accelerometer_data) {
                 return false
             }
@@ -109,6 +116,7 @@ class TestDataResponse {
             var result = _id!!.hashCode()
             result = 31 * result + athlete!!.hashCode()
             result = 31 * result + tester!!.hashCode()
+            result = 31 * result + testType!!.hashCode()
             result = 31 * result + accelerometer_data!!.hashCode()
             result = 31 * result + gyroscope_data!!.hashCode()
             result = 31 * result + magnometer_data!!.hashCode()

@@ -6,8 +6,10 @@ import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.madmensoftware.sips.data.models.room.Athlete
 import com.madmensoftware.sips.data.models.room.TestData
+import com.madmensoftware.sips.data.models.room.TestType
 import com.madmensoftware.sips.ui.athlete.TestDataListAdapter
 import com.madmensoftware.sips.ui.athlete_list.AthleteListAdapter
+import com.madmensoftware.sips.ui.athlete_test.TestTypeListAdapter
 
 
 /**
@@ -40,6 +42,20 @@ object BindingUtils {
 
         }
     }
+
+    @JvmStatic
+    @BindingAdapter("adapter")
+    fun addTestTypeItems(recyclerView: RecyclerView, testTypes: List<TestType>) {
+        val adapter = recyclerView.adapter as TestTypeListAdapter?
+        if (adapter != null) {
+            adapter.clearItems()
+            adapter.addItems(testTypes)
+        }
+        else {
+
+        }
+    }
+
 
     @JvmStatic
     @BindingAdapter("imageUrl")

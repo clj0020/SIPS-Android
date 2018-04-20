@@ -6,10 +6,7 @@ import com.google.gson.Gson
 import com.madmensoftware.sips.data.local.prefs.PreferencesHelper
 import com.madmensoftware.sips.data.local.room.DbHelper
 import com.madmensoftware.sips.data.models.api.*
-import com.madmensoftware.sips.data.models.room.Athlete
-import com.madmensoftware.sips.data.models.room.Organization
-import com.madmensoftware.sips.data.models.room.TestData
-import com.madmensoftware.sips.data.models.room.User
+import com.madmensoftware.sips.data.models.room.*
 import com.madmensoftware.sips.data.remote.ApiHeader
 import com.madmensoftware.sips.data.remote.ApiHelper
 import com.madmensoftware.sips.util.SchedulerProvider
@@ -104,10 +101,6 @@ class AppDataManager @Inject constructor(private val mContext: Context,
     override fun doGoogleLoginApiCall(request: LoginRequest.GoogleLoginRequest): Single<LoginResponse> {
         return mApiHelper.doGoogleLoginApiCall(request)
     }
-
-//    override fun doLogoutCall(): Single<LogoutResponse> {
-//        return mPreferencesHelper.doLogoutApiCall()
-//    }
 
     override fun logout() {
         setUserAsLoggedOut()
@@ -234,6 +227,37 @@ class AppDataManager @Inject constructor(private val mContext: Context,
 
     override fun saveOrganization(organization: Organization): Completable {
         return mDbHelper.saveOrganization(organization)
+    }
+
+    override fun getTestTypeList(): Observable<List<TestType>?> {
+        val remoteSource: Single<List<TestType>> = mApiHelper.getTestTypesFromOrganizationServer().subscribeOn(schedulerProvider.io())
+
+        return mDbHelper.getTestTypesFromOrganizationDatabase(this.currentUserOrganizationId!!)
+                .flatMap { listFromLocal: List<TestType> ->
+                    remoteSource
+                            .observeOn(schedulerProvider.computation())
+                            .toObservable()
+                            .filter { apiTestTypeList: List<TestType> ->
+                                apiTestTypeList != listFromLocal
+                            }
+                            .flatMapSingle { apiTestTypeList ->
+                                mDbHelper.saveTestTypeListToDatabase(apiTestTypeList)
+                                        .andThen(Single.just(apiTestTypeList))
+                            }
+                            .startWith(listFromLocal)
+                }
+    }
+
+    override fun saveTestTypeListToDatabase(testTypeList: List<TestType>): Completable {
+        return mDbHelper.saveTestTypeListToDatabase(testTypeList)
+    }
+
+    override fun getTestTypesFromOrganizationDatabase(organizationId: String): Observable<List<TestType>> {
+        return mDbHelper.getTestTypesFromOrganizationDatabase(organizationId)
+    }
+
+    override fun getTestTypesFromOrganizationServer(): Single<List<TestType>> {
+        return mApiHelper.getTestTypesFromOrganizationServer()
     }
 
 

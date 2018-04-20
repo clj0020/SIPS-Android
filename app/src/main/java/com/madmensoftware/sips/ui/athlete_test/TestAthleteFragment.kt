@@ -3,25 +3,44 @@ package com.madmensoftware.sips.ui.athlete_test
 import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.support.annotation.Nullable
+import android.support.v7.widget.DefaultItemAnimator
+import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.*
 import com.github.pwittchen.reactivesensors.library.ReactiveSensors
 import com.madmensoftware.sips.BR
 import com.madmensoftware.sips.R
+import com.madmensoftware.sips.data.models.room.TestType
 import com.madmensoftware.sips.databinding.FragmentTestAthleteBinding
+import com.madmensoftware.sips.ui.athlete_list.AthleteListAdapter
 import com.madmensoftware.sips.ui.base.BaseFragment
 import com.madmensoftware.sips.ui.main.MainActivity
 import com.madmensoftware.sips.util.SensorHelper
+import com.wardellbagby.rxcountdowntimer.RxCountDownTimer
+import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_test_athlete.*
 import javax.inject.Inject
+import cn.pedant.SweetAlert.SweetAlertDialog
+import com.madmensoftware.sips.data.models.api.TestDataRequest
+
 
 /**
  * Created by clj00 on 3/5/2018.
  */
-class TestAthleteFragment : BaseFragment<FragmentTestAthleteBinding, TestAthleteViewModel>(), TestAthleteNavigator {
+class TestAthleteFragment : BaseFragment<FragmentTestAthleteBinding, TestAthleteViewModel>(), TestAthleteNavigator, TestTypeListAdapter.TestTypeAdapterListener {
+
+    @Inject
+    lateinit var mTestTypeAdapter: TestTypeListAdapter
+
+    @Inject
+    lateinit var mLayoutManager: LinearLayoutManager
 
     @Inject
     override lateinit var viewModel: TestAthleteViewModel
         internal set
+
+    private var mTestTypes: List<TestType> = arrayListOf()
+
 
     @Inject
     lateinit var mReactiveSensors: ReactiveSensors
@@ -43,6 +62,7 @@ class TestAthleteFragment : BaseFragment<FragmentTestAthleteBinding, TestAthlete
     override fun onCreate(@Nullable savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel.navigator = this
+        mTestTypeAdapter.setListener(this)
         viewModel.athleteId = getArguments()!!.getString(TestAthleteFragment.KEY_ATHLETE_ID)
         viewModel.mReactiveSensors = mReactiveSensors
         viewModel.mSensorHelper = mSensorHelper
@@ -56,8 +76,58 @@ class TestAthleteFragment : BaseFragment<FragmentTestAthleteBinding, TestAthlete
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mFragmentTestAthleteBinding = viewDataBinding
+        setUp()
+        subscribeToLiveData()
+    }
+
+    fun setUp() {
         mFragmentTestAthleteBinding!!.isTestSelected = false
         mFragmentTestAthleteBinding!!.isClockStarted = false
+
+        val layoutManager = LinearLayoutManager(activity)
+        layoutManager.orientation = LinearLayoutManager.VERTICAL
+        mFragmentTestAthleteBinding!!.testTypeListRecyclerView.setLayoutManager(layoutManager)
+        mFragmentTestAthleteBinding!!.testTypeListRecyclerView.setItemAnimator(DefaultItemAnimator())
+        mFragmentTestAthleteBinding!!.testTypeListRecyclerView.setAdapter(mTestTypeAdapter)
+
+    }
+
+    override fun updateTestTypeList(testTypeList: List<TestType>) {
+        mTestTypeAdapter.addItems(testTypeList)
+    }
+
+    private fun subscribeToLiveData() {
+        viewModel.testTypeListLiveData.observe(this, Observer<List<TestType>> {
+            testTypes ->
+            viewModel.addTestTypeItemsToList(testTypes!!)
+            mTestTypes = testTypes
+        }
+        )
+    }
+
+    override fun showConfirmDialog(testDataRequest: TestDataRequest.UploadTestDataRequest) {
+        var confirmDialog = SweetAlertDialog(baseActivity, SweetAlertDialog.WARNING_TYPE)
+        confirmDialog.titleText = "Do you want to upload testing data?"
+        confirmDialog.contentText = "You can always redo if you don't think this was a good test"
+
+        confirmDialog.confirmText = "Upload"
+        confirmDialog.setConfirmClickListener(SweetAlertDialog.OnSweetClickListener {dialog ->
+            Log.i("Confirm Dialog","clicked confirm")
+            dialog.dismissWithAnimation()
+            viewModel.uploadTestData(testDataRequest)
+        })
+
+
+        confirmDialog.cancelText = "Redo Test"
+        confirmDialog.showCancelButton(true)
+        confirmDialog.setCancelable(true)
+        confirmDialog.setCancelClickListener(SweetAlertDialog.OnSweetClickListener {dialog ->
+            Log.i("Confirm Dialog","clicked cancel")
+            dialog.cancel()
+            viewModel.resetTime()
+        })
+
+        confirmDialog.show()
     }
 
     override fun testSaved() {
@@ -79,15 +149,23 @@ class TestAthleteFragment : BaseFragment<FragmentTestAthleteBinding, TestAthlete
 
     override fun testStopped() {
         mFragmentTestAthleteBinding!!.isClockStarted = false
+        viewModel.stopCountDownTimer()
     }
 
-    override fun testSelected(testId: Int) {
+    override fun testSelected(testType: TestType) {
         mFragmentTestAthleteBinding!!.isTestSelected = true
+        time_text.text = viewModel.formatTime(testType.duration!!.toLong())
+        test_title_text.text = testType.title
     }
 
     override fun goBack() {
         (baseActivity as MainActivity).onBackPressed()
     }
+
+    override fun onRetryClick() {
+        viewModel.fetchTestTypes()
+    }
+
 
     override fun handleError(throwable: Throwable) {
         showError("Error", throwable.message!!)

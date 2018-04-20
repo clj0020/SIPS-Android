@@ -10,21 +10,21 @@ class AthleteItemViewModel(private val mAthlete: Athlete, val mListener: Athlete
 
 //    val createdAt: ObservableField<String>
 
-    val first_name: ObservableField<String>
+    val first_name: ObservableField<String?>
 
-    val last_name: ObservableField<String>
+    val last_name: ObservableField<String?>
 
 //    val updatedAt: ObservableField<String>
 
-    val email: ObservableField<String>
+    val email: ObservableField<String?>
 
 
     init {
 //        createdAt = ObservableField(mAthlete.created_at!!)
-        first_name = ObservableField(mAthlete.first_name!!)
-        last_name = ObservableField(mAthlete.last_name!!)
+        first_name = ObservableField(mAthlete.first_name)
+        last_name = ObservableField(mAthlete.last_name)
 //        updatedAt = ObservableField(mAthlete.updatedAt!!)
-        email = ObservableField(mAthlete.email!!)
+        email = ObservableField(mAthlete.email)
     }
 
     fun onItemClick() {

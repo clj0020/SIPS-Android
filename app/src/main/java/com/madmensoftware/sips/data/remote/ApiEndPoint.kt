@@ -25,4 +25,6 @@ object ApiEndPoint {
 
     val ENDPOINT_ADD_TEST_DATA = BuildConfig.BASE_URL + "/testingData/add"
 
+    val ENDPOINT_GET_TEST_TYPES_FROM_ORGANIZATION = BuildConfig.BASE_URL + "/testTypes/organization/{organizationId}"
+
 }// This class is not publicly instantiable

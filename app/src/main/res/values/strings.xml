@@ -71,4 +71,5 @@
     <string name="single_leg_jump">Single Leg Jump</string>
     <string name="testing_data">Testing Data</string>
     <string name="no_athletes_found">No Athletes found.</string>
+    <string name="no_test_types_found">No test types found..</string>
 </resources>

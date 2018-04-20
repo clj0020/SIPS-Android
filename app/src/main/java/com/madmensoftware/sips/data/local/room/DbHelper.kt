@@ -5,10 +5,7 @@ package com.madmensoftware.sips.data.local.room
  */
 
 
-import com.madmensoftware.sips.data.models.room.Athlete
-import com.madmensoftware.sips.data.models.room.Organization
-import com.madmensoftware.sips.data.models.room.TestData
-import com.madmensoftware.sips.data.models.room.User
+import com.madmensoftware.sips.data.models.room.*
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -36,6 +33,10 @@ interface DbHelper {
     fun saveAthlete(athlete: Athlete): Completable
 
     fun saveAthleteList(athleteList: List<Athlete>): Completable
+
+    fun saveTestTypeListToDatabase(testTypeList: List<TestType>): Completable
+
+    fun getTestTypesFromOrganizationDatabase(organizationId: String): Observable<List<TestType>>
 
     fun saveOrganization(organization: Organization): Completable
 

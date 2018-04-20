@@ -11,6 +11,9 @@ object TestDataRequest {
                              @field:SerializedName("athlete")
                              val athleteId: String?,
                              @field:Expose
+                             @field:SerializedName("testType")
+                             val testTypeId: String?,
+                             @field:Expose
                              @field:SerializedName("accelerometer_data")
                              val accelerometer_data: List<SensorData>?,
                              @field:Expose
@@ -34,6 +37,10 @@ object TestDataRequest {
             if (if (athleteId != null) athleteId != that!!.athleteId else that!!.athleteId != null) {
                 return false
             }
+            if (if (testTypeId != null) testTypeId != that!!.testTypeId else that!!.testTypeId != null) {
+                return false
+            }
+
             if (if (accelerometer_data != null) accelerometer_data != that!!.accelerometer_data else that!!.accelerometer_data != null) {
                 return false
             }
@@ -45,6 +52,7 @@ object TestDataRequest {
 
         override fun hashCode(): Int {
             var result = athleteId?.hashCode() ?: 0
+            result = 31 * result + (testTypeId?.hashCode() ?: 0)
             result = 31 * result + (accelerometer_data?.hashCode() ?: 0)
             result = 31 * result + (gyroscope_data?.hashCode() ?: 0)
             result = 31 * result + (magnometer_data?.hashCode() ?: 0)

@@ -17,13 +17,14 @@ android {
     }
     buildTypes {
         debug {
-            buildConfigField("String", "BASE_URL", "\"http://localhost:8080\"")
+//            buildConfigField("String", "BASE_URL", "\"http://localhost:8080\"")
+            buildConfigField("String", "BASE_URL", "\"https://server-dot-sips-1350.appspot.com\"")
             buildConfigField("String", "API_KEY", "\"ABCXYZ123TEST\"")
         }
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField("String", "BASE_URL", "\"http://localhost:8080\"")
+            buildConfigField("String", "BASE_URL", "\"https://server-dot-sips-1350.appspot.com\"")
             buildConfigField("String", "API_KEY", "\"ABCXYZ123TEST\"")
         }
     }
@@ -54,6 +55,7 @@ ext.reactive_sensors_version = "0.2.0"
 ext.rx_countdown_timer_version = "0.1.0"
 ext.sweet_alert_dialog_version = "1.5.1"
 ext.stetho_version = "1.5.0"
+ext.jwtdecode_version = "1.1.1"
 
 
 
@@ -96,6 +98,9 @@ dependencies {
 
     // GSON
     implementation "com.google.code.gson:gson:$gson_version"
+
+    // JWT Helper
+    implementation "com.auth0.android:jwtdecode:$jwtdecode_version"
 
     // OKHTTP
     implementation "com.squareup.okhttp3:okhttp:$okhttp_version"

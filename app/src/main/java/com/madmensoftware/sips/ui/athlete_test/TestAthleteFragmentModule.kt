@@ -1,5 +1,6 @@
 package com.madmensoftware.sips.ui.athlete_test
 
+import android.support.v7.widget.LinearLayoutManager
 import com.github.pwittchen.reactivesensors.library.ReactiveSensors
 import com.madmensoftware.sips.data.DataManager
 import com.madmensoftware.sips.util.SchedulerProvider
@@ -26,6 +27,16 @@ class TestAthleteFragmentModule {
     @Provides
     internal fun provideSensorHelper(reactiveSensors: ReactiveSensors, schedulerProvider: SchedulerProvider): SensorHelper {
         return SensorHelper(reactiveSensors, schedulerProvider)
+    }
+
+    @Provides
+    internal fun provideTestTypeListAdapter(): TestTypeListAdapter {
+        return TestTypeListAdapter(ArrayList())
+    }
+
+    @Provides
+    internal fun provideLinearLayoutManager(fragment: TestAthleteFragment): LinearLayoutManager {
+        return LinearLayoutManager(fragment.getActivity())
     }
 
 

@@ -14,6 +14,7 @@ import android.content.ContentValues.TAG
 import android.util.Log
 import com.google.gson.Gson
 import com.madmensoftware.sips.data.models.room.TestData
+import com.madmensoftware.sips.data.models.room.TestType
 import io.reactivex.Observer
 import org.json.JSONObject
 import org.json.JSONException
@@ -29,6 +30,7 @@ import org.json.JSONException
 
 @Singleton
 class AppApiHelper @Inject constructor(override val apiHeader: ApiHeader) : ApiHelper {
+
 
     override fun doFacebookLoginApiCall(request: LoginRequest.FacebookLoginRequest): Single<LoginResponse> {
         return Rx2AndroidNetworking.post(ApiEndPoint.ENDPOINT_FACEBOOK_LOGIN)
@@ -119,11 +121,38 @@ class AppApiHelper @Inject constructor(override val apiHeader: ApiHeader) : ApiH
         return Rx2AndroidNetworking.post(ApiEndPoint.ENDPOINT_ADD_TEST_DATA)
                 .addHeaders(apiHeader.protectedApiHeader)
 //                .addBodyParameter(request)
-                .addBodyParameter("athleteId", request.athleteId)
+                .addBodyParameter("athlete", request.athleteId)
+                .addBodyParameter("testType", request.testTypeId)
                 .addBodyParameter("accelerometer_data", accelerometer_data)
                 .addBodyParameter("gyroscope_data", gyroscope_data)
                 .addBodyParameter("magnometer_data", magnometer_data)
                 .build()
                 .getObjectSingle<TestDataResponse>(TestDataResponse::class.java)
     }
+
+    override fun getTestTypesFromOrganizationServer(): Single<List<TestType>> {
+        return Rx2AndroidNetworking.get(ApiEndPoint.ENDPOINT_GET_TEST_TYPES_FROM_ORGANIZATION)
+                .addHeaders(apiHeader.protectedApiHeader)
+                .build()
+                .getObjectSingle<TestTypeResponse>(TestTypeResponse::class.java)
+                .map { apiTestTypeListResponse: TestTypeResponse? ->
+                    mapTestTypeListResponseToTestTypeModel(apiTestTypeListResponse?.testTypes ?: emptyList()) }
+    }
+
+    fun mapTestTypeListResponseToTestTypeModel(testTypeList: List<TestTypeResponse.TestType>): List<TestType> {
+        val _listTestTypes = mutableListOf<TestType>()
+        for (item in testTypeList) {
+            val testType = TestType()
+            testType._id = item._id
+            testType.created_at = item.created_at
+            testType.title = item.title
+            testType.description = item.description
+            testType.duration = item.duration
+            testType.organization = item.organization
+            _listTestTypes.add(testType)
+        }
+
+        return _listTestTypes.toList()
+    }
+
 }

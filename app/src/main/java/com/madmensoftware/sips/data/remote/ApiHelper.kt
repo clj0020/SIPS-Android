@@ -3,6 +3,7 @@ package com.madmensoftware.sips.data.remote
 import com.madmensoftware.sips.data.models.api.*
 import com.madmensoftware.sips.data.models.room.Athlete
 import com.madmensoftware.sips.data.models.room.TestData
+import com.madmensoftware.sips.data.models.room.TestType
 import io.reactivex.Observable
 import io.reactivex.Single
 
@@ -26,4 +27,6 @@ interface ApiHelper {
     fun getAthleteByIdServer(athleteId: String): Single<Athlete>
 
     fun saveTestDataServer(request: TestDataRequest.UploadTestDataRequest): Single<TestDataResponse>
+
+    fun getTestTypesFromOrganizationServer(): Single<List<TestType>>
 }

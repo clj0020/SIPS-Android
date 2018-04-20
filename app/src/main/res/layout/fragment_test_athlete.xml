@@ -91,37 +91,13 @@
                 android:textColor="@android:color/black"
                 android:textSize="50sp" />
 
-            <Button
-                android:id="@+id/one_leg_squat_hold_button"
-                android:layout_width="wrap_content"
-                android:layout_height="60dp"
-                style="@style/Button.Primary"
-                app:layout_anchor="@id/choose_test_text"
-                app:layout_anchorGravity="bottom|center_horizontal"
-                android:layout_gravity="bottom|center_horizontal"
-                android:onClick="@{() -> viewModel.onOneSquatHoldButtonClick()}"
-                android:text="@string/one_leg_squat_hold"/>
-
-            <Button
-                android:id="@+id/single_leg_jump_button"
-                android:layout_width="wrap_content"
-                android:layout_height="60dp"
-                style="@style/Button.Primary"
-                app:layout_anchor="@id/one_leg_squat_hold_button"
-                app:layout_anchorGravity="bottom|center_horizontal"
-                android:layout_gravity="bottom|center_horizontal"
-                android:text="@string/single_leg_jump"
-                android:onClick="@{() -> viewModel.onSingleLegJumpButtonClick()}"/>
-
-
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/testTypeListRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:adapter="@{viewModel.testTypeObservableList}"
+                tools:listitem="@layout/item_test_type_view" />
 
         </android.support.design.widget.CoordinatorLayout>
-
-
-
-
     </android.support.design.widget.CoordinatorLayout>
-
-
-
 </layout>

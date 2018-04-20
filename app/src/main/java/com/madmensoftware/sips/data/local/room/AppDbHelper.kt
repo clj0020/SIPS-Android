@@ -3,10 +3,7 @@ package com.madmensoftware.sips.data.local.room
 /**
  * Created by clj00 on 3/2/2018.
  */
-import com.madmensoftware.sips.data.models.room.Athlete
-import com.madmensoftware.sips.data.models.room.Organization
-import com.madmensoftware.sips.data.models.room.TestData
-import com.madmensoftware.sips.data.models.room.User
+import com.madmensoftware.sips.data.models.room.*
 import io.reactivex.Completable
 
 import javax.inject.Inject;
@@ -23,6 +20,7 @@ import io.reactivex.Single
 @Singleton
 class AppDbHelper @Inject constructor(internal val appDatabase: AppDatabase) : DbHelper {
 
+
     override val allUsers: Observable<kotlin.collections.List<User>> =
         Observable.fromCallable<kotlin.collections.List<User>> {
             appDatabase.userDao().loadAll()
@@ -35,13 +33,6 @@ class AppDbHelper @Inject constructor(internal val appDatabase: AppDatabase) : D
             return@fromCallable true
         }
     }
-
-//    override fun getAllAthletes(): Observable<kotlin.collections.List<Athlete>> {
-//        return Observable.fromCallable<kotlin.collections.List<Athlete>> {
-//            appDatabase.athleteDao().loadAll()
-//        }
-//    }
-
 
     override fun getAllAthletesFromOrganization(organizationId: String): Observable<List<Athlete>> {
         return Observable.fromCallable<List<Athlete>> {
@@ -96,6 +87,18 @@ class AppDbHelper @Inject constructor(internal val appDatabase: AppDatabase) : D
             appDatabase.organizationDao().insert(organization)
             true
         }
-//        appDatabase.organizationDao().insert(organization)
+    }
+
+    override fun saveTestTypeListToDatabase(testTypeList: List<TestType>): Completable {
+        return Completable.fromCallable {
+            appDatabase.testTypeDao().insertAll(testTypeList)
+            true
+        }
+    }
+
+    override fun getTestTypesFromOrganizationDatabase(organizationId: String): Observable<List<TestType>> {
+        return Observable.fromCallable<List<TestType>> {
+            appDatabase.testTypeDao().loadAllByOrganizationId(organizationId)
+        }
     }
 }

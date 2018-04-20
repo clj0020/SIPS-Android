@@ -3,6 +3,7 @@ package com.madmensoftware.sips.data
 import com.madmensoftware.sips.data.local.prefs.PreferencesHelper
 import com.madmensoftware.sips.data.local.room.DbHelper
 import com.madmensoftware.sips.data.models.room.Athlete
+import com.madmensoftware.sips.data.models.room.TestType
 import com.madmensoftware.sips.data.remote.ApiHelper
 import io.reactivex.Observable
 import io.reactivex.Scheduler
@@ -46,4 +47,6 @@ interface DataManager : DbHelper, ApiHelper, PreferencesHelper {
     fun getAthleteList(): Observable<List<Athlete>?>
 
     fun getAthlete(athleteId: String): Observable<Athlete>
+
+    fun getTestTypeList(): Observable<List<TestType>?>
 }
