@@ -1,6 +1,7 @@
 package com.madmensoftware.sips.ui.athlete_list
 
 import android.databinding.ObservableField
+import android.util.Log
 import com.madmensoftware.sips.data.models.room.Athlete
 
 /**
@@ -8,23 +9,23 @@ import com.madmensoftware.sips.data.models.room.Athlete
  */
 class AthleteItemViewModel(private val mAthlete: Athlete, val mListener: AthleteItemViewModelListener) {
 
-//    val createdAt: ObservableField<String>
-
     val first_name: ObservableField<String?>
-
     val last_name: ObservableField<String?>
-
-//    val updatedAt: ObservableField<String>
-
     val email: ObservableField<String?>
-
+    val verified: ObservableField<Boolean>
 
     init {
-//        createdAt = ObservableField(mAthlete.created_at!!)
         first_name = ObservableField(mAthlete.first_name)
         last_name = ObservableField(mAthlete.last_name)
-//        updatedAt = ObservableField(mAthlete.updatedAt!!)
         email = ObservableField(mAthlete.email)
+
+        Log.i("AthleteItem", mAthlete.status + "")
+        if (mAthlete.status == "Verified") {
+            verified = ObservableField(true)
+        }
+        else {
+            verified = ObservableField(false)
+        }
     }
 
     fun onItemClick() {

@@ -88,6 +88,7 @@ class AppApiHelper @Inject constructor(override val apiHeader: ApiHeader) : ApiH
             athlete.email = item.email
             athlete.first_name = item.first_name
             athlete.last_name = item.last_name
+            athlete.status = item.status
             athlete.height = item.height
             athlete.weight = item.weight
             athlete.organization = item.organization!!._id
@@ -105,6 +106,7 @@ class AppApiHelper @Inject constructor(override val apiHeader: ApiHeader) : ApiH
         athlete.email = athleteResponse.email
         athlete.first_name = athleteResponse.first_name
         athlete.last_name = athleteResponse.last_name
+        athlete.status = athleteResponse.status
         athlete.height = athleteResponse.height
         athlete.weight = athleteResponse.weight
         athlete.organization = athleteResponse.organization!!._id

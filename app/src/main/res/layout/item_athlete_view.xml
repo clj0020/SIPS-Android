@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="android.view.View" />
         <variable
             name="viewModel"
             type="com.madmensoftware.sips.ui.athlete_list.AthleteItemViewModel" />
@@ -47,8 +48,21 @@
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
                     android:layout_marginTop="20dp"
+                    android:visibility="@{viewModel.verified ? View.VISIBLE : View.GONE}"
                     android:text="@{viewModel.first_name + ' '  + viewModel.last_name}"
                     tools:text="Carson Jones" />
+
+                <TextView
+                    android:id="@+id/emailTextView"
+                    style="@style/TextStyle.Heading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="20dp"
+                    android:visibility="@{!viewModel.verified ? View.VISIBLE : View.GONE}"
+                    android:text="@{viewModel.email}"
+                    tools:text="clj0020@gmail.com" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"

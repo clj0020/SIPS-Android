@@ -17,6 +17,9 @@
         <variable
             name="isClockStarted"
             type="boolean" />
+        <variable
+            name="context"
+            type="android.content.Context" />
     </data>
 
     <android.support.design.widget.CoordinatorLayout
@@ -56,7 +59,7 @@
                 app:layout_anchor="@id/time_text"
                 app:layout_anchorGravity="bottom|center_horizontal"
                 style="@style/Button.Primary"
-                android:onClick="@{() -> viewModel.onStartTestClicked()}"
+                android:onClick="@{() -> viewModel.onStartTestClicked(context)}"
                 android:visibility="@{isClockStarted ? View.GONE : View.VISIBLE}"
                 tools:layout_editor_absoluteY="-3dp" />
 

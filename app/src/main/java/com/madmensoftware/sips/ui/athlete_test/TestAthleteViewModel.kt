@@ -2,11 +2,14 @@ package com.madmensoftware.sips.ui.athlete_test
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
+import android.content.Context
 import android.databinding.ObservableArrayList
 import android.databinding.ObservableList
 import android.hardware.Sensor
+import android.media.MediaPlayer
 import android.util.Log
 import com.github.pwittchen.reactivesensors.library.ReactiveSensors
+import com.madmensoftware.sips.R
 import com.madmensoftware.sips.data.DataManager
 import com.madmensoftware.sips.data.models.api.TestDataRequest
 import com.madmensoftware.sips.data.models.api.TestDataResponse
@@ -89,19 +92,25 @@ class TestAthleteViewModel(dataManager: DataManager, schedulerProvider: Schedule
                 }))
     }
 
-    fun startCountdownTimer(secondsLong: Long) {
+    fun startCountdownTimer(context: Context, testDuration: Long) {
 
         compositeDisposable.clear()
 
-        // Starts sensors (Accelerometer, Gyroscope, Magnometer) and then subscribes to them on the computation thread, observes on the main thread.
-        startSensors()
+//        // Starts sensors (Accelerometer, Gyroscope, Magnometer) and then subscribes to them on the computation thread, observes on the main thread.
+//        startSensors()
 
         // probably useless
         mClockStarted = true
 
+        val beepMediaPlayer: MediaPlayer = MediaPlayer.create(context, R.raw.beep)
+        val completedMediaPlayer: MediaPlayer = MediaPlayer.create(context, R.raw.completed)
+
+        val initialCountdown = 3 // This is the countdown to let you know before it starts.
+
         //Counts down from 60 seconds with a new value being emitted at least 1 second after the last one. Emits in seconds.
-        mRxCountDownTimerSubscription = RxCountDownTimer.create(secondsLong, 1, TimeUnit.SECONDS)
+        mRxCountDownTimerSubscription = RxCountDownTimer.create(testDuration + initialCountdown, 1, TimeUnit.SECONDS)
                 .doOnComplete({
+                    completedMediaPlayer.start()
 
                     // Package the testing data
                     mAccelerometerData = mSensorHelper.mAccelerometerData
@@ -117,8 +126,20 @@ class TestAthleteViewModel(dataManager: DataManager, schedulerProvider: Schedule
                     mClockStarted = false
                 })
                 .subscribe({ secondsPassed ->
-                    // Broadcast new values from the MutableLiveData to the LiveData
-                    mFormattedTime.postValue(formatTime(secondsPassed))
+                    Log.i("Countdown", "Seconds Passed:" + secondsPassed.toString())
+                    if (secondsPassed > testDuration-1) {
+                        Log.i("Countdown", "Timer about to start")
+                        beepMediaPlayer.start()
+                    }
+                    else if (secondsPassed == testDuration - 1) {
+                        Log.i("Countdown", "Starting Sensors")
+                        startSensors()
+                    }
+                    else {
+                        // Broadcast new values from the MutableLiveData to the LiveData
+                        mFormattedTime.postValue(formatTime(secondsPassed))
+                    }
+
                 })
 
         // add the countdowntimer to the composite disposable.
@@ -210,8 +231,8 @@ class TestAthleteViewModel(dataManager: DataManager, schedulerProvider: Schedule
         return "$hh:$mm:$ss"
     }
 
-    fun onStartTestClicked() {
-        startCountdownTimer(mTestType.value!!.duration!!.toLong())
+    fun onStartTestClicked(context: Context) {
+        startCountdownTimer(context, mTestType.value!!.duration!!.toLong())
         navigator!!.testStarted()
     }
 

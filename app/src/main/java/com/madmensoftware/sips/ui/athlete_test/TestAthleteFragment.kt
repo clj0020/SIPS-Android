@@ -83,6 +83,7 @@ class TestAthleteFragment : BaseFragment<FragmentTestAthleteBinding, TestAthlete
     fun setUp() {
         mFragmentTestAthleteBinding!!.isTestSelected = false
         mFragmentTestAthleteBinding!!.isClockStarted = false
+        mFragmentTestAthleteBinding!!.context = context
 
         val layoutManager = LinearLayoutManager(activity)
         layoutManager.orientation = LinearLayoutManager.VERTICAL
@@ -106,7 +107,7 @@ class TestAthleteFragment : BaseFragment<FragmentTestAthleteBinding, TestAthlete
     }
 
     override fun showConfirmDialog(testDataRequest: TestDataRequest.UploadTestDataRequest) {
-        var confirmDialog = SweetAlertDialog(baseActivity, SweetAlertDialog.WARNING_TYPE)
+        val confirmDialog = SweetAlertDialog(baseActivity, SweetAlertDialog.WARNING_TYPE)
         confirmDialog.titleText = "Do you want to upload testing data?"
         confirmDialog.contentText = "You can always redo if you don't think this was a good test"
 
