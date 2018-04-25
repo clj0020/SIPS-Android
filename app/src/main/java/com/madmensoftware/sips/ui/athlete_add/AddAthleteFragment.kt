@@ -49,27 +49,17 @@ class AddAthleteFragment : BaseFragment<FragmentAddAthleteBinding, AddAthleteVie
     }
 
     override fun addAthlete() {
-        val firstName = mFragmentAddAthleteBinding!!.firstName.text.toString()
-        val lastName = mFragmentAddAthleteBinding!!.lastName.text.toString()
         val email = mFragmentAddAthleteBinding!!.email.text.toString()
-        if (viewModel.isFormDataValid(firstName, lastName, email)) {
+        if (viewModel.isFormDataValid(email)) {
             hideKeyboard()
-            var athlete: Athlete = Athlete()
-            athlete.first_name = firstName
-            athlete.last_name = lastName
-            athlete.email = email
-//            athlete.createdAt = "January 21 2018" // TODO: Hardcoded
-//            athlete.updatedAt = "January 21 2018" // TODO: Hardcoded data
-//            athlete.organizationId = 0 // TODO: Hardcoded
-
-            viewModel.addAthlete(athlete)
+            viewModel.addAthlete(email)
         } else {
             Toast.makeText(activity, getString(R.string.invalid_form_data), Toast.LENGTH_SHORT).show()
         }
     }
 
-    override fun athleteAdded(athlete: Athlete) {
-        showSuccess("Athlete Added", "")
+    override fun athleteAdded() {
+        showSuccess("Athlete Added", "Verification email sent. Ask athlete to check email and sign up.")
         goBack()
     }
 

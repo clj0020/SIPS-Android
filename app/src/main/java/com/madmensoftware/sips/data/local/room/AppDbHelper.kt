@@ -66,7 +66,7 @@ class AppDbHelper @Inject constructor(internal val appDatabase: AppDatabase) : D
         }
     }
 
-    override fun saveAthlete(athlete: Athlete): Completable {
+    override fun saveAthleteDatabase(athlete: Athlete): Completable {
         return Completable.fromCallable {
             appDatabase.athleteDao().insert(athlete)
             true

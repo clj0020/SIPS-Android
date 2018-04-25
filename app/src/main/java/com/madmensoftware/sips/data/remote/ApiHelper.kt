@@ -16,6 +16,8 @@ interface ApiHelper {
 
     fun doServerLoginApiCall(request: LoginRequest.ServerLoginRequest): Single<LoginResponse>
 
+    fun saveAthleteServer(email: String, organization: String): Single<Athlete>
+
     fun getAthletesFromOrganizationServer(): Single<List<Athlete>>
 
     fun getAthleteByIdServer(athleteId: String): Single<Athlete>

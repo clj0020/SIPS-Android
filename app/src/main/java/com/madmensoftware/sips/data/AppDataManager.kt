@@ -187,7 +187,7 @@ class AppDataManager @Inject constructor(private val mContext: Context,
                                 apiAthlete != athleteFromLocal
                             }
                             .flatMapSingle { apiAthlete ->
-                                mDbHelper.saveAthlete(apiAthlete)
+                                mDbHelper.saveAthleteDatabase(apiAthlete)
                                         .andThen(Single.just(apiAthlete))
                             }
                             .startWith(athleteFromLocal)
@@ -204,8 +204,21 @@ class AppDataManager @Inject constructor(private val mContext: Context,
         return mApiHelper.getAthleteByIdServer(athleteId)
     }
 
-    override fun saveAthlete(athlete: Athlete): Completable {
-        return mDbHelper.saveAthlete(athlete)
+    override fun saveAthlete(email: String): Completable {
+        return mApiHelper.saveAthleteServer(email, this.currentUserOrganizationId!!)
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.computation())
+                .flatMapCompletable { athlete: Athlete ->
+                    mDbHelper.saveAthleteDatabase(athlete)
+                }
+    }
+
+    override fun saveAthleteServer(email: String, organization: String): Single<Athlete> {
+        return mApiHelper.saveAthleteServer(email, this.currentUserOrganizationId!!)
+    }
+
+    override fun saveAthleteDatabase(athlete: Athlete): Completable {
+        return mDbHelper.saveAthleteDatabase(athlete)
     }
 
     /**

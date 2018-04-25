@@ -14,31 +14,25 @@ import com.madmensoftware.sips.util.SchedulerProvider
  */
 class AddAthleteViewModel(dataManager: DataManager, schedulerProvider: SchedulerProvider) : BaseViewModel<AddAthleteNavigator>(dataManager, schedulerProvider) {
 
-    val finishedAddAthleteLiveData: MutableLiveData<Boolean> = MutableLiveData<Boolean>()
-
-    fun addAthlete(athlete: Athlete) {
+    fun addAthlete(email: String) {
         setIsLoading(true)
-        compositeDisposable.add(dataManager
-                .saveAthlete(athlete)
+        dataManager.saveAthlete(email)
                 .subscribeOn(schedulerProvider.io())
                 .observeOn(schedulerProvider.ui())
-                .subscribe({
+                .doOnComplete({
                     setIsLoading(false)
-//                    navigator!!.showSuccess()
-                    navigator!!.athleteAdded(athlete)
-                }, { throwable ->
+                    navigator!!.athleteAdded()
+                })
+                .doOnError({throwable: Throwable ->
                     setIsLoading(false)
                     navigator!!.handleError(throwable)
-                }))
+                })
+                .subscribe({
+                    setIsLoading(false)
+                })
     }
 
-    fun isFormDataValid(firstName: String, lastName: String, email: String): Boolean {
-        if (TextUtils.isEmpty(firstName)) {
-            return false
-        }
-        if (TextUtils.isEmpty(lastName)) {
-            return false
-        }
+    fun isFormDataValid(email: String): Boolean {
         if (TextUtils.isEmpty(email)) {
             return false
         }

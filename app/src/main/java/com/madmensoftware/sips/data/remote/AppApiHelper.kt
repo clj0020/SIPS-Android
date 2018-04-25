@@ -51,8 +51,8 @@ class AppApiHelper @Inject constructor(override val apiHeader: ApiHeader) : ApiH
                 .addHeaders(apiHeader.protectedApiHeader)
                 .addPathParameter("athleteId", athleteId)
                 .build()
-                .getObjectSingle<AthleteResponse>(AthleteResponse::class.java)
-                .map {apiAthleteResponse: AthleteResponse? ->
+                .getObjectSingle<AthleteResponse.GetAthlete>(AthleteResponse.GetAthlete::class.java)
+                .map {apiAthleteResponse: AthleteResponse.GetAthlete? ->
                     mapAthleteResponseToAthleteModel(apiAthleteResponse?.athlete)
                 }
     }
@@ -64,6 +64,18 @@ class AppApiHelper @Inject constructor(override val apiHeader: ApiHeader) : ApiH
                 .getObjectSingle<AthleteListResponse>(AthleteListResponse::class.java)
                 .map { apiAthleteListResponse: AthleteListResponse? ->
                     mapAthleteListResponseToAthleteModel(apiAthleteListResponse?.athletes ?: emptyList()) }
+    }
+
+    override fun saveAthleteServer(email: String, organization: String): Single<Athlete> {
+        return Rx2AndroidNetworking.post(ApiEndPoint.ENDPOINT_ADD_ATHLETE)
+                .addHeaders(apiHeader.protectedApiHeader)
+                .addBodyParameter("email", email)
+                .addBodyParameter("organization", organization)
+                .build()
+                .getObjectSingle<AthleteResponse.AddAthlete>(AthleteResponse.AddAthlete::class.java)
+                .map { apiAthleteResponse: AthleteResponse.AddAthlete ->
+                    mapAddAthleteResponseToAthleteModel(apiAthleteResponse.athlete!!)
+                }
     }
 
     /**
@@ -118,7 +130,7 @@ class AppApiHelper @Inject constructor(override val apiHeader: ApiHeader) : ApiH
     /**
      * Response Mappers
      */
-    fun mapAthleteResponseToAthleteModel(athleteResponse: AthleteResponse.Athlete?): Athlete {
+    fun mapAthleteResponseToAthleteModel(athleteResponse: AthleteResponse.GetAthlete.Athlete?): Athlete {
         val athlete = Athlete()
         athlete._id = athleteResponse!!._id
         athlete.created_at = athleteResponse.created_at
@@ -130,6 +142,16 @@ class AppApiHelper @Inject constructor(override val apiHeader: ApiHeader) : ApiH
         athlete.height = athleteResponse.height
         athlete.weight = athleteResponse.weight
         athlete.organization = athleteResponse.organization!!._id
+        return athlete
+    }
+
+    fun mapAddAthleteResponseToAthleteModel(athleteResponse: AthleteResponse.AddAthlete.Athlete?): Athlete {
+        val athlete = Athlete()
+        athlete._id = athleteResponse!!._id
+        athlete.created_at = athleteResponse.created_at
+        athlete.email = athleteResponse.email
+        athlete.status = athleteResponse.status
+        athlete.organization = athleteResponse.organization!!
         return athlete
     }
 
