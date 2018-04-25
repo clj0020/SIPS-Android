@@ -29,6 +29,9 @@ class AppDataManager @Inject constructor(private val mContext: Context,
                                          private val schedulerProvider: SchedulerProvider,
                                          private val mApiHelper: ApiHelper, private val mGson: Gson) : DataManager {
 
+    /**
+     * Fields for preferences
+     */
     override var accessToken: String?
         get() = mPreferencesHelper.accessToken
         set(accessToken) {
@@ -94,22 +97,16 @@ class AppDataManager @Inject constructor(private val mContext: Context,
             mPreferencesHelper.currentUserKind = status
         }
 
-    override fun doFacebookLoginApiCall(request: LoginRequest.FacebookLoginRequest): Single<LoginResponse> {
-        return mApiHelper.doFacebookLoginApiCall(request)
-    }
-
-    override fun doGoogleLoginApiCall(request: LoginRequest.GoogleLoginRequest): Single<LoginResponse> {
-        return mApiHelper.doGoogleLoginApiCall(request)
+    /**
+     * User Functions
+     */
+    override fun doServerLoginApiCall(request: LoginRequest.ServerLoginRequest): Single<LoginResponse> {
+        return mApiHelper.doServerLoginApiCall(request)
     }
 
     override fun logout() {
         setUserAsLoggedOut()
     }
-
-    override fun doServerLoginApiCall(request: LoginRequest.ServerLoginRequest): Single<LoginResponse> {
-        return mApiHelper.doServerLoginApiCall(request)
-    }
-
 
     override fun setCurrentUserLoggedInMode(mode: DataManager.LoggedInMode) {
         mPreferencesHelper.setCurrentUserLoggedInMode(mode)
@@ -144,10 +141,13 @@ class AppDataManager @Inject constructor(private val mContext: Context,
         updateApiHeader(accessToken)
     }
 
+    /**
+     * Athlete Functions
+     */
     override fun getAthleteList(): Observable<List<Athlete>?> {
         val remoteSource: Single<List<Athlete>> = mApiHelper.getAthletesFromOrganizationServer().subscribeOn(schedulerProvider.io())
 
-        return mDbHelper.getAllAthletesFromOrganization(this.currentUserOrganizationId!!)
+        return mDbHelper.getAllAthletesFromOrganizationDatabase(this.currentUserOrganizationId!!)
                 .flatMap { listFromLocal: List<Athlete> ->
                     remoteSource
                             .observeOn(schedulerProvider.computation())
@@ -156,7 +156,7 @@ class AppDataManager @Inject constructor(private val mContext: Context,
                                 apiAthleteList != listFromLocal
                             }
                             .flatMapSingle { apiAthleteList ->
-                                mDbHelper.saveAthleteList(apiAthleteList)
+                                mDbHelper.saveAthleteListDatabase(apiAthleteList)
                                         .andThen(Single.just(apiAthleteList))
                             }
                             .startWith(listFromLocal)
@@ -167,12 +167,12 @@ class AppDataManager @Inject constructor(private val mContext: Context,
         return mApiHelper.getAthletesFromOrganizationServer()
     }
 
-    override fun getAllAthletesFromOrganization(organizationId: String): Observable<List<Athlete>> {
-        return mDbHelper.getAllAthletesFromOrganization(organizationId)
+    override fun getAllAthletesFromOrganizationDatabase(organizationId: String): Observable<List<Athlete>> {
+        return mDbHelper.getAllAthletesFromOrganizationDatabase(organizationId)
     }
 
-    override fun saveAthleteList(athleteList: List<Athlete>): Completable {
-        return mDbHelper.saveAthleteList(athleteList)
+    override fun saveAthleteListDatabase(athleteList: List<Athlete>): Completable {
+        return mDbHelper.saveAthleteListDatabase(athleteList)
     }
 
     override fun getAthlete(athleteId: String): Observable<Athlete> {
@@ -204,31 +204,71 @@ class AppDataManager @Inject constructor(private val mContext: Context,
         return mApiHelper.getAthleteByIdServer(athleteId)
     }
 
-    override fun getTestDataForAthleteId(athleteId: String): Observable<List<TestData>> {
-        return mDbHelper.getTestDataForAthleteId(athleteId)
-    }
-
-    override fun saveTestDataServer(request: TestDataRequest.UploadTestDataRequest): Single<TestDataResponse> {
-
-        return mApiHelper.saveTestDataServer(request)
-    }
-
-    override fun saveTestData(testData: TestData): Observable<Boolean> {
-        return mDbHelper.saveTestData(testData)
-    }
-
-    override fun saveTestDataList(testDataList: List<TestData>): Observable<Boolean> {
-        return mDbHelper.saveTestDataList(testDataList)
-    }
-
     override fun saveAthlete(athlete: Athlete): Completable {
         return mDbHelper.saveAthlete(athlete)
     }
 
+    /**
+     * Test Data Functions
+     */
+    override fun getTestDataList(athleteId: String): Observable<List<TestData>?> {
+        val remoteSource: Single<List<TestData>> = mApiHelper.getTestDataForAthleteServer(athleteId).subscribeOn(schedulerProvider.io())
+
+        return mDbHelper.getTestDataForAthleteIdDatabase(athleteId)
+                .flatMap { listFromLocal: List<TestData> ->
+                    remoteSource
+                            .observeOn(schedulerProvider.computation())
+                            .toObservable()
+                            .filter { apiTestDataList: List<TestData> ->
+                                apiTestDataList != listFromLocal
+                            }
+                            .flatMapSingle { apiTestDataList ->
+                                mDbHelper.saveTestDataList(apiTestDataList)
+                                        .andThen(Single.just(apiTestDataList))
+                            }
+                            .startWith(listFromLocal)
+                }
+    }
+
+    override fun getTestDataForAthleteServer(athleteId: String): Single<List<TestData>> {
+        return mApiHelper.getTestDataForAthleteServer(athleteId)
+    }
+
+    override fun getTestDataForAthleteIdDatabase(athleteId: String): Observable<List<TestData>> {
+        return mDbHelper.getTestDataForAthleteIdDatabase(athleteId)
+    }
+
+    override fun saveTestData(request: TestDataRequest.UploadTestDataRequest): Completable {
+        return mApiHelper.saveTestDataServer(request)
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.computation())
+                .flatMapCompletable { testData: TestData ->
+                        mDbHelper.saveTestDataDatabase(testData)
+                }
+    }
+
+    override fun saveTestDataServer(request: TestDataRequest.UploadTestDataRequest): Single<TestData> {
+        return mApiHelper.saveTestDataServer(request)
+    }
+
+    override fun saveTestDataDatabase(testData: TestData): Completable {
+        return mDbHelper.saveTestDataDatabase(testData)
+    }
+
+    override fun saveTestDataList(testDataList: List<TestData>): Completable {
+        return mDbHelper.saveTestDataList(testDataList)
+    }
+
+    /**
+     * Organization Functions
+     */
     override fun saveOrganization(organization: Organization): Completable {
         return mDbHelper.saveOrganization(organization)
     }
 
+    /**
+     * Test Type Functions
+     */
     override fun getTestTypeList(): Observable<List<TestType>?> {
         val remoteSource: Single<List<TestType>> = mApiHelper.getTestTypesFromOrganizationServer().subscribeOn(schedulerProvider.io())
 
@@ -248,10 +288,6 @@ class AppDataManager @Inject constructor(private val mContext: Context,
                 }
     }
 
-    override fun saveTestTypeListToDatabase(testTypeList: List<TestType>): Completable {
-        return mDbHelper.saveTestTypeListToDatabase(testTypeList)
-    }
-
     override fun getTestTypesFromOrganizationDatabase(organizationId: String): Observable<List<TestType>> {
         return mDbHelper.getTestTypesFromOrganizationDatabase(organizationId)
     }
@@ -260,6 +296,8 @@ class AppDataManager @Inject constructor(private val mContext: Context,
         return mApiHelper.getTestTypesFromOrganizationServer()
     }
 
-
+    override fun saveTestTypeListToDatabase(testTypeList: List<TestType>): Completable {
+        return mDbHelper.saveTestTypeListToDatabase(testTypeList)
+    }
 
 }

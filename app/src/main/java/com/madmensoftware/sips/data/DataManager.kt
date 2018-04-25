@@ -2,9 +2,12 @@ package com.madmensoftware.sips.data
 
 import com.madmensoftware.sips.data.local.prefs.PreferencesHelper
 import com.madmensoftware.sips.data.local.room.DbHelper
+import com.madmensoftware.sips.data.models.api.TestDataRequest
 import com.madmensoftware.sips.data.models.room.Athlete
+import com.madmensoftware.sips.data.models.room.TestData
 import com.madmensoftware.sips.data.models.room.TestType
 import com.madmensoftware.sips.data.remote.ApiHelper
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import java.util.*
@@ -41,12 +44,13 @@ interface DataManager : DbHelper, ApiHelper, PreferencesHelper {
         LOGGED_IN_MODE_SERVER(3)
     }
 
-
-//    fun getAthleteList(organizationId: String, scheduler: Scheduler): Observable<List<Athlete>?>
-
     fun getAthleteList(): Observable<List<Athlete>?>
 
     fun getAthlete(athleteId: String): Observable<Athlete>
+
+    fun getTestDataList(athleteId: String): Observable<List<TestData>?>
+
+    fun saveTestData(request: TestDataRequest.UploadTestDataRequest): Completable
 
     fun getTestTypeList(): Observable<List<TestType>?>
 }

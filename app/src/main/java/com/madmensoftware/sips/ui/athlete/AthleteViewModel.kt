@@ -3,6 +3,7 @@ package com.madmensoftware.sips.ui.athlete
 import android.arch.lifecycle.MutableLiveData
 import android.databinding.ObservableArrayList
 import android.databinding.ObservableList
+import android.util.Log
 import com.madmensoftware.sips.data.DataManager
 import com.madmensoftware.sips.data.models.room.Athlete
 import com.madmensoftware.sips.data.models.room.TestData
@@ -12,8 +13,7 @@ import com.madmensoftware.sips.util.SchedulerProvider
 /**
  * Created by clj00 on 3/4/2018.
  */
-class AthleteViewModel(dataManager: DataManager,
-                           schedulerProvider: SchedulerProvider) : BaseViewModel<AthleteNavigator>(dataManager, schedulerProvider) {
+class AthleteViewModel(dataManager: DataManager, schedulerProvider: SchedulerProvider) : BaseViewModel<AthleteNavigator>(dataManager, schedulerProvider) {
 
     var athleteId: String = ""
 
@@ -22,10 +22,6 @@ class AthleteViewModel(dataManager: DataManager,
     val testDataObservableList: ObservableList<TestData>?= ObservableArrayList<TestData>()
 
     val testDataListLiveData: MutableLiveData<List<TestData>> = MutableLiveData<List<TestData>>()
-
-    init {
-
-    }
 
     fun fetchAthlete() {
         setIsLoading(true)
@@ -50,18 +46,18 @@ class AthleteViewModel(dataManager: DataManager,
     }
 
     fun fetchTestData() {
-        setIsLoading(true)
+        navigator!!.setRefreshing(true)
         compositeDisposable.add(dataManager
-                .getTestDataForAthleteId(athleteId)
+                .getTestDataList(this.athleteId)
                 .subscribeOn(schedulerProvider.io())
                 .observeOn(schedulerProvider.ui())
                 .subscribe({ testDataList ->
                     if (testDataList != null) {
                         testDataListLiveData.setValue(testDataList)
                     }
-                    setIsLoading(false)
+                    navigator!!.setRefreshing(false)
                 }, { throwable ->
-                    setIsLoading(false)
+                    navigator!!.setRefreshing(false)
                     navigator!!.handleError(throwable)
                 }))
     }

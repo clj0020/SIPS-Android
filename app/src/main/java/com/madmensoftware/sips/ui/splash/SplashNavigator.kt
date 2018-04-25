@@ -8,4 +8,6 @@ interface SplashNavigator {
     fun openLoginActivity()
 
     fun openMainActivity()
+
+    fun handleError(throwable: Throwable)
 }

@@ -14,19 +14,16 @@ interface ApiHelper {
 
     val apiHeader: ApiHeader
 
-    fun doFacebookLoginApiCall(request: LoginRequest.FacebookLoginRequest): Single<LoginResponse>
-
-    fun doGoogleLoginApiCall(request: LoginRequest.GoogleLoginRequest): Single<LoginResponse>
-
-//    fun doLogoutApiCall(): Single<LogoutResponse>
-
     fun doServerLoginApiCall(request: LoginRequest.ServerLoginRequest): Single<LoginResponse>
 
     fun getAthletesFromOrganizationServer(): Single<List<Athlete>>
 
     fun getAthleteByIdServer(athleteId: String): Single<Athlete>
 
-    fun saveTestDataServer(request: TestDataRequest.UploadTestDataRequest): Single<TestDataResponse>
+    fun saveTestDataServer(request: TestDataRequest.UploadTestDataRequest): Single<TestData>
 
     fun getTestTypesFromOrganizationServer(): Single<List<TestType>>
+
+    fun getTestDataForAthleteServer(athleteId: String): Single<List<TestData>>
+
 }

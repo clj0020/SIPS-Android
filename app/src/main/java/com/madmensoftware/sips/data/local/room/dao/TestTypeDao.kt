@@ -18,7 +18,7 @@ interface TestTypeDao {
     @Query("SELECT * FROM test_type")
     fun loadAll(): List<TestType>
 
-    @Query("SELECT * FROM test_type WHERE organization = :organization")
+    @Query("SELECT * FROM test_type WHERE organization = (:organization)")
     fun loadAllByOrganizationId(organization: String): List<TestType>
 
 }

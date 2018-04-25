@@ -34,12 +34,11 @@ class AppDbHelper @Inject constructor(internal val appDatabase: AppDatabase) : D
         }
     }
 
-    override fun getAllAthletesFromOrganization(organizationId: String): Observable<List<Athlete>> {
+    override fun getAllAthletesFromOrganizationDatabase(organizationId: String): Observable<List<Athlete>> {
         return Observable.fromCallable<List<Athlete>> {
             appDatabase.athleteDao().loadAthletesByOrganizationId(organizationId)
         }
     }
-
 
     override fun getAthleteFromDatabase(athleteId: String): Observable<Athlete> {
         return Observable.fromCallable<Athlete> {
@@ -47,22 +46,21 @@ class AppDbHelper @Inject constructor(internal val appDatabase: AppDatabase) : D
         }
     }
 
-
-    override fun getTestDataForAthleteId(athleteId: String): Observable<kotlin.collections.List<TestData>> {
+    override fun getTestDataForAthleteIdDatabase(athleteId: String): Observable<kotlin.collections.List<TestData>> {
         return Observable.fromCallable<kotlin.collections.List<TestData>> {
             appDatabase.testDataDao().loadAllByAthleteId(athleteId)
         }
     }
 
-    override fun saveTestData(testData: TestData): Observable<Boolean> {
-        return Observable.fromCallable {
+    override fun saveTestDataDatabase(testData: TestData): Completable {
+        return Completable.fromCallable {
             appDatabase.testDataDao().insert(testData)
             true
         }
     }
 
-    override fun saveTestDataList(testDataList: kotlin.collections.List<TestData>): Observable<Boolean> {
-        return Observable.fromCallable {
+    override fun saveTestDataList(testDataList: kotlin.collections.List<TestData>): Completable {
+        return Completable.fromCallable {
             appDatabase.testDataDao().insertAll(testDataList)
             true
         }
@@ -75,7 +73,7 @@ class AppDbHelper @Inject constructor(internal val appDatabase: AppDatabase) : D
         }
     }
 
-    override fun saveAthleteList(athleteList: List<Athlete>): Completable {
+    override fun saveAthleteListDatabase(athleteList: List<Athlete>): Completable {
         return Completable.fromCallable {
             appDatabase.athleteDao().insertAll(athleteList)
             true

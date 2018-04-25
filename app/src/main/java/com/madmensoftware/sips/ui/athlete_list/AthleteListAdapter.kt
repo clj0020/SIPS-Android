@@ -67,15 +67,6 @@ class AthleteListAdapter(val mAthleteList: MutableList<Athlete>?) : RecyclerView
         notifyDataSetChanged()
     }
 
-//    fun updateAthleteListItems(athletes: List<Athlete>) {
-//        val diffCallback = AthleteListDiffCallback(this.mAthleteList!!, athletes)
-//        val diffResult = DiffUtil.calculateDiff(diffCallback)
-//
-//        this.mAthleteList.clear()
-//        this.mAthleteList.addAll(athletes)
-//        diffResult.dispatchUpdatesTo(this)
-//    }
-
     fun clearItems() {
         mAthleteList!!.clear()
     }

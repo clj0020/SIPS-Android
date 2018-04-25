@@ -93,13 +93,7 @@ class TestAthleteViewModel(dataManager: DataManager, schedulerProvider: Schedule
     }
 
     fun startCountdownTimer(context: Context, testDuration: Long) {
-
         compositeDisposable.clear()
-
-//        // Starts sensors (Accelerometer, Gyroscope, Magnometer) and then subscribes to them on the computation thread, observes on the main thread.
-//        startSensors()
-
-        // probably useless
         mClockStarted = true
 
         val beepMediaPlayer: MediaPlayer = MediaPlayer.create(context, R.raw.beep)
@@ -204,18 +198,20 @@ class TestAthleteViewModel(dataManager: DataManager, schedulerProvider: Schedule
 
     fun uploadTestData(testDataRequest: TestDataRequest.UploadTestDataRequest) {
         setIsLoading(true)
-        compositeDisposable.add(dataManager
-                .saveTestDataServer(testDataRequest)
+        dataManager.saveTestData(testDataRequest)
                 .subscribeOn(schedulerProvider.io())
                 .observeOn(schedulerProvider.ui())
-                .subscribe({testDataResponse: TestDataResponse ->
+                .doOnComplete({
                     setIsLoading(false)
                     navigator!!.testSaved()
-                }, {throwable ->
+                })
+                .doOnError({throwable: Throwable ->
                     setIsLoading(false)
                     navigator!!.handleError(throwable)
                 })
-        )
+                .subscribe({
+                    setIsLoading(false)
+                })
     }
 
     // Formats the time for the clock

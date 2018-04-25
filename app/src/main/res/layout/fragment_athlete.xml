@@ -34,6 +34,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
+                android:visibility="@{athlete.status.equals(`Unverified`) ? View.GONE : View.VISIBLE}"
                 android:text="@{athlete.first_name + ' ' + athlete.last_name}"
                 android:textSize="32sp"
                 tools:text="Carson Jones" />
@@ -89,12 +90,19 @@
                     android:textSize="20sp"
                     android:layout_marginBottom="10dp"/>
 
+            <android.support.v4.widget.SwipeRefreshLayout
+                android:id="@+id/testDataListSwipeRefresh"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/testDataListRecyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:adapter="@{viewModel.testDataObservableList}"
                     tools:listitem="@layout/item_athlete_view" />
+
+            </android.support.v4.widget.SwipeRefreshLayout>
 
         </LinearLayout>
 

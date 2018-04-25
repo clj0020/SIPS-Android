@@ -16,29 +16,36 @@ import io.reactivex.Single
 
 interface DbHelper {
 
+    // User
+
     val allUsers: Observable<List<User>>
 
     fun insertUser(user: User): Observable<Boolean>
 
-//    fun getAllAthletes(): Observable<List<Athlete>>
-
+    // Athlete
     fun getAthleteFromDatabase(athleteId: String): Observable<Athlete>
-
-    fun getTestDataForAthleteId(athleteId: String): Observable<List<TestData>>
-
-    fun saveTestData(testData: TestData): Observable<Boolean>
-
-    fun saveTestDataList(testDataList: List<TestData>): Observable<Boolean>
 
     fun saveAthlete(athlete: Athlete): Completable
 
-    fun saveAthleteList(athleteList: List<Athlete>): Completable
+    fun saveAthleteListDatabase(athleteList: List<Athlete>): Completable
+
+    fun getAllAthletesFromOrganizationDatabase(organizationId: String): Observable<List<Athlete>>
+
+    // Test Data
+    fun getTestDataForAthleteIdDatabase(athleteId: String): Observable<List<TestData>>
+
+    fun saveTestDataDatabase(testData: TestData): Completable
+
+    fun saveTestDataList(testDataList: List<TestData>): Completable
+
+    // Test Type
 
     fun saveTestTypeListToDatabase(testTypeList: List<TestType>): Completable
 
     fun getTestTypesFromOrganizationDatabase(organizationId: String): Observable<List<TestType>>
 
+    // Organization
+
     fun saveOrganization(organization: Organization): Completable
 
-    fun getAllAthletesFromOrganization(organizationId: String): Observable<List<Athlete>>
 }

@@ -13,6 +13,7 @@ import io.reactivex.schedulers.Schedulers
 import android.content.ContentValues.TAG
 import android.util.Log
 import com.google.gson.Gson
+import com.madmensoftware.sips.data.models.SensorData
 import com.madmensoftware.sips.data.models.room.TestData
 import com.madmensoftware.sips.data.models.room.TestType
 import io.reactivex.Observer
@@ -31,23 +32,9 @@ import org.json.JSONException
 @Singleton
 class AppApiHelper @Inject constructor(override val apiHeader: ApiHeader) : ApiHelper {
 
-
-    override fun doFacebookLoginApiCall(request: LoginRequest.FacebookLoginRequest): Single<LoginResponse> {
-        return Rx2AndroidNetworking.post(ApiEndPoint.ENDPOINT_FACEBOOK_LOGIN)
-                .addHeaders(apiHeader.publicApiHeader)
-                .addBodyParameter(request)
-                .build()
-                .getObjectSingle<LoginResponse>(LoginResponse::class.java)
-    }
-
-    override fun doGoogleLoginApiCall(request: LoginRequest.GoogleLoginRequest): Single<LoginResponse> {
-        return Rx2AndroidNetworking.post(ApiEndPoint.ENDPOINT_GOOGLE_LOGIN)
-                .addHeaders(apiHeader.publicApiHeader)
-                .addBodyParameter(request)
-                .build()
-                .getObjectSingle<LoginResponse>(LoginResponse::class.java)
-    }
-
+    /**
+     * User Functions
+     */
     override fun doServerLoginApiCall(request: LoginRequest.ServerLoginRequest): Single<LoginResponse> {
         return Rx2AndroidNetworking.post(ApiEndPoint.ENDPOINT_SERVER_LOGIN)
                 .addHeaders(apiHeader.publicApiHeader)
@@ -56,17 +43,9 @@ class AppApiHelper @Inject constructor(override val apiHeader: ApiHeader) : ApiH
                 .getObjectSingle<LoginResponse>(LoginResponse::class.java)
     }
 
-    override fun getAthletesFromOrganizationServer() : Single<List<Athlete>> {
-//        var request: AthleteRequest.GetAllAthletesFromOrganizationRequest = AthleteRequest.GetAllAthletesFromOrganizationRequest(organizationId)
-        return Rx2AndroidNetworking.get(ApiEndPoint.ENDPOINT_GET_ATHLETES_FROM_ORGANIZATION)
-                .addHeaders(apiHeader.protectedApiHeader)
-//                .addQueryParameter(request)
-                .build()
-                .getObjectSingle<AthleteListResponse>(AthleteListResponse::class.java)
-                .map { apiAthleteListResponse: AthleteListResponse? ->
-                    mapAthleteListResponseToAthleteModel(apiAthleteListResponse?.athletes ?: emptyList()) }
-    }
-
+    /**
+     * Athlete Functions
+     */
     override fun getAthleteByIdServer(athleteId: String): Single<Athlete> {
         return Rx2AndroidNetworking.get(ApiEndPoint.ENDPOINT_GET_ATHLETE_BY_ID)
                 .addHeaders(apiHeader.protectedApiHeader)
@@ -76,6 +55,82 @@ class AppApiHelper @Inject constructor(override val apiHeader: ApiHeader) : ApiH
                 .map {apiAthleteResponse: AthleteResponse? ->
                     mapAthleteResponseToAthleteModel(apiAthleteResponse?.athlete)
                 }
+    }
+
+    override fun getAthletesFromOrganizationServer() : Single<List<Athlete>> {
+        return Rx2AndroidNetworking.get(ApiEndPoint.ENDPOINT_GET_ATHLETES_FROM_ORGANIZATION)
+                .addHeaders(apiHeader.protectedApiHeader)
+                .build()
+                .getObjectSingle<AthleteListResponse>(AthleteListResponse::class.java)
+                .map { apiAthleteListResponse: AthleteListResponse? ->
+                    mapAthleteListResponseToAthleteModel(apiAthleteListResponse?.athletes ?: emptyList()) }
+    }
+
+    /**
+     * Test Data Functions
+     */
+
+    /**
+     * Saves test data to server
+     */
+    override fun saveTestDataServer(request: TestDataRequest.UploadTestDataRequest): Single<TestData> {
+        var gson = Gson()
+        var accelerometer_data = gson.toJson(request.accelerometer_data)
+        var gyroscope_data = gson.toJson(request.gyroscope_data)
+        var magnometer_data = gson.toJson(request.magnometer_data)
+
+        return Rx2AndroidNetworking.post(ApiEndPoint.ENDPOINT_ADD_TEST_DATA)
+                .addHeaders(apiHeader.protectedApiHeader)
+                .addBodyParameter("athlete", request.athleteId)
+                .addBodyParameter("testType", request.testTypeId)
+                .addBodyParameter("accelerometer_data", accelerometer_data)
+                .addBodyParameter("gyroscope_data", gyroscope_data)
+                .addBodyParameter("magnometer_data", magnometer_data)
+                .build()
+                .getObjectSingle<TestDataResponse.AddTest>(TestDataResponse.AddTest::class.java)
+                .map { apiTestDataResponse: TestDataResponse.AddTest ->
+                    mapTestDataResponseToTestDataModel(apiTestDataResponse.testData!!)
+                }
+    }
+
+    override fun getTestDataForAthleteServer(athleteId: String): Single<List<TestData>> {
+        return Rx2AndroidNetworking.get(ApiEndPoint.ENDPOINT_GET_TEST_DATA_FOR_ATHLETE)
+                .addHeaders(apiHeader.protectedApiHeader)
+                .addPathParameter("athleteId", athleteId)
+                .build()
+                .getObjectSingle<TestDataResponse.GetTestDataForAthlete>(TestDataResponse.GetTestDataForAthlete::class.java)
+                .map { apiTestDataListResponse: TestDataResponse.GetTestDataForAthlete ->
+                    mapTestDataListResponseToTestDataModel(apiTestDataListResponse.testDataList ?: emptyList()) }
+    }
+
+    /**
+     * Test Type Functions
+     */
+    override fun getTestTypesFromOrganizationServer(): Single<List<TestType>> {
+        return Rx2AndroidNetworking.get(ApiEndPoint.ENDPOINT_GET_TEST_TYPES_FROM_ORGANIZATION)
+                .addHeaders(apiHeader.protectedApiHeader)
+                .build()
+                .getObjectSingle<TestTypeResponse>(TestTypeResponse::class.java)
+                .map { apiTestTypeListResponse: TestTypeResponse? ->
+                    mapTestTypeListResponseToTestTypeModel(apiTestTypeListResponse?.testTypes ?: emptyList()) }
+    }
+
+    /**
+     * Response Mappers
+     */
+    fun mapAthleteResponseToAthleteModel(athleteResponse: AthleteResponse.Athlete?): Athlete {
+        val athlete = Athlete()
+        athlete._id = athleteResponse!!._id
+        athlete.created_at = athleteResponse.created_at
+        athlete.date_of_birth = athleteResponse.date_of_birth
+        athlete.email = athleteResponse.email
+        athlete.first_name = athleteResponse.first_name
+        athlete.last_name = athleteResponse.last_name
+        athlete.status = athleteResponse.status
+        athlete.height = athleteResponse.height
+        athlete.weight = athleteResponse.weight
+        athlete.organization = athleteResponse.organization!!._id
+        return athlete
     }
 
     fun mapAthleteListResponseToAthleteModel(athleteList: List<AthleteListResponse.Athlete>): List<Athlete> {
@@ -98,47 +153,104 @@ class AppApiHelper @Inject constructor(override val apiHeader: ApiHeader) : ApiH
         return _listAthletes.toList()
     }
 
-    fun mapAthleteResponseToAthleteModel(athleteResponse: AthleteResponse.Athlete?): Athlete {
-        val athlete = Athlete()
-        athlete._id = athleteResponse!!._id
-        athlete.created_at = athleteResponse.created_at
-        athlete.date_of_birth = athleteResponse.date_of_birth
-        athlete.email = athleteResponse.email
-        athlete.first_name = athleteResponse.first_name
-        athlete.last_name = athleteResponse.last_name
-        athlete.status = athleteResponse.status
-        athlete.height = athleteResponse.height
-        athlete.weight = athleteResponse.weight
-        athlete.organization = athleteResponse.organization!!._id
-        return athlete
+    fun mapTestDataListResponseToTestDataModel(testDataList: List<TestDataResponse.GetTestDataForAthlete.TestData>): List<TestData> {
+        val _listTestData = mutableListOf<TestData>()
+        for (item in testDataList) {
+            val testData = TestData()
+            testData._id = item._id!!
+            testData.created_at = item.created_at
+            testData.athlete = item.athlete!!
+            testData.testType = item.testType!!._id
+
+            val _listAccelerometerData = mutableListOf<SensorData>()
+            for (dataItem in item.accelerometer_data!!) {
+                val sensorData = SensorData()
+                sensorData._id = dataItem._id
+                sensorData.time = dataItem.time?.toFloat()
+                sensorData.x = dataItem.x?.toFloat()
+                sensorData.y = dataItem.y?.toFloat()
+                sensorData.z = dataItem.z?.toFloat()
+                _listAccelerometerData.add(sensorData)
+            }
+
+            val _listGyroscopeData = mutableListOf<SensorData>()
+            for (dataItem in item.gyroscope_data!!) {
+                val sensorData = SensorData()
+                sensorData._id = dataItem._id
+                sensorData.time = dataItem.time?.toFloat()
+                sensorData.x = dataItem.x?.toFloat()
+                sensorData.y = dataItem.y?.toFloat()
+                sensorData.z = dataItem.z?.toFloat()
+                _listGyroscopeData.add(sensorData)
+            }
+
+            val _listMagnometerData = mutableListOf<SensorData>()
+            for (dataItem in item.magnometer_data!!) {
+                val sensorData = SensorData()
+                sensorData._id = dataItem._id
+                sensorData.time = dataItem.time?.toFloat()
+                sensorData.x = dataItem.x?.toFloat()
+                sensorData.y = dataItem.y?.toFloat()
+                sensorData.z = dataItem.z?.toFloat()
+                _listMagnometerData.add(sensorData)
+            }
+
+
+            testData.accelerometer_array = _listAccelerometerData.toList()
+            testData.gyroscope_array = _listGyroscopeData.toList()
+            testData.magnometer_array = _listMagnometerData.toList()
+
+            _listTestData.add(testData)
+        }
+
+        return _listTestData.toList()
     }
 
-    override fun saveTestDataServer(request: TestDataRequest.UploadTestDataRequest): Single<TestDataResponse> {
-        var gson = Gson()
-        var accelerometer_data = gson.toJson(request.accelerometer_data)
-        var gyroscope_data = gson.toJson(request.gyroscope_data)
-        var magnometer_data = gson.toJson(request.magnometer_data)
+    fun mapTestDataResponseToTestDataModel(testDataApi: TestDataResponse.AddTest.TestData): TestData {
+        val testData = TestData()
+        testData._id = testDataApi._id!!
+        testData.created_at = testDataApi.created_at
+        testData.athlete = testDataApi.athlete!!
+        testData.testType = testDataApi.testType!!
 
+        val _listAccelerometerData = mutableListOf<SensorData>()
+        for (dataItem in testDataApi.accelerometer_data!!) {
+            val sensorData = SensorData()
+            sensorData._id = dataItem._id
+            sensorData.time = dataItem.time?.toFloat()
+            sensorData.x = dataItem.x?.toFloat()
+            sensorData.y = dataItem.y?.toFloat()
+            sensorData.z = dataItem.z?.toFloat()
+            _listAccelerometerData.add(sensorData)
+        }
 
-        return Rx2AndroidNetworking.post(ApiEndPoint.ENDPOINT_ADD_TEST_DATA)
-                .addHeaders(apiHeader.protectedApiHeader)
-//                .addBodyParameter(request)
-                .addBodyParameter("athlete", request.athleteId)
-                .addBodyParameter("testType", request.testTypeId)
-                .addBodyParameter("accelerometer_data", accelerometer_data)
-                .addBodyParameter("gyroscope_data", gyroscope_data)
-                .addBodyParameter("magnometer_data", magnometer_data)
-                .build()
-                .getObjectSingle<TestDataResponse>(TestDataResponse::class.java)
-    }
+        val _listGyroscopeData = mutableListOf<SensorData>()
+        for (dataItem in testDataApi.gyroscope_data!!) {
+            val sensorData = SensorData()
+            sensorData._id = dataItem._id
+            sensorData.time = dataItem.time?.toFloat()
+            sensorData.x = dataItem.x?.toFloat()
+            sensorData.y = dataItem.y?.toFloat()
+            sensorData.z = dataItem.z?.toFloat()
+            _listGyroscopeData.add(sensorData)
+        }
 
-    override fun getTestTypesFromOrganizationServer(): Single<List<TestType>> {
-        return Rx2AndroidNetworking.get(ApiEndPoint.ENDPOINT_GET_TEST_TYPES_FROM_ORGANIZATION)
-                .addHeaders(apiHeader.protectedApiHeader)
-                .build()
-                .getObjectSingle<TestTypeResponse>(TestTypeResponse::class.java)
-                .map { apiTestTypeListResponse: TestTypeResponse? ->
-                    mapTestTypeListResponseToTestTypeModel(apiTestTypeListResponse?.testTypes ?: emptyList()) }
+        val _listMagnometerData = mutableListOf<SensorData>()
+        for (dataItem in testDataApi.magnometer_data!!) {
+            val sensorData = SensorData()
+            sensorData._id = dataItem._id
+            sensorData.time = dataItem.time?.toFloat()
+            sensorData.x = dataItem.x?.toFloat()
+            sensorData.y = dataItem.y?.toFloat()
+            sensorData.z = dataItem.z?.toFloat()
+            _listMagnometerData.add(sensorData)
+        }
+
+        testData.accelerometer_array = _listAccelerometerData.toList()
+        testData.gyroscope_array = _listGyroscopeData.toList()
+        testData.magnometer_array = _listMagnometerData.toList()
+
+        return testData
     }
 
     fun mapTestTypeListResponseToTestTypeModel(testTypeList: List<TestTypeResponse.TestType>): List<TestType> {

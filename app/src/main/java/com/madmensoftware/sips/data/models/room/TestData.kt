@@ -3,19 +3,30 @@ package com.madmensoftware.sips.data.models.room
 import android.arch.persistence.room.*
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.madmensoftware.sips.data.models.SensorData
 import java.util.*
 
 /**
  * Created by clj00 on 3/2/2018.
  */
 @Entity(tableName = "test_data",
-        indices= arrayOf(Index(value = ["athlete_id"])),
-        foreignKeys = arrayOf(ForeignKey(
-                entity = Athlete::class,
-                parentColumns = arrayOf("_id"),
-                childColumns = arrayOf("athlete_id"),
-                onDelete = ForeignKey.CASCADE)
-        ))
+        indices= arrayOf(
+                Index(value = ["athlete"]),
+                Index(value = ["testType"])
+        ),
+        foreignKeys = arrayOf(
+                ForeignKey(
+                    entity = Athlete::class,
+                    parentColumns = arrayOf("_id"),
+                    childColumns = arrayOf("athlete"),
+                    onDelete = ForeignKey.CASCADE),
+                ForeignKey(
+                    entity = TestType::class,
+                    parentColumns = arrayOf("_id"),
+                    childColumns = arrayOf("testType"),
+                    onDelete = ForeignKey.CASCADE)
+        )
+)
 class TestData {
 
     @Expose
@@ -26,31 +37,31 @@ class TestData {
     @Expose
     @SerializedName("created_at")
     @ColumnInfo(name = "created_at")
-    var createdAt: String? = null
+    var created_at: String? = null
 
     @Expose
-    @SerializedName("athlete_id")
-    @ColumnInfo(name = "athlete_id")
-    var athlete_id: String = ""
+    @SerializedName("athlete")
+    @ColumnInfo(name = "athlete")
+    var athlete: String = ""
 
     @Expose
-    @SerializedName("tested_at")
-    @ColumnInfo(name = "tested_at")
-    var testedAt: Date = Date()
+    @SerializedName("testType")
+    @ColumnInfo(name = "testType")
+    var testType: String = ""
 
     @Expose
     @SerializedName("accelerometer_array")
     @ColumnInfo(name = "accelerometer_array")
-    var accelerometerArray: ArrayList<Array<Float>> ?= null
+    var accelerometer_array: List<SensorData> ?= null
 
     @Expose
     @SerializedName("gyroscope_array")
     @ColumnInfo(name = "gyroscope_array")
-    var gyroscopeArray: ArrayList<Array<Float>> ?= null
+    var gyroscope_array: List<SensorData> ?= null
 
     @Expose
     @SerializedName("magnetometer_array")
     @ColumnInfo(name = "magnetometer_array")
-    var magnetometerArray: ArrayList<Array<Float>> ?= null
+    var magnometer_array: List<SensorData> ?= null
 
 }

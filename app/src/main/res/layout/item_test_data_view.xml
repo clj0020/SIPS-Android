@@ -32,15 +32,15 @@
                 android:paddingBottom="30dp">
 
                 <TextView
-                    android:id="@+id/nameTextView"
+                    android:id="@+id/testDataCreatedAtTextView"
                     style="@style/TextStyle.Heading"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
                     android:layout_marginTop="20dp"
-                    android:text="@{viewModel.createdAt}"
-                    tools:text="Carson Jones" />
+                    android:text="@{viewModel.created_at}"
+                    tools:text="01/01/2018" />
 
             </LinearLayout>
         </android.support.v7.widget.CardView>

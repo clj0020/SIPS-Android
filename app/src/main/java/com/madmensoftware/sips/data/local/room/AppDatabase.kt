@@ -6,13 +6,14 @@ import android.arch.persistence.room.TypeConverters
 import com.madmensoftware.sips.data.local.room.converters.DateConverter
 import com.madmensoftware.sips.data.local.room.converters.SensorDataConverter
 import com.madmensoftware.sips.data.local.room.dao.*
+import com.madmensoftware.sips.data.models.SensorData
 import com.madmensoftware.sips.data.models.room.*
 
 
 /**
  * Created by clj00 on 3/2/2018.
  */
-@Database(entities = arrayOf(User::class, Athlete::class, TestData::class, Organization::class, TestType::class), version = 6, exportSchema = false)
+@Database(entities = arrayOf(User::class, Athlete::class, TestData::class, Organization::class, TestType::class), version = 9, exportSchema = false)
 @TypeConverters(DateConverter::class, SensorDataConverter::class)
 abstract class AppDatabase : RoomDatabase() {
 

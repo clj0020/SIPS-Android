@@ -5,8 +5,7 @@ import com.madmensoftware.sips.data.DataManager
 import com.madmensoftware.sips.ui.base.BaseViewModel
 import com.madmensoftware.sips.util.SchedulerProvider
 import com.auth0.android.jwt.JWT
-
-
+import com.madmensoftware.sips.data.models.room.TestType
 
 
 /**
@@ -25,8 +24,31 @@ class SplashViewModel(dataManager: DataManager, schedulerProvider: SchedulerProv
                 dataManager.setUserAsLoggedOut()
                 navigator!!.openLoginActivity()
             }
-
-            navigator!!.openMainActivity()
+            else {
+                seedDatabase()
+            }
         }
+    }
+
+    fun seedDatabase() {
+        setIsLoading(true)
+        dataManager.getTestTypeList()
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.ui())
+                .subscribe({ testTypeList ->
+                    dataManager.getAthleteList()
+                            .subscribeOn(schedulerProvider.io())
+                            .observeOn(schedulerProvider.ui())
+                            .subscribe({ athleteList ->
+                                setIsLoading(false)
+                                navigator!!.openMainActivity()
+                            }, { throwable: Throwable ->
+                                setIsLoading(false)
+                                navigator?.handleError(throwable)
+                            })
+                }, { throwable: Throwable ->
+                    setIsLoading(false)
+                    navigator?.handleError(throwable)
+                })
     }
 }

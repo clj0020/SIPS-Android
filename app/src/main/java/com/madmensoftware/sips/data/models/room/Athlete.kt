@@ -18,18 +18,14 @@ import com.google.gson.annotations.SerializedName
 class Athlete {
 
     @Expose
-    @SerializedName("created_at")
-    @ColumnInfo(name = "created_at")
-    var created_at: String? = null
-//
-//    @Expose
-//    @PrimaryKey(autoGenerate = true)
-//    var id: Long? = null
-
-    @Expose
     @PrimaryKey
     @ColumnInfo(name = "_id")
     var _id: String = ""
+
+    @Expose
+    @SerializedName("created_at")
+    @ColumnInfo(name = "created_at")
+    var created_at: String? = null
 
     @Expose
     @SerializedName("organization")

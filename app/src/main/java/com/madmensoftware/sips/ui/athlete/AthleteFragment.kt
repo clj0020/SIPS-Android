@@ -2,6 +2,7 @@ package com.madmensoftware.sips.ui.athlete
 
 import android.arch.lifecycle.Observer
 import android.os.Bundle
+import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
@@ -24,16 +25,14 @@ class AthleteFragment : BaseFragment<FragmentAthleteBinding, AthleteViewModel>()
     @Inject
     lateinit var mTestDataAdapter: TestDataListAdapter
 
-    var mFragmentAthleteBinding: FragmentAthleteBinding? = null
-
     @Inject
     lateinit var mLayoutManager: LinearLayoutManager
-
 
     @Inject
     override lateinit var viewModel: AthleteViewModel
         internal set
 
+    var mFragmentAthleteBinding: FragmentAthleteBinding? = null
 
     override val bindingVariable: Int
         get() = BR.viewModel
@@ -41,16 +40,11 @@ class AthleteFragment : BaseFragment<FragmentAthleteBinding, AthleteViewModel>()
     override val layoutId: Int
         get() = R.layout.fragment_athlete
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel.navigator = this
         mTestDataAdapter.setListener(this)
     }
-
-//    override fun onRetryClick() {
-//        viewModel.fetchTestData()
-//    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -68,11 +62,27 @@ class AthleteFragment : BaseFragment<FragmentAthleteBinding, AthleteViewModel>()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
+    private fun setUp() {
+        val layoutManager = LinearLayoutManager(activity)
+        layoutManager.orientation = LinearLayoutManager.VERTICAL
+        mFragmentAthleteBinding!!.testDataListRecyclerView.setLayoutManager(layoutManager)
+        mFragmentAthleteBinding!!.testDataListRecyclerView.setItemAnimator(DefaultItemAnimator())
+        mFragmentAthleteBinding!!.testDataListRecyclerView.setAdapter(mTestDataAdapter)
+
+        mFragmentAthleteBinding!!.testDataListSwipeRefresh.setOnRefreshListener(
+                SwipeRefreshLayout.OnRefreshListener {
+                    mFragmentAthleteBinding!!.viewModel!!.fetchTestData()
+                }
+        )
+    }
+
+    override fun setRefreshing(isRefreshing: Boolean) {
+        mFragmentAthleteBinding!!.testDataListSwipeRefresh.isRefreshing = isRefreshing
+    }
+
     private fun subscribeToAthleteLiveData(athleteId: String) {
         viewModel.athleteId = athleteId
-
         viewModel.fetchAthlete()
-
         viewModel.athleteLiveData.observe(this, Observer<Athlete> {
             athlete: Athlete? ->
             if (athlete != null) {
@@ -82,37 +92,22 @@ class AthleteFragment : BaseFragment<FragmentAthleteBinding, AthleteViewModel>()
         })
     }
 
-    override fun updateTestDataList(testDataList: List<TestData>) {
-        mTestDataAdapter.addItems(testDataList)
-    }
-
-    private fun setUp() {
-        val layoutManager = LinearLayoutManager(activity)
-        layoutManager.orientation = LinearLayoutManager.VERTICAL
-        mFragmentAthleteBinding!!.testDataListRecyclerView.setLayoutManager(layoutManager)
-        mFragmentAthleteBinding!!.testDataListRecyclerView.setItemAnimator(DefaultItemAnimator())
-        mFragmentAthleteBinding!!.testDataListRecyclerView.setAdapter(mTestDataAdapter)
-    }
-
     private fun subscribeToTestDataLiveData() {
         viewModel.fetchTestData()
-
         viewModel.testDataListLiveData.observe(this, Observer<List<TestData>> {
             testDataList -> viewModel.addTestDataItemsToList(testDataList!!)
         })
+    }
+
+    override fun updateTestDataList(testDataList: List<TestData>) {
+        mTestDataAdapter.addItems(testDataList)
     }
 
     override fun onRetryClick() {
         viewModel.fetchTestData()
     }
 
-    override fun onStop() {
-        Log.i(AthleteFragment.TAG, "OnStop called")
-        super.onStop()
-    }
-
     override fun onPause() {
-        Log.i(AthleteFragment.TAG, "OnPause called")
         super.onPause()
         mLayoutManager.detachAndScrapAttachedViews(mFragmentAthleteBinding!!.testDataListRecyclerView.Recycler())
     }
@@ -148,9 +143,7 @@ class AthleteFragment : BaseFragment<FragmentAthleteBinding, AthleteViewModel>()
         inflater.inflate(R.menu.toolbar_detail, menu)
     }
 
-
     companion object {
-
         val TAG = AthleteFragment::class.java.simpleName
         val KEY_ATHLETE_ID = "athleteId"
 

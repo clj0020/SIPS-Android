@@ -26,81 +26,119 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.design.widget.CoordinatorLayout
+        <android.support.constraint.ConstraintLayout
             android:id="@+id/testing_holder"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:visibility="gone"
+            tools:visibility="visible"
             android:visibility="@{!isTestSelected ? View.GONE : View.VISIBLE}">
 
             <TextView
                 android:id="@+id/test_title_text"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="30sp"
-                android:layout_gravity="top"/>
+                android:layout_marginTop="48dp"
+                android:textAlignment="center"
+                android:textColor="@android:color/black"
+                android:textSize="40sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="One Legged Squat" />
 
             <TextView
                 android:id="@+id/time_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
                 style="@style/TextStyle.Heading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="116dp"
                 android:text="00:00:00"
+                android:textAlignment="center"
                 android:textColor="@android:color/black"
-                android:textSize="50sp" />
+                android:textSize="70sp"
+                app:layout_constraintBottom_toTopOf="@+id/relativeLayout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/test_title_text"
+                app:layout_constraintVertical_bias="0.079" />
 
-            <Button
-                android:id="@+id/start_athlete_test_button"
-                android:layout_width="wrap_content"
-                android:layout_height="60dp"
-                android:layout_gravity="bottom|center_horizontal"
-                android:text="@string/start_test"
-                app:layout_anchor="@id/time_text"
-                app:layout_anchorGravity="bottom|center_horizontal"
-                style="@style/Button.Primary"
-                android:onClick="@{() -> viewModel.onStartTestClicked(context)}"
-                android:visibility="@{isClockStarted ? View.GONE : View.VISIBLE}"
-                tools:layout_editor_absoluteY="-3dp" />
+            <RelativeLayout
+                android:id="@+id/relativeLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent">
 
-            <Button
-                android:id="@+id/stop_athlete_test_button"
-                android:layout_width="wrap_content"
-                android:layout_height="60dp"
-                android:layout_gravity="bottom|center_horizontal"
-                android:text="@string/stop_test"
-                style="@style/Button.Primary"
-                android:onClick="@{() -> viewModel.onStopTestClicked()}"
-                android:visibility="@{!isClockStarted ? View.GONE : View.VISIBLE}"
-                app:layout_anchor="@id/time_text"
-                app:layout_anchorGravity="bottom|center_horizontal"
-                tools:layout_editor_absoluteY="5dp" />
+                <Button
+                    android:id="@+id/start_athlete_test_button"
+                    style="@style/Button.Primary"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_centerHorizontal="true"
+                    android:onClick="@{() -> viewModel.onStartTestClicked(context)}"
+                    android:text="@string/start_test"
+                    android:visibility="@{isClockStarted ? View.GONE : View.VISIBLE}" />
 
-        </android.support.design.widget.CoordinatorLayout>
+                <Button
+                    android:id="@+id/stop_athlete_test_button"
+                    style="@style/Button.Primary"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_centerHorizontal="true"
+                    android:onClick="@{() -> viewModel.onStopTestClicked()}"
+                    android:text="@string/stop_test"
+                    android:visibility="@{!isClockStarted ? View.GONE : View.VISIBLE}" />
 
-        <android.support.design.widget.CoordinatorLayout
+            </RelativeLayout>
+
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
             android:id="@+id/test_selector_holder"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            tools:visibility="gone"
             android:visibility="@{isTestSelected ? View.GONE : View.VISIBLE}">
 
             <TextView
                 android:id="@+id/choose_test_text"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="top|center_horizontal"
-                android:layout_marginBottom="60dp"
+                android:layout_height="0dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="20dp"
                 android:text="@string/choose_test"
+                android:textAlignment="center"
                 android:textColor="@android:color/black"
-                android:textSize="50sp" />
+                android:textSize="40sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/testTypeListRecyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="10dp"
                 app:adapter="@{viewModel.testTypeObservableList}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/choose_test_text"
+                app:layout_constraintVertical_bias="0.0"
                 tools:listitem="@layout/item_test_type_view" />
 
-        </android.support.design.widget.CoordinatorLayout>
+
+        </android.support.constraint.ConstraintLayout>
+
     </android.support.design.widget.CoordinatorLayout>
 </layout>

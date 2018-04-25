@@ -28,6 +28,12 @@ class SplashActivity : BaseActivity<ActivitySplashBinding, SplashViewModel>(), S
     override val layoutId: Int
         get() = R.layout.activity_splash
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel.navigator = this
+        viewModel.decideNextActivity()
+    }
+
     override fun openLoginActivity() {
         val intent = LoginActivity.newIntent(this@SplashActivity)
         startActivity(intent)
@@ -40,10 +46,8 @@ class SplashActivity : BaseActivity<ActivitySplashBinding, SplashViewModel>(), S
         finish()
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel.navigator = this
-        viewModel.decideNextActivity()
+    override fun handleError(throwable: Throwable) {
+
     }
 
     companion object {

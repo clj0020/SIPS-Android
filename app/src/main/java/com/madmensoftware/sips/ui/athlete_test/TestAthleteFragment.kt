@@ -3,6 +3,7 @@ package com.madmensoftware.sips.ui.athlete_test
 import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.support.annotation.Nullable
+import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
@@ -90,7 +91,6 @@ class TestAthleteFragment : BaseFragment<FragmentTestAthleteBinding, TestAthlete
         mFragmentTestAthleteBinding!!.testTypeListRecyclerView.setLayoutManager(layoutManager)
         mFragmentTestAthleteBinding!!.testTypeListRecyclerView.setItemAnimator(DefaultItemAnimator())
         mFragmentTestAthleteBinding!!.testTypeListRecyclerView.setAdapter(mTestTypeAdapter)
-
     }
 
     override fun updateTestTypeList(testTypeList: List<TestType>) {

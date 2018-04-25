@@ -19,7 +19,6 @@ class AthleteItemViewModel(private val mAthlete: Athlete, val mListener: Athlete
         last_name = ObservableField(mAthlete.last_name)
         email = ObservableField(mAthlete.email)
 
-        Log.i("AthleteItem", mAthlete.status + "")
         if (mAthlete.status == "Verified") {
             verified = ObservableField(true)
         }

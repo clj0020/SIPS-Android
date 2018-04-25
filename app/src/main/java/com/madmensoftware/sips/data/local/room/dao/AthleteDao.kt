@@ -12,9 +12,6 @@ interface AthleteDao {
     @Delete
     fun delete(athlete: Athlete)
 
-//    @Query("SELECT * FROM athletes WHERE name LIKE :name LIMIT 1")
-//    fun findByName(name: String): Athlete
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(athlete: Athlete)
 
@@ -27,7 +24,7 @@ interface AthleteDao {
     @Query("SELECT * FROM athletes WHERE _id = (:athleteIds)")
     fun loadAthleteById(athleteIds: String): Athlete
 
-    @Query("SELECT * FROM athletes WHERE _id = (:organizationId)")
+    @Query("SELECT * FROM athletes WHERE organization = (:organizationId)")
     fun loadAthletesByOrganizationId(organizationId: String): List<Athlete>
 
 }

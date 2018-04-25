@@ -9,9 +9,13 @@ interface AthleteNavigator {
 
     fun handleError(throwable: Throwable)
 
+    fun onRetryClick()
+
     fun updateTestDataList(testDataList: List<TestData>)
 
     fun showTestAthleteFragment(athleteId: String)
 
     fun showEditAthleteFragment(athleteId: String)
+
+    fun setRefreshing(refreshing: Boolean)
 }

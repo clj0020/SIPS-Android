@@ -21,7 +21,7 @@ interface TestDataDao {
     @Query("SELECT * FROM test_data")
     fun loadAll(): List<TestData>
 
-    @Query("SELECT * FROM test_data WHERE athlete_id = :athleteId")
+    @Query("SELECT * FROM test_data WHERE athlete = (:athleteId)")
     fun loadAllByAthleteId(athleteId: String): List<TestData>
 
 }
