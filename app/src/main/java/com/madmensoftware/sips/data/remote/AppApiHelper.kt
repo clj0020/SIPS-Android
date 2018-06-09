@@ -57,9 +57,10 @@ class AppApiHelper @Inject constructor(override val apiHeader: ApiHeader) : ApiH
                 }
     }
 
-    override fun getAthletesFromOrganizationServer() : Single<List<Athlete>> {
+    override fun getAthletesFromOrganizationServer(organizationId: String) : Single<List<Athlete>> {
         return Rx2AndroidNetworking.get(ApiEndPoint.ENDPOINT_GET_ATHLETES_FROM_ORGANIZATION)
                 .addHeaders(apiHeader.protectedApiHeader)
+                .addPathParameter("organizationId", organizationId)
                 .build()
                 .getObjectSingle<AthleteListResponse>(AthleteListResponse::class.java)
                 .map { apiAthleteListResponse: AthleteListResponse? ->
@@ -118,9 +119,10 @@ class AppApiHelper @Inject constructor(override val apiHeader: ApiHeader) : ApiH
     /**
      * Test Type Functions
      */
-    override fun getTestTypesFromOrganizationServer(): Single<List<TestType>> {
+    override fun getTestTypesFromOrganizationServer(organizationId: String): Single<List<TestType>> {
         return Rx2AndroidNetworking.get(ApiEndPoint.ENDPOINT_GET_TEST_TYPES_FROM_ORGANIZATION)
                 .addHeaders(apiHeader.protectedApiHeader)
+                .addPathParameter("organizationId", organizationId)
                 .build()
                 .getObjectSingle<TestTypeResponse>(TestTypeResponse::class.java)
                 .map { apiTestTypeListResponse: TestTypeResponse? ->

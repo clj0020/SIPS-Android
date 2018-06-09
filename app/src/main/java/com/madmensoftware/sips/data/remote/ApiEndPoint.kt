@@ -9,9 +9,9 @@ object ApiEndPoint {
 
     val ENDPOINT_SERVER_LOGIN = BuildConfig.BASE_URL + "/users/login"
 
-    val ENDPOINT_ADD_ATHLETE = BuildConfig.BASE_URL + "/athletes/add"
+    val ENDPOINT_ADD_ATHLETE = BuildConfig.BASE_URL + "/athletes"
 
-    val ENDPOINT_GET_ATHLETES_FROM_ORGANIZATION = BuildConfig.BASE_URL + "/athletes/get-athletes-from-organization"
+    val ENDPOINT_GET_ATHLETES_FROM_ORGANIZATION = BuildConfig.BASE_URL + "/athletes/organization/{organizationId}"
 
     val ENDPOINT_GET_ATHLETE_BY_ID = BuildConfig.BASE_URL + "/athletes/{athleteId}"
 

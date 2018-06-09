@@ -18,13 +18,13 @@ interface ApiHelper {
 
     fun saveAthleteServer(email: String, organization: String): Single<Athlete>
 
-    fun getAthletesFromOrganizationServer(): Single<List<Athlete>>
+    fun getAthletesFromOrganizationServer(organizationId: String): Single<List<Athlete>>
 
     fun getAthleteByIdServer(athleteId: String): Single<Athlete>
 
     fun saveTestDataServer(request: TestDataRequest.UploadTestDataRequest): Single<TestData>
 
-    fun getTestTypesFromOrganizationServer(): Single<List<TestType>>
+    fun getTestTypesFromOrganizationServer(organizationId: String): Single<List<TestType>>
 
     fun getTestDataForAthleteServer(athleteId: String): Single<List<TestData>>
 

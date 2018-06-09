@@ -145,7 +145,7 @@ class AppDataManager @Inject constructor(private val mContext: Context,
      * Athlete Functions
      */
     override fun getAthleteList(): Observable<List<Athlete>?> {
-        val remoteSource: Single<List<Athlete>> = mApiHelper.getAthletesFromOrganizationServer().subscribeOn(schedulerProvider.io())
+        val remoteSource: Single<List<Athlete>> = mApiHelper.getAthletesFromOrganizationServer(this.currentUserOrganizationId!!).subscribeOn(schedulerProvider.io())
 
         return mDbHelper.getAllAthletesFromOrganizationDatabase(this.currentUserOrganizationId!!)
                 .flatMap { listFromLocal: List<Athlete> ->
@@ -163,8 +163,8 @@ class AppDataManager @Inject constructor(private val mContext: Context,
                 }
     }
 
-    override fun getAthletesFromOrganizationServer(): Single<List<Athlete>> {
-        return mApiHelper.getAthletesFromOrganizationServer()
+    override fun getAthletesFromOrganizationServer(organizationId: String): Single<List<Athlete>> {
+        return mApiHelper.getAthletesFromOrganizationServer(organizationId)
     }
 
     override fun getAllAthletesFromOrganizationDatabase(organizationId: String): Observable<List<Athlete>> {
@@ -283,7 +283,7 @@ class AppDataManager @Inject constructor(private val mContext: Context,
      * Test Type Functions
      */
     override fun getTestTypeList(): Observable<List<TestType>?> {
-        val remoteSource: Single<List<TestType>> = mApiHelper.getTestTypesFromOrganizationServer().subscribeOn(schedulerProvider.io())
+        val remoteSource: Single<List<TestType>> = mApiHelper.getTestTypesFromOrganizationServer(this.currentUserOrganizationId!!).subscribeOn(schedulerProvider.io())
 
         return mDbHelper.getTestTypesFromOrganizationDatabase(this.currentUserOrganizationId!!)
                 .flatMap { listFromLocal: List<TestType> ->
@@ -305,8 +305,8 @@ class AppDataManager @Inject constructor(private val mContext: Context,
         return mDbHelper.getTestTypesFromOrganizationDatabase(organizationId)
     }
 
-    override fun getTestTypesFromOrganizationServer(): Single<List<TestType>> {
-        return mApiHelper.getTestTypesFromOrganizationServer()
+    override fun getTestTypesFromOrganizationServer(organizationId: String): Single<List<TestType>> {
+        return mApiHelper.getTestTypesFromOrganizationServer(organizationId)
     }
 
     override fun saveTestTypeListToDatabase(testTypeList: List<TestType>): Completable {
