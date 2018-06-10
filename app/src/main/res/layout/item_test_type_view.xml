@@ -31,6 +31,13 @@
                 android:orientation="vertical"
                 android:paddingBottom="30dp">
 
+                <ImageView
+                    android:id="@+id/coverImageView"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:scaleType="fitCenter"
+                    app:imageUrl='@{viewModel.image ?? "http://www.sunshineglobalhospitals.com/xadmin/myaccount/upload/default/profiledefault.png"}'
+                    tools:src="@drawable/ic_rabbit" />
 
                 <TextView
                     android:id="@+id/testTypeTitleTextView"

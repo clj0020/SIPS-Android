@@ -8,12 +8,13 @@ class TestTypeItemViewModel(private val mTestType: TestType, val mListener: Test
     val title: ObservableField<String>
     val description: ObservableField<String>
     val duration: ObservableField<Int>
+    val image: ObservableField<String?>
 
     init {
-
         title = ObservableField(mTestType.title!!)
         description = ObservableField(mTestType.description!!)
         duration = ObservableField(mTestType.duration!!)
+        image = ObservableField(mTestType.imageUrl)
     }
 
     fun onItemClick() {

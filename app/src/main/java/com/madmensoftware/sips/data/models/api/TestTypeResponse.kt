@@ -67,6 +67,10 @@ class TestTypeResponse {
         var duration: Int ?= null
 
         @Expose
+        @SerializedName("imageUrl")
+        var imageUrl: String ?= null
+
+        @Expose
         @SerializedName("organization")
         var organization: String = ""
 
@@ -91,6 +95,9 @@ class TestTypeResponse {
             if (duration != that.duration) {
                 return false
             }
+            if (imageUrl != that.imageUrl) {
+                return false
+            }
             if (organization != that.organization) {
                 return false
             }
@@ -102,6 +109,7 @@ class TestTypeResponse {
             result = 31 * result + title!!.hashCode()
             result = 31 * result + description!!.hashCode()
             result = 31 * result + duration!!.hashCode()
+            result = 31 * result + imageUrl!!.hashCode()
             result = 31 * result + organization!!.hashCode()
             result = 31 * result + created_at!!.hashCode()
             return result

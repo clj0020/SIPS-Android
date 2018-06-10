@@ -13,6 +13,7 @@ class AthleteItemViewModel(private val mAthlete: Athlete, val mListener: Athlete
     val last_name: ObservableField<String?>
     val email: ObservableField<String?>
     val verified: ObservableField<Boolean>
+    val profileImageUrl: ObservableField<String?>
 
     init {
         first_name = ObservableField(mAthlete.first_name)
@@ -25,6 +26,9 @@ class AthleteItemViewModel(private val mAthlete: Athlete, val mListener: Athlete
         else {
             verified = ObservableField(false)
         }
+
+        profileImageUrl = ObservableField(mAthlete.profileImageUrl)
+
     }
 
     fun onItemClick() {

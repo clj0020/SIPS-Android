@@ -63,4 +63,5 @@ object BindingUtils {
         val context = imageView.getContext()
         Glide.with(context).load(url).into(imageView)
     }
+
 }// This class is not publicly instantiable

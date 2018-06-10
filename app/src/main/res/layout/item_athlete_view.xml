@@ -26,11 +26,22 @@
             app:cardCornerRadius="7dp"
             app:cardElevation="4dp">
 
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingBottom="30dp">
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="10dp">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/profileImageView"
+                    android:layout_width="65dp"
+                    android:layout_height="65dp"
+                    app:civ_border_color="#FF000000"
+                    app:civ_border_width="2dp"
+                    app:imageUrl='@{viewModel.profileImageUrl ?? "http://www.sunshineglobalhospitals.com/xadmin/myaccount/upload/default/profiledefault.png"}'
+                    tools:src="@drawable/ic_rabbit" />
 
                 <TextView
                     android:id="@+id/nameTextView"
@@ -39,9 +50,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
-                    android:layout_marginTop="20dp"
-                    android:visibility="@{viewModel.verified ? View.VISIBLE : View.GONE}"
                     android:text="@{viewModel.first_name + ' '  + viewModel.last_name}"
+                    android:textSize="22sp"
+                    android:visibility="@{viewModel.verified ? View.VISIBLE : View.GONE}"
                     tools:text="Carson Jones" />
 
                 <TextView
@@ -51,10 +62,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
-                    android:layout_marginTop="20dp"
-                    android:visibility="@{!viewModel.verified ? View.VISIBLE : View.GONE}"
                     android:text="@{viewModel.email}"
-                    tools:text="clj0020@gmail.com" />
+                    android:visibility="@{!viewModel.verified ? View.VISIBLE : View.GONE}" />
 
             </LinearLayout>
         </android.support.v7.widget.CardView>

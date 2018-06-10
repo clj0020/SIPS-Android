@@ -67,4 +67,9 @@ class Athlete {
     @ColumnInfo(name = "weight")
     var weight: Int ?= null
 
+    @Expose
+    @SerializedName("profileImageUrl")
+    @ColumnInfo(name = "profileImageUrl")
+    var profileImageUrl: String ?= null
+
 }

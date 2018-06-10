@@ -143,6 +143,7 @@ class AppApiHelper @Inject constructor(override val apiHeader: ApiHeader) : ApiH
         athlete.status = athleteResponse.status
         athlete.height = athleteResponse.height
         athlete.weight = athleteResponse.weight
+        athlete.profileImageUrl = athleteResponse.profileImageUrl
         athlete.organization = athleteResponse.organization!!._id
         return athlete
     }
@@ -170,6 +171,7 @@ class AppApiHelper @Inject constructor(override val apiHeader: ApiHeader) : ApiH
             athlete.status = item.status
             athlete.height = item.height
             athlete.weight = item.weight
+            athlete.profileImageUrl = item.profileImageUrl
             athlete.organization = item.organization!!._id
             _listAthletes.add(athlete)
         }
@@ -286,6 +288,7 @@ class AppApiHelper @Inject constructor(override val apiHeader: ApiHeader) : ApiH
             testType.title = item.title
             testType.description = item.description
             testType.duration = item.duration
+            testType.imageUrl = item.imageUrl
             testType.organization = item.organization
             _listTestTypes.add(testType)
         }

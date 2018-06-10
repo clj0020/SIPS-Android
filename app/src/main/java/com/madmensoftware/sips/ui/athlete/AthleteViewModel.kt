@@ -2,6 +2,7 @@ package com.madmensoftware.sips.ui.athlete
 
 import android.arch.lifecycle.MutableLiveData
 import android.databinding.ObservableArrayList
+import android.databinding.ObservableField
 import android.databinding.ObservableList
 import android.util.Log
 import com.madmensoftware.sips.data.DataManager

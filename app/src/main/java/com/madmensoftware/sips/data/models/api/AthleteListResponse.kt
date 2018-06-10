@@ -68,6 +68,10 @@ class AthleteListResponse {
         var status: String? = null
 
         @Expose
+        @SerializedName("profileImageUrl")
+        var profileImageUrl: String? = null
+
+        @Expose
         @SerializedName("tests")
         var tests: List<TestData>? = null
 
@@ -128,6 +132,9 @@ class AthleteListResponse {
             if (organization != that.organization) {
                 return false
             }
+            if (profileImageUrl != that.profileImageUrl) {
+                return false
+            }
             if (tests != that.tests) {
                 return false
             }
@@ -159,6 +166,7 @@ class AthleteListResponse {
             result = 31 * result + date_of_birth!!.hashCode()
             result = 31 * result + height!!.hashCode()
             result = 31 * result + weight!!.hashCode()
+            result = 31 * result + profileImageUrl!!.hashCode()
             result = 31 * result + created_at!!.hashCode()
             result = 31 * result + kind!!.hashCode()
             result = 31 * result + organization!!.hashCode()

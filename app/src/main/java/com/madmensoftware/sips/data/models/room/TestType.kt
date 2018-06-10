@@ -40,6 +40,11 @@ class TestType {
     var duration: Int ?= null
 
     @Expose
+    @SerializedName("imageUrl")
+    @ColumnInfo(name = "imageUrl")
+    var imageUrl: String ?= null
+
+    @Expose
     @SerializedName("organization")
     @ColumnInfo(name = "organization")
     var organization: String = ""
