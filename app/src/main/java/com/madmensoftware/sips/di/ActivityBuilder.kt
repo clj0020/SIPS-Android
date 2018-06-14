@@ -2,6 +2,7 @@ package com.madmensoftware.sips.di
 
 import com.madmensoftware.sips.ui.athlete.AthleteFragmentProvider
 import com.madmensoftware.sips.ui.athlete_add.AddAthleteFragmentProvider
+import com.madmensoftware.sips.ui.athlete_edit.EditAthleteFragmentProvider
 import com.madmensoftware.sips.ui.athlete_list.AthleteListFragmentProvider
 import com.madmensoftware.sips.ui.athlete_test.TestAthleteFragmentProvider
 import dagger.android.ContributesAndroidInjector
@@ -30,6 +31,7 @@ abstract class ActivityBuilder {
             AthleteListFragmentProvider::class,
             AthleteFragmentProvider::class,
             AddAthleteFragmentProvider::class,
+            EditAthleteFragmentProvider::class,
             TestAthleteFragmentProvider::class))
     internal abstract fun bindMainActivity(): MainActivity
 

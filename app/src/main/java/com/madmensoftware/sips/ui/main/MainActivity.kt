@@ -13,6 +13,7 @@ import com.madmensoftware.sips.BuildConfig
 import com.madmensoftware.sips.databinding.ActivityMainBinding
 import com.madmensoftware.sips.ui.athlete.AthleteFragment
 import com.madmensoftware.sips.ui.athlete_add.AddAthleteFragment
+import com.madmensoftware.sips.ui.athlete_edit.EditAthleteFragment
 import com.madmensoftware.sips.ui.athlete_list.AthleteListFragment
 import com.madmensoftware.sips.ui.athlete_test.TestAthleteFragment
 import javax.inject.Inject
@@ -118,11 +119,11 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), MainNav
                 supportActionBar!!.title = "Test Athlete"
                 setupViewFragment(TestAthleteFragment.newInstance(data.athleteId))
             }
-//            is MainViewModel.Data.EditAthleteData -> {
-//                showBackButton()
-//                supportActionBar!!.title = "Test Athlete"
-//                setupViewFragment(EditAthleteFragment.newInstance(data.athleteId))
-//            }
+            is MainViewModel.Data.EditAthleteData -> {
+                showBackButton()
+                supportActionBar!!.title = "Edit Athlete"
+                setupViewFragment(EditAthleteFragment.newInstance(data.athleteId))
+            }
 
         }
     }

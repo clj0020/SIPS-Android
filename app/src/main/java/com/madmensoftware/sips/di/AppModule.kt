@@ -38,25 +38,11 @@ class AppModule {
         return appApiHelper
     }
 
-//    @Provides
-//    @ApiInfo
-//    internal fun provideApiKey(): String {
-//        return BuildConfig.API_KEY
-//    }
-
     @Provides
     @Singleton
     internal fun provideAppDatabase(@DatabaseInfo dbName: String, context: Context): AppDatabase {
-//        val mockAthletes = DataGenerator.generateAthletes()
-
         val database = Room.databaseBuilder(context, AppDatabase::class.java, dbName).fallbackToDestructiveMigration()
                 .build()
-
-//        database.runInTransaction {
-//            database.athleteDao().insertAll(mockAthletes)
-////                database.testDataDao().insertAll(testData)
-//        }
-
         return database
     }
 

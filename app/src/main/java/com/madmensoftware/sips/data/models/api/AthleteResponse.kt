@@ -97,8 +97,7 @@ class AthleteResponse {
 
             @Expose
             @SerializedName("organization")
-            var organization: Organization? = null
-
+            var organization: String? = null
 
             @Expose
             @SerializedName("kind")
@@ -149,9 +148,9 @@ class AthleteResponse {
                 if (created_at != that.created_at) {
                     return false
                 }
-//            if (organization != that.organization) {
-//                return false
-//            }
+                if (organization != that.organization) {
+                    return false
+                }
                 return kind == that.kind
             }
 

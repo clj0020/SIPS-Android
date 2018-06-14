@@ -144,7 +144,7 @@ class AppApiHelper @Inject constructor(override val apiHeader: ApiHeader) : ApiH
         athlete.height = athleteResponse.height
         athlete.weight = athleteResponse.weight
         athlete.profileImageUrl = athleteResponse.profileImageUrl
-        athlete.organization = athleteResponse.organization!!._id
+        athlete.organization = athleteResponse.organization!!
         return athlete
     }
 

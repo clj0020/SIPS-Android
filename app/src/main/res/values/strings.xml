@@ -72,4 +72,8 @@
     <string name="testing_data">Testing Data</string>
     <string name="no_athletes_found">No Athletes found.</string>
     <string name="no_test_types_found">No test types found..</string>
+    <string name="hint_first_name">First Name</string>
+    <string name="hint_last_name">Last Name</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_date_of_birth">Date of Birth</string>
 </resources>

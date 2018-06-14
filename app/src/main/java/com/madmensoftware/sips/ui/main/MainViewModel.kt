@@ -63,6 +63,10 @@ class MainViewModel(dataManager: DataManager, schedulerProvider: SchedulerProvid
                 backStackLiveData.value = Data.AthleteData((backStackLiveData.value as Data.TestAthleteData).athleteId)
                 true
             }
+            is Data.EditAthleteData -> {
+                backStackLiveData.value = Data.AthleteData((backStackLiveData.value as Data.EditAthleteData).athleteId)
+                true
+            }
             else -> false
         }
     }

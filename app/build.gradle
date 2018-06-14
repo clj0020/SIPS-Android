@@ -131,6 +131,9 @@ dependencies {
     // Sweet Alert Dialog
     implementation "com.github.f0ris.sweetalert:library:$sweet_alert_dialog_version"
 
+    // Material Datepicker
+    implementation "com.wdullaer:materialdatetimepicker:3.6.0"
+
     // RXCountdown timer
     implementation "com.github.wardellbagby:RxCountDownTimer:$rx_countdown_timer_version"
 
