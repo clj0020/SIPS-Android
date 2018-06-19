@@ -18,6 +18,9 @@ interface AthleteDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(athlete: List<Athlete>)
 
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    fun update(athlete: Athlete)
+
     @Query("SELECT * FROM athletes")
     fun loadAll(): List<Athlete>
 

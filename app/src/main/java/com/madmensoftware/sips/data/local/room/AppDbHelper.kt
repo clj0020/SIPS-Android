@@ -20,7 +20,6 @@ import io.reactivex.Single
 @Singleton
 class AppDbHelper @Inject constructor(internal val appDatabase: AppDatabase) : DbHelper {
 
-
     override val allUsers: Observable<kotlin.collections.List<User>> =
         Observable.fromCallable<kotlin.collections.List<User>> {
             appDatabase.userDao().loadAll()
@@ -63,6 +62,12 @@ class AppDbHelper @Inject constructor(internal val appDatabase: AppDatabase) : D
         return Completable.fromCallable {
             appDatabase.testDataDao().insertAll(testDataList)
             true
+        }
+    }
+
+    override fun editAthleteDatabase(athlete: Athlete): Completable {
+        return Completable.fromCallable {
+            appDatabase.athleteDao().update(athlete)
         }
     }
 

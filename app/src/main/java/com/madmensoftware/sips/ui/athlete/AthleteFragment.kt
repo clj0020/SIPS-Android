@@ -107,17 +107,28 @@ class AthleteFragment : BaseFragment<FragmentAthleteBinding, AthleteViewModel>()
         viewModel.fetchTestData()
     }
 
-    override fun onPause() {
-        super.onPause()
-        mLayoutManager.detachAndScrapAttachedViews(mFragmentAthleteBinding!!.testDataListRecyclerView.Recycler())
-    }
-
     override fun showTestAthleteFragment(athleteId: String) {
         (activity as MainActivity).viewModel.onTestAthlete(athleteId)
     }
 
     override fun showEditAthleteFragment(athleteId: String) {
         (activity as MainActivity).viewModel.onEditAthlete(athleteId)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.i("AthleteFrag", "onStart")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mLayoutManager.detachAndScrapAttachedViews(mFragmentAthleteBinding!!.testDataListRecyclerView.Recycler())
+        Log.i("AthleteFrag", "onPause")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.i("AthleteFrag", "onResume")
     }
 
     override fun handleError(throwable: Throwable) {

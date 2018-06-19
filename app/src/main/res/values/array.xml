@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="sports_array">
+        <item>Baseball</item>
+        <item>Basketball</item>
+        <item>Cheerleading</item>
+        <item>Cross Country Running</item>
+        <item>Football</item>
+        <item>Golf</item>
+        <item>Hockey</item>
+        <item>Soccer</item>
+        <item>Swimming and Diving</item>
+        <item>Tennis</item>
+        <item>Track and Field</item>
+        <item>Volleyball</item>
+        <item>Wrestling</item>
+    </string-array>
+
+    <string-array name="baseball_positions_array">
+        <item>Pitcher</item>
+        <item>Catcher</item>
+        <item>First Baseman</item>
+        <item>Second Baseman</item>
+        <item>Third Baseman</item>
+        <item>Shortstop</item>
+        <item>Left Fielder</item>
+        <item>Center Fielder</item>
+        <item>Right Fielder</item>
+    </string-array>
+
+    <string-array name="basketball_positions_array">
+        <item>Point Guard</item>
+        <item>Shooting Guard</item>
+        <item>Small Forward</item>
+        <item>Power Forward</item>
+        <item>Center</item>
+    </string-array>
+
+    <string-array name="cheerleading_positions_array">
+        <item>Flyer</item>
+        <item>Base</item>
+        <item>Spotter</item>
+    </string-array>
+
+    <string-array name="cross_country_positions_array">
+        <item>Runner</item>
+    </string-array>
+
+    <string-array name="football_positions_array">
+        <item>Quarterback</item>
+        <item>Running Back</item>
+        <item>Wide Receiver</item>
+        <item>Tight End</item>
+        <item>Center</item>
+        <item>Guard</item>
+        <item>Offensive Tackle</item>
+        <item>Defensive Tackle</item>
+        <item>Defensive End</item>
+        <item>Middle Linebacker</item>
+        <item>Linebacker</item>
+        <item>Cornerback</item>
+        <item>Free Safety</item>
+        <item>Strong Safety</item>
+    </string-array>
+
+    <string-array name="golf_positions_array">
+        <item>Golfer</item>
+    </string-array>
+
+    <string-array name="hockey_positions_array">
+        <item>Goalie</item>
+        <item>Defenseman</item>
+        <item>Wing</item>
+        <item>Center</item>
+    </string-array>
+
+    <string-array name="soccer_positions_array">
+        <item>Forward</item>
+        <item>Midfielder</item>
+        <item>Defender</item>
+        <item>Sweeper</item>
+        <item>Goalie</item>
+    </string-array>
+
+    <string-array name="swimming_positions_array">
+        <item>Swimmer</item>
+    </string-array>
+
+    <string-array name="tennis_positions_array">
+        <item>Player</item>
+    </string-array>
+
+    <string-array name="track_positions_array">
+        <item>Running</item>
+        <item>Jumping</item>
+        <item>Throwing</item>
+        <item>Combined</item>
+    </string-array>
+
+    <string-array name="volleyball_positions_array">
+        <item>Wing Spiker (Left)</item>
+        <item>Wing Spiker (Right)</item>
+        <item>Attacker</item>
+        <item>Setter</item>
+        <item>Middle Blocker</item>
+        <item>Libero</item>
+        <item>Defensive Specialist</item>
+    </string-array>
+
+    <string-array name="wrestling_positions_array">
+        <item>Wrestler</item>
+    </string-array>
+
+</resources>

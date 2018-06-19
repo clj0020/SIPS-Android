@@ -5,22 +5,17 @@ import android.view.*
 import com.madmensoftware.sips.BR
 import com.madmensoftware.sips.R
 import com.madmensoftware.sips.data.models.room.Athlete
-import com.madmensoftware.sips.ui.athlete_add.AddAthleteFragment
 import com.madmensoftware.sips.ui.base.BaseFragment
 import com.madmensoftware.sips.ui.main.MainActivity
 import android.arch.lifecycle.Observer
 import com.madmensoftware.sips.databinding.FragmentEditAthleteBinding
 import kotlinx.android.synthetic.main.fragment_edit_athlete.*
 import javax.inject.Inject
-import android.databinding.adapters.TextViewBindingAdapter.setText
-import android.widget.DatePicker
 import java.util.*
-import android.databinding.adapters.TextViewBindingAdapter.setText
-import android.widget.TextView
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import android.databinding.adapters.TextViewBindingAdapter.setText
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
+import android.widget.*
 
 
 class EditAthleteFragment : BaseFragment<FragmentEditAthleteBinding, EditAthleteViewModel>(), EditAthleteNavigator, com.wdullaer.materialdatetimepicker.date.DatePickerDialog.OnDateSetListener {
@@ -53,6 +48,8 @@ class EditAthleteFragment : BaseFragment<FragmentEditAthleteBinding, EditAthlete
 
         val athleteId: String = arguments!!.getString(KEY_ATHLETE_ID)
         subscribeToAthleteLiveData(athleteId)
+
+
     }
 
     private fun subscribeToAthleteLiveData(athleteId: String) {
@@ -65,13 +62,37 @@ class EditAthleteFragment : BaseFragment<FragmentEditAthleteBinding, EditAthlete
 
                 if (mFragmentEditAthleteBinding!!.athlete?.date_of_birth != null) {
                     btn_date_of_birth.setText(viewModel.formatDate(mFragmentEditAthleteBinding!!.athlete!!.date_of_birth!!))
+                    input_date_of_birth.setText(mFragmentEditAthleteBinding!!.athlete!!.date_of_birth)
                 }
+
+                setUpSpinner(mFragmentEditAthleteBinding!!.athlete)
             }
         })
     }
 
     override fun editAthlete() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val editedAthlete = Athlete()
+        editedAthlete._id = mFragmentEditAthleteBinding!!.athlete!!._id
+        editedAthlete.first_name = input_first_name.text.toString()
+        editedAthlete.last_name = input_last_name.text.toString()
+        editedAthlete.email = input_email.text.toString()
+        editedAthlete.date_of_birth = input_date_of_birth.text.toString()
+        editedAthlete.height = (input_height_feet.text.toString().toInt() * 12) + input_height_inches.text.toString().toInt()
+        editedAthlete.weight = input_weight.text.toString().toInt()
+        editedAthlete.sport = sports_spinner_edit_athlete.selectedItem.toString()
+        editedAthlete.position = position_spinner_edit_athlete.selectedItem.toString()
+
+        if (viewModel.isFormDataValid(editedAthlete)) {
+            hideKeyboard()
+            viewModel.editAthlete(editedAthlete)
+        } else {
+            Toast.makeText(activity, getString(R.string.invalid_form_data), Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun athleteEdited() {
+        showSuccess("Success", "Athlete profile has been edited!")
+        goBack()
     }
 
     override fun goBack() {
@@ -96,6 +117,15 @@ class EditAthleteFragment : BaseFragment<FragmentEditAthleteBinding, EditAthlete
     override fun onDateSet(view: com.wdullaer.materialdatetimepicker.date.DatePickerDialog?, year: Int, monthOfYear: Int, dayOfMonth: Int) {
         val date = "Birthday: " + (monthOfYear + 1) + "/" + dayOfMonth + "/" + year
         btn_date_of_birth.setText(date)
+
+        val calendar = Calendar.getInstance(TimeZone.getDefault(), Locale.getDefault())
+        calendar.set(Calendar.YEAR, year)
+        calendar.set(Calendar.MONTH, monthOfYear)
+        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+        val dateOb: Date = calendar.time
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+        var birthday: String = dateFormat.format(dateOb)
+        input_date_of_birth.setText(birthday)
     }
 
     fun getCalendarFromISO(datestring: String): Calendar {
@@ -109,6 +139,301 @@ class EditAthleteFragment : BaseFragment<FragmentEditAthleteBinding, EditAthlete
         }
 
         return calendar
+    }
+
+    fun setUpSpinner(athlete: Athlete?) {
+        val adapter = ArrayAdapter.createFromResource(context,
+                R.array.sports_array, android.R.layout.simple_spinner_item)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        sports_spinner_edit_athlete.setAdapter(adapter)
+        sports_spinner_edit_athlete.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parentView: AdapterView<*>, selectedItemView: View, position: Int, id: Long) {
+                setUpPositionSpinner(parentView.getItemAtPosition(position).toString())
+            }
+
+            override fun onNothingSelected(parentView: AdapterView<*>) {
+            }
+        }
+
+        if (athlete?.sport != null) {
+            // Find a match for current
+            val androidStrings = resources.getStringArray(R.array.sports_array)
+            for (s in androidStrings) {
+                val i = s.indexOf(athlete.sport!!)
+                if (i >= 0) {
+                    sports_spinner_edit_athlete.setSelection(androidStrings.indexOf(s))
+                }
+            }
+
+            // Show corresponding positions based on sport
+            when (athlete.sport!!) {
+                "Baseball" -> {
+                    val position_adapter = ArrayAdapter.createFromResource(context,
+                            R.array.baseball_positions_array, android.R.layout.simple_spinner_item)
+                    position_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    position_spinner_edit_athlete.setAdapter(position_adapter)
+
+                    val strings = resources.getStringArray(R.array.baseball_positions_array)
+                    for (s in strings) {
+                        val i = s.indexOf(athlete.position!!)
+                        if (i >= 0) {
+                            position_spinner_edit_athlete.setSelection(androidStrings.indexOf(s))
+                        }
+                    }
+                }
+                "Basketball" -> {
+                    val position_adapter = ArrayAdapter.createFromResource(context,
+                            R.array.basketball_positions_array, android.R.layout.simple_spinner_item)
+                    position_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    position_spinner_edit_athlete.setAdapter(position_adapter)
+
+                    val strings = resources.getStringArray(R.array.basketball_positions_array)
+                    for (s in strings) {
+                        val i = s.indexOf(athlete.position!!)
+                        if (i >= 0) {
+                            position_spinner_edit_athlete.setSelection(androidStrings.indexOf(s))
+                        }
+                    }
+                }
+                "Cheerleading" -> {
+                    val position_adapter = ArrayAdapter.createFromResource(context,
+                            R.array.cheerleading_positions_array, android.R.layout.simple_spinner_item)
+                    position_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    position_spinner_edit_athlete.setAdapter(position_adapter)
+
+                    val strings = resources.getStringArray(R.array.cheerleading_positions_array)
+                    for (s in strings) {
+                        val i = s.indexOf(athlete.position!!)
+                        if (i >= 0) {
+                            position_spinner_edit_athlete.setSelection(androidStrings.indexOf(s))
+                        }
+                    }
+                }
+                "Cross Country Running" -> {
+                    val position_adapter = ArrayAdapter.createFromResource(context,
+                            R.array.cross_country_positions_array, android.R.layout.simple_spinner_item)
+                    position_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    position_spinner_edit_athlete.setAdapter(position_adapter)
+
+                    val strings = resources.getStringArray(R.array.cross_country_positions_array)
+                    for (s in strings) {
+                        val i = s.indexOf(athlete.position!!)
+                        if (i >= 0) {
+                            position_spinner_edit_athlete.setSelection(androidStrings.indexOf(s))
+                        }
+                    }
+                }
+                "Football" -> {
+                    val position_adapter = ArrayAdapter.createFromResource(context,
+                            R.array.football_positions_array, android.R.layout.simple_spinner_item)
+                    position_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    position_spinner_edit_athlete.setAdapter(position_adapter)
+
+                    val strings = resources.getStringArray(R.array.football_positions_array)
+                    for (s in strings) {
+                        val i = s.indexOf(athlete.position!!)
+                        if (i >= 0) {
+                            position_spinner_edit_athlete.setSelection(androidStrings.indexOf(s))
+                        }
+                    }
+                }
+                "Golf" -> {
+                    val position_adapter = ArrayAdapter.createFromResource(context,
+                            R.array.golf_positions_array, android.R.layout.simple_spinner_item)
+                    position_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    position_spinner_edit_athlete.setAdapter(position_adapter)
+
+                    val strings = resources.getStringArray(R.array.golf_positions_array)
+                    for (s in strings) {
+                        val i = s.indexOf(athlete.position!!)
+                        if (i >= 0) {
+                            position_spinner_edit_athlete.setSelection(androidStrings.indexOf(s))
+                        }
+                    }
+                }
+                "Hockey" -> {
+                    val position_adapter = ArrayAdapter.createFromResource(context,
+                            R.array.hockey_positions_array, android.R.layout.simple_spinner_item)
+                    position_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    position_spinner_edit_athlete.setAdapter(position_adapter)
+
+                    val strings = resources.getStringArray(R.array.hockey_positions_array)
+                    for (s in strings) {
+                        val i = s.indexOf(athlete.position!!)
+                        if (i >= 0) {
+                            position_spinner_edit_athlete.setSelection(androidStrings.indexOf(s))
+                        }
+                    }
+                }
+                "Soccer" -> {
+                    val position_adapter = ArrayAdapter.createFromResource(context,
+                            R.array.soccer_positions_array, android.R.layout.simple_spinner_item)
+                    position_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    position_spinner_edit_athlete.setAdapter(position_adapter)
+
+                    val strings = resources.getStringArray(R.array.soccer_positions_array)
+                    for (s in strings) {
+                        val i = s.indexOf(athlete.position!!)
+                        if (i >= 0) {
+                            position_spinner_edit_athlete.setSelection(androidStrings.indexOf(s))
+                        }
+                    }
+                }
+                "Swimming and Diving" -> {
+                    val position_adapter = ArrayAdapter.createFromResource(context,
+                            R.array.swimming_positions_array, android.R.layout.simple_spinner_item)
+                    position_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    position_spinner_edit_athlete.setAdapter(position_adapter)
+
+                    val strings = resources.getStringArray(R.array.swimming_positions_array)
+                    for (s in strings) {
+                        val i = s.indexOf(athlete.position!!)
+                        if (i >= 0) {
+                            position_spinner_edit_athlete.setSelection(androidStrings.indexOf(s))
+                        }
+                    }
+                }
+                "Tennis" -> {
+                    val position_adapter = ArrayAdapter.createFromResource(context,
+                            R.array.tennis_positions_array, android.R.layout.simple_spinner_item)
+                    position_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    position_spinner_edit_athlete.setAdapter(position_adapter)
+
+                    val strings = resources.getStringArray(R.array.tennis_positions_array)
+                    for (s in strings) {
+                        val i = s.indexOf(athlete.position!!)
+                        if (i >= 0) {
+                            position_spinner_edit_athlete.setSelection(androidStrings.indexOf(s))
+                        }
+                    }
+                }
+                "Track and Field" -> {
+                    val position_adapter = ArrayAdapter.createFromResource(context,
+                            R.array.track_positions_array, android.R.layout.simple_spinner_item)
+                    position_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    position_spinner_edit_athlete.setAdapter(position_adapter)
+
+                    val strings = resources.getStringArray(R.array.track_positions_array)
+                    for (s in strings) {
+                        val i = s.indexOf(athlete.position!!)
+                        if (i >= 0) {
+                            position_spinner_edit_athlete.setSelection(androidStrings.indexOf(s))
+                        }
+                    }
+                }
+                "Volleyball" -> {
+                    val position_adapter = ArrayAdapter.createFromResource(context,
+                            R.array.volleyball_positions_array, android.R.layout.simple_spinner_item)
+                    position_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    position_spinner_edit_athlete.setAdapter(position_adapter)
+
+                    val strings = resources.getStringArray(R.array.volleyball_positions_array)
+                    for (s in strings) {
+                        val i = s.indexOf(athlete.position!!)
+                        if (i >= 0) {
+                            position_spinner_edit_athlete.setSelection(androidStrings.indexOf(s))
+                        }
+                    }
+                }
+                "Wrestling" -> {
+                    val position_adapter = ArrayAdapter.createFromResource(context,
+                            R.array.wrestling_positions_array, android.R.layout.simple_spinner_item)
+                    position_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    position_spinner_edit_athlete.setAdapter(position_adapter)
+
+                    val strings = resources.getStringArray(R.array.wrestling_positions_array)
+                    for (s in strings) {
+                        val i = s.indexOf(athlete.position!!)
+                        if (i >= 0) {
+                            position_spinner_edit_athlete.setSelection(androidStrings.indexOf(s))
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fun setUpPositionSpinner(sport: String) {
+        when (sport) {
+            "Baseball" -> {
+                val position_adapter = ArrayAdapter.createFromResource(context,
+                        R.array.baseball_positions_array, android.R.layout.simple_spinner_item)
+                position_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                position_spinner_edit_athlete.setAdapter(position_adapter)
+            }
+            "Basketball" -> {
+                val position_adapter = ArrayAdapter.createFromResource(context,
+                        R.array.basketball_positions_array, android.R.layout.simple_spinner_item)
+                position_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                position_spinner_edit_athlete.setAdapter(position_adapter)
+            }
+            "Cheerleading" -> {
+                val position_adapter = ArrayAdapter.createFromResource(context,
+                        R.array.cheerleading_positions_array, android.R.layout.simple_spinner_item)
+                position_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                position_spinner_edit_athlete.setAdapter(position_adapter)
+            }
+            "Cross Country Running" -> {
+                val position_adapter = ArrayAdapter.createFromResource(context,
+                        R.array.cross_country_positions_array, android.R.layout.simple_spinner_item)
+                position_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                position_spinner_edit_athlete.setAdapter(position_adapter)
+            }
+            "Football" -> {
+                val position_adapter = ArrayAdapter.createFromResource(context,
+                        R.array.football_positions_array, android.R.layout.simple_spinner_item)
+                position_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                position_spinner_edit_athlete.setAdapter(position_adapter)
+            }
+            "Golf" -> {
+                val position_adapter = ArrayAdapter.createFromResource(context,
+                        R.array.golf_positions_array, android.R.layout.simple_spinner_item)
+                position_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                position_spinner_edit_athlete.setAdapter(position_adapter)
+            }
+            "Hockey" -> {
+                val position_adapter = ArrayAdapter.createFromResource(context,
+                        R.array.hockey_positions_array, android.R.layout.simple_spinner_item)
+                position_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                position_spinner_edit_athlete.setAdapter(position_adapter)
+            }
+            "Soccer" -> {
+                val position_adapter = ArrayAdapter.createFromResource(context,
+                        R.array.soccer_positions_array, android.R.layout.simple_spinner_item)
+                position_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                position_spinner_edit_athlete.setAdapter(position_adapter)
+            }
+            "Swimming and Diving" -> {
+                val position_adapter = ArrayAdapter.createFromResource(context,
+                        R.array.swimming_positions_array, android.R.layout.simple_spinner_item)
+                position_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                position_spinner_edit_athlete.setAdapter(position_adapter)
+            }
+            "Tennis" -> {
+                val position_adapter = ArrayAdapter.createFromResource(context,
+                        R.array.tennis_positions_array, android.R.layout.simple_spinner_item)
+                position_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                position_spinner_edit_athlete.setAdapter(position_adapter)
+            }
+            "Track and Field" -> {
+                val position_adapter = ArrayAdapter.createFromResource(context,
+                        R.array.track_positions_array, android.R.layout.simple_spinner_item)
+                position_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                position_spinner_edit_athlete.setAdapter(position_adapter)
+            }
+            "Volleyball" -> {
+                val position_adapter = ArrayAdapter.createFromResource(context,
+                        R.array.volleyball_positions_array, android.R.layout.simple_spinner_item)
+                position_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                position_spinner_edit_athlete.setAdapter(position_adapter)
+            }
+            "Wrestling" -> {
+                val position_adapter = ArrayAdapter.createFromResource(context,
+                        R.array.wrestling_positions_array, android.R.layout.simple_spinner_item)
+                position_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                position_spinner_edit_athlete.setAdapter(position_adapter)
+            }
+        }
     }
 
     /** For handling toolbar_main actions  */

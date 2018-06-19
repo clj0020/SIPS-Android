@@ -192,8 +192,6 @@ class AppDataManager @Inject constructor(private val mContext: Context,
                             }
                             .startWith(athleteFromLocal)
                 }
-
-
     }
 
     override fun getAthleteFromDatabase(athleteId: String): Observable<Athlete> {
@@ -202,6 +200,23 @@ class AppDataManager @Inject constructor(private val mContext: Context,
 
     override fun getAthleteByIdServer(athleteId: String): Single<Athlete> {
         return mApiHelper.getAthleteByIdServer(athleteId)
+    }
+
+    override fun editAthlete(athlete: Athlete): Completable {
+        return mApiHelper.editAthleteServer(athlete)
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.computation())
+                .flatMapCompletable { edittedAthlete: Athlete ->
+                    mDbHelper.editAthleteDatabase(edittedAthlete)
+                }
+    }
+
+    override fun editAthleteDatabase(athlete: Athlete): Completable {
+        return mDbHelper.editAthleteDatabase(athlete)
+    }
+
+    override fun editAthleteServer(athlete: Athlete): Single<Athlete> {
+        return mApiHelper.editAthleteServer(athlete)
     }
 
     override fun saveAthlete(email: String): Completable {

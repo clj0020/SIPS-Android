@@ -76,4 +76,12 @@
     <string name="hint_last_name">Last Name</string>
     <string name="hint_email">Email</string>
     <string name="hint_date_of_birth">Date of Birth</string>
+    <string name="hint_height_feet">Height (Feet)</string>
+    <string name="hint_height_inches">Height (Inches)</string>
+    <string name="hint_weight">Weight (lbs)</string>
+    <string name="edit_athlete_title">Edit Athlete</string>
+    <string name="sport_hint">Sport</string>
+    <string name="position_hint">Position</string>
+    <string name="birthday_hint">Birthday</string>
+
 </resources>

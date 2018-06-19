@@ -68,6 +68,16 @@ class Athlete {
     var weight: Int ?= null
 
     @Expose
+    @SerializedName("sport")
+    @ColumnInfo(name = "sport")
+    var sport: String ?= null
+
+    @Expose
+    @SerializedName("position")
+    @ColumnInfo(name = "position")
+    var position: String ?= null
+
+    @Expose
     @SerializedName("profileImageUrl")
     @ColumnInfo(name = "profileImageUrl")
     var profileImageUrl: String ?= null

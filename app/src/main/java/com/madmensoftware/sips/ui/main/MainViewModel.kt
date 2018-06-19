@@ -75,18 +75,6 @@ class MainViewModel(dataManager: DataManager, schedulerProvider: SchedulerProvid
         setIsLoading(true)
         dataManager.logout()
         navigator!!.openLoginActivity()
-//                .doOnSuccess({
-//                    dataManager.setUserAsLoggedOut()
-//                })
-//                .subscribeOn(schedulerProvider.io())
-//                .observeOn(schedulerProvider.ui())
-//                .subscribe({
-//                    setIsLoading(false)
-//                    navigator!!.openLoginActivity()
-//                }, { throwable: Throwable ->
-//                    setIsLoading(false)
-//                    navigator!!.handleError(throwable)
-//                }))
     }
 
     fun onNavMenuCreated() {

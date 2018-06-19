@@ -46,6 +46,8 @@ interface DataManager : DbHelper, ApiHelper, PreferencesHelper {
 
     fun saveAthlete(email: String): Completable
 
+    fun editAthlete(athlete: Athlete): Completable
+
     fun getAthleteList(): Observable<List<Athlete>?>
 
     fun getAthlete(athleteId: String): Observable<Athlete>

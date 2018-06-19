@@ -11,6 +11,8 @@ object ApiEndPoint {
 
     val ENDPOINT_ADD_ATHLETE = BuildConfig.BASE_URL + "/athletes"
 
+    val ENDPOINT_EDIT_ATHLETE = BuildConfig.BASE_URL + "/athletes/{athleteId}"
+
     val ENDPOINT_GET_ATHLETES_FROM_ORGANIZATION = BuildConfig.BASE_URL + "/athletes/organization/{organizationId}"
 
     val ENDPOINT_GET_ATHLETE_BY_ID = BuildConfig.BASE_URL + "/athletes/{athleteId}"

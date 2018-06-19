@@ -20,6 +20,8 @@ interface ApiHelper {
 
     fun getAthletesFromOrganizationServer(organizationId: String): Single<List<Athlete>>
 
+    fun editAthleteServer(athlete: Athlete): Single<Athlete>
+
     fun getAthleteByIdServer(athleteId: String): Single<Athlete>
 
     fun saveTestDataServer(request: TestDataRequest.UploadTestDataRequest): Single<TestData>

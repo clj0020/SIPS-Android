@@ -6,6 +6,8 @@ interface EditAthleteNavigator {
 
     fun editAthlete()
 
+    fun athleteEdited()
+
     fun openSelectBirthdayDialog(date_of_birth: String)
 
     fun goBack()

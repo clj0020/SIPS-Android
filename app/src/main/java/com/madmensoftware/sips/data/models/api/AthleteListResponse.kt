@@ -88,6 +88,14 @@ class AthleteListResponse {
         var weight: Int? = null
 
         @Expose
+        @SerializedName("sport")
+        var sport: String? = null
+
+        @Expose
+        @SerializedName("position")
+        var position: String? = null
+
+        @Expose
         @SerializedName("created_at")
         var created_at: String? = null
 
@@ -95,15 +103,9 @@ class AthleteListResponse {
         @SerializedName("organization")
         var organization: Organization? = null
 
-
         @Expose
         @SerializedName("kind")
         var kind: String? = null
-
-//        @Expose
-//        @SerializedName("organization")
-//        var organization: Organization? = null
-
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -133,6 +135,12 @@ class AthleteListResponse {
                 return false
             }
             if (profileImageUrl != that.profileImageUrl) {
+                return false
+            }
+            if (sport != that.sport) {
+                return false
+            }
+            if (position != that.position) {
                 return false
             }
             if (tests != that.tests) {
@@ -166,6 +174,8 @@ class AthleteListResponse {
             result = 31 * result + date_of_birth!!.hashCode()
             result = 31 * result + height!!.hashCode()
             result = 31 * result + weight!!.hashCode()
+            result = 31 * result + sport!!.hashCode()
+            result = 31 * result + position!!.hashCode()
             result = 31 * result + profileImageUrl!!.hashCode()
             result = 31 * result + created_at!!.hashCode()
             result = 31 * result + kind!!.hashCode()

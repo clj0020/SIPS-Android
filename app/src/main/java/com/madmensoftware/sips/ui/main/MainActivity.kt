@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment
 import android.support.v7.widget.Toolbar
 import com.madmensoftware.sips.BR
 import com.madmensoftware.sips.BuildConfig
+import com.madmensoftware.sips.data.models.room.Athlete
 import com.madmensoftware.sips.databinding.ActivityMainBinding
 import com.madmensoftware.sips.ui.athlete.AthleteFragment
 import com.madmensoftware.sips.ui.athlete_add.AddAthleteFragment
@@ -46,7 +47,6 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), MainNav
         get() = R.layout.activity_main
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
         mActivityMainBinding = viewDataBinding
         viewModel.navigator = this
@@ -111,7 +111,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), MainNav
             }
             MainViewModel.Data.AddAthleteData -> {
                 showBackButton()
-                supportActionBar!!.title = "Athlete Profile"
+                supportActionBar!!.title = "Add Athlete"
                 setupViewFragment(AddAthleteFragment.newInstance())
             }
             is MainViewModel.Data.TestAthleteData -> {
@@ -137,9 +137,22 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), MainNav
             val fragment = supportFragmentManager.findFragmentByTag(mFragmentStack.peek())
             // This time I set an animation with no fade in, so the user doesn't wait for the animation in back press
             transaction.setCustomAnimations(R.anim.slide_left, R.anim.slide_right)
+
+            // Refresh Athlete Profile Page if we're going back to it.
+            if (fragment is AthleteFragment) {
+                fragment.viewModel.fetchAthlete()
+            }
+
+            // Refresh Athlete List if we're going back to it.
+            if (fragment is AthleteListFragment) {
+                fragment.viewModel.fetchAthletes()
+            }
+
             // We must use the show() method.
             transaction.show(fragment)
             transaction.commit()
+
+
 
             super.onBackPressed()
         }

@@ -1,7 +1,6 @@
 package com.madmensoftware.sips.ui.athlete_edit
 
 import android.arch.lifecycle.MutableLiveData
-import android.content.Context
 import android.text.TextUtils
 import com.madmensoftware.sips.data.DataManager
 import com.madmensoftware.sips.data.models.room.Athlete
@@ -34,8 +33,22 @@ class EditAthleteViewModel(dataManager: DataManager, schedulerProvider: Schedule
         )
     }
 
-    fun editAthlete() {
+    fun editAthlete(editedAthlete: Athlete) {
         setIsLoading(true)
+        dataManager.editAthlete(editedAthlete)
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.ui())
+                .doOnComplete({
+                    setIsLoading(false)
+                    navigator!!.athleteEdited()
+                })
+                .doOnError({throwable: Throwable ->
+                    setIsLoading(false)
+                    navigator!!.handleError(throwable)
+                })
+                .subscribe({
+                    setIsLoading(false)
+                })
     }
 
     fun onSelectDOBClick(date_of_birth: String) {
@@ -50,11 +63,14 @@ class EditAthleteViewModel(dataManager: DataManager, schedulerProvider: Schedule
         return dateStr
     }
 
-    fun isFormDataValid(email: String): Boolean {
-        if (TextUtils.isEmpty(email)) {
+    fun isFormDataValid(athlete: Athlete): Boolean {
+        if (TextUtils.isEmpty(athlete.first_name) || TextUtils.isEmpty(athlete.last_name) ||
+                TextUtils.isEmpty(athlete.email) || TextUtils.isEmpty(athlete.date_of_birth) ||
+                TextUtils.isEmpty(athlete.height.toString()) || TextUtils.isEmpty(athlete.weight.toString()) ||
+                TextUtils.isEmpty(athlete.sport) || TextUtils.isEmpty(athlete.position)) {
             return false
         }
-        if (!CommonUtils.isEmailValid(email)) {
+        if (!CommonUtils.isEmailValid(athlete.email!!)) {
             return false
         }
 

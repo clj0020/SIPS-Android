@@ -25,6 +25,8 @@ interface DbHelper {
     // Athlete
     fun getAthleteFromDatabase(athleteId: String): Observable<Athlete>
 
+    fun editAthleteDatabase(athlete: Athlete): Completable
+
     fun saveAthleteDatabase(athlete: Athlete): Completable
 
     fun saveAthleteListDatabase(athleteList: List<Athlete>): Completable
