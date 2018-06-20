@@ -79,6 +79,7 @@
                 <Button
                     android:id="@+id/start_athlete_test_button"
                     style="@style/Button.Primary"
+                    android:background="@color/colorAccent"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:layout_centerHorizontal="true"
@@ -89,6 +90,7 @@
                 <Button
                     android:id="@+id/stop_athlete_test_button"
                     style="@style/Button.Primary"
+                    android:background="@color/colorAccentDark"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:layout_centerHorizontal="true"
