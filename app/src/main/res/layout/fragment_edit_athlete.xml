@@ -124,7 +124,7 @@
 
                     <EditText
                         android:id="@+id/input_height_feet"
-                        android:text='@{((athlete.height / 12) - ((athlete.height % 12) / 12)) + ""}'
+                        android:text='@{athlete.height != null ? ((athlete.height / 12) - ((athlete.height % 12) / 12)) : null}'
                         android:inputType="number"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -140,7 +140,7 @@
 
                     <EditText
                         android:id="@+id/input_height_inches"
-                        android:text='@{(athlete.height % 12) + ""}'
+                        android:text='@{athlete.height != null ? (athlete.height % 12) : null}'
                         android:inputType="number"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -158,7 +158,7 @@
 
                 <EditText
                     android:id="@+id/input_weight"
-                    android:text='@{athlete.weight + ""}'
+                    android:text='@{athlete.weight}'
                     android:inputType="number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

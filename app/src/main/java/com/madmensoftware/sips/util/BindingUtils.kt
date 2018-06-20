@@ -1,6 +1,7 @@
 package com.madmensoftware.sips.util
 
 import android.databinding.BindingAdapter
+import android.databinding.InverseBindingAdapter
 import android.support.v7.widget.RecyclerView
 import android.widget.ImageView
 import com.bumptech.glide.Glide
@@ -10,6 +11,10 @@ import com.madmensoftware.sips.data.models.room.TestType
 import com.madmensoftware.sips.ui.athlete.TestDataListAdapter
 import com.madmensoftware.sips.ui.athlete_list.AthleteListAdapter
 import com.madmensoftware.sips.ui.athlete_test.TestTypeListAdapter
+import android.databinding.adapters.TextViewBindingAdapter.setText
+import android.widget.TextView
+
+
 
 
 /**
@@ -64,4 +69,23 @@ object BindingUtils {
         Glide.with(context).load(url).into(imageView)
     }
 
+    @JvmStatic
+    @BindingAdapter("android:text")
+    fun setInt(view: TextView, value: Int?) {
+        if (value == null) view.setText("");
+        else view.setText(value.toString());
+    }
+
+    @JvmStatic
+    @InverseBindingAdapter(attribute = "android:text")
+    fun getInt(view: TextView): Int {
+        val num = view.getText().toString();
+        if(num.isEmpty()) return 0;
+        try {
+            return Integer.parseInt(num);
+        }
+        catch (e: NumberFormatException) {
+            return 0;
+        }
+    }
 }// This class is not publicly instantiable

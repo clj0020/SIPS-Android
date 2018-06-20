@@ -8,6 +8,9 @@
 
         <import type="android.view.View" />
 
+        <import
+            type="com.madmensoftware.sips.util.ViewUtils"/>
+
         <variable
             name="viewModel"
             type="com.madmensoftware.sips.ui.athlete.AthleteViewModel" />
@@ -44,21 +47,38 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:visibility="@{athlete.status.equals(`Unverified`) ? View.GONE : View.VISIBLE}"
-                android:text="@{athlete.first_name + ' ' + athlete.last_name}"
+                android:text="@{ViewUtils.formatName(athlete.first_name, athlete.last_name) ?? athlete.email}"
                 android:textSize="32sp"
                 tools:text="Carson Jones" />
+
+            <TextView
+                android:id="@+id/athlete_sport_position"
+                style="@style/TextStyle.Heading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="@{athlete.sport == null || athlete.position == null ? View.GONE : View.VISIBLE}"
+                android:text="@{ViewUtils.formatSportPosition(athlete.sport, athlete.position)}"
+                android:textSize="15sp"
+                tools:text="Football (Defensive End)" />
 
             <TextView
                 android:id="@+id/athlete_email"
                 style="@style/TextStyle.Heading"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
                 android:text="@{athlete.email}"
-                android:textSize="12sp"
+                android:textSize="15sp"
                 tools:text="clj0020@gmail.com" />
 
+            <TextView
+                android:id="@+id/athlete_height_weight"
+                style="@style/TextStyle.Heading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="@{athlete.height == null || athlete.weight == null ? View.GONE : View.VISIBLE}"
+                android:text="@{ViewUtils.formatHeightWeight(athlete.height, athlete.weight)}"
+                android:textSize="15sp"
+                tools:text="5'10, 250 lbs" />
 
             <LinearLayout
                 android:layout_width="match_parent"

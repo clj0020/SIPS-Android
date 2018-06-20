@@ -175,17 +175,19 @@ class TestAthleteViewModel(dataManager: DataManager, schedulerProvider: Schedule
     }
 
     private fun stopSensors() {
-        if (mReactiveSensors.hasSensor(Sensor.TYPE_ACCELEROMETER)) {
+        if (mReactiveSensors.hasSensor(Sensor.TYPE_ACCELEROMETER) && ::mAccelerometerSubscription.isInitialized) {
             mSensorHelper.safelyDispose(mAccelerometerSubscription)
         }
-        if (mReactiveSensors.hasSensor(Sensor.TYPE_GYROSCOPE)) {
+        if (mReactiveSensors.hasSensor(Sensor.TYPE_GYROSCOPE) && ::mGyroscopeSubscription.isInitialized) {
             mSensorHelper.safelyDispose(mGyroscopeSubscription)
         }
-        if (mReactiveSensors.hasSensor(Sensor.TYPE_MAGNETIC_FIELD)) {
+        if (mReactiveSensors.hasSensor(Sensor.TYPE_MAGNETIC_FIELD) && ::mMagnometerSubscription.isInitialized) {
             mSensorHelper.safelyDispose(mMagnometerSubscription)
         }
     }
 
+
+    // TODO: Add a Field for actual duration, if we are going to allow uploads of partial tests.
     fun prepareTestDataRequest(accelerometerData: ArrayList<TestDataRequest.UploadTestDataRequest.SensorData>, gyroscopeData: ArrayList<TestDataRequest.UploadTestDataRequest.SensorData>, magnometerData: ArrayList<TestDataRequest.UploadTestDataRequest.SensorData>): TestDataRequest.UploadTestDataRequest {
         return TestDataRequest.UploadTestDataRequest(
                 athleteId = this.athleteId,

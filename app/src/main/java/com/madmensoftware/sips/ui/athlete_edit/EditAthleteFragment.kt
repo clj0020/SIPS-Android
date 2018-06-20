@@ -64,6 +64,9 @@ class EditAthleteFragment : BaseFragment<FragmentEditAthleteBinding, EditAthlete
                     btn_date_of_birth.setText(viewModel.formatDate(mFragmentEditAthleteBinding!!.athlete!!.date_of_birth!!))
                     input_date_of_birth.setText(mFragmentEditAthleteBinding!!.athlete!!.date_of_birth)
                 }
+                else {
+                    btn_date_of_birth.setText(getString(R.string.hint_birthday))
+                }
 
                 setUpSpinner(mFragmentEditAthleteBinding!!.athlete)
             }
@@ -71,14 +74,19 @@ class EditAthleteFragment : BaseFragment<FragmentEditAthleteBinding, EditAthlete
     }
 
     override fun editAthlete() {
-        val editedAthlete = Athlete()
-        editedAthlete._id = mFragmentEditAthleteBinding!!.athlete!!._id
+        val editedAthlete = mFragmentEditAthleteBinding!!.athlete!!
         editedAthlete.first_name = input_first_name.text.toString()
         editedAthlete.last_name = input_last_name.text.toString()
         editedAthlete.email = input_email.text.toString()
         editedAthlete.date_of_birth = input_date_of_birth.text.toString()
-        editedAthlete.height = (input_height_feet.text.toString().toInt() * 12) + input_height_inches.text.toString().toInt()
-        editedAthlete.weight = input_weight.text.toString().toInt()
+
+        // Check if integer value edit texts are empty
+        // TODO: Refactor this to use TextUtils
+        if (!input_height_feet.text.toString().equals("") || !input_height_inches.text.toString().equals("") || !input_weight.text.toString().equals("")) {
+            editedAthlete.height = (input_height_feet.text.toString().toInt() * 12) + input_height_inches.text.toString().toInt()
+            editedAthlete.weight = input_weight.text.toString().toInt()
+        }
+        
         editedAthlete.sport = sports_spinner_edit_athlete.selectedItem.toString()
         editedAthlete.position = position_spinner_edit_athlete.selectedItem.toString()
 
@@ -86,7 +94,7 @@ class EditAthleteFragment : BaseFragment<FragmentEditAthleteBinding, EditAthlete
             hideKeyboard()
             viewModel.editAthlete(editedAthlete)
         } else {
-            Toast.makeText(activity, getString(R.string.invalid_form_data), Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, getString(R.string.invalid_form_data), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -103,7 +111,7 @@ class EditAthleteFragment : BaseFragment<FragmentEditAthleteBinding, EditAthlete
         showError("There was an error!", throwable.message!!)
     }
 
-    override fun openSelectBirthdayDialog(date_of_birth: String) {
+    override fun openSelectBirthdayDialog(date_of_birth: String?) {
         val cal = getCalendarFromISO(date_of_birth)
         val dpd = DatePickerDialog.newInstance(
                 this,
@@ -115,7 +123,7 @@ class EditAthleteFragment : BaseFragment<FragmentEditAthleteBinding, EditAthlete
     }
 
     override fun onDateSet(view: com.wdullaer.materialdatetimepicker.date.DatePickerDialog?, year: Int, monthOfYear: Int, dayOfMonth: Int) {
-        val date = "Birthday: " + (monthOfYear + 1) + "/" + dayOfMonth + "/" + year
+        val date = "" + (monthOfYear + 1) + "/" + dayOfMonth + "/" + year
         btn_date_of_birth.setText(date)
 
         val calendar = Calendar.getInstance(TimeZone.getDefault(), Locale.getDefault())
@@ -128,14 +136,16 @@ class EditAthleteFragment : BaseFragment<FragmentEditAthleteBinding, EditAthlete
         input_date_of_birth.setText(birthday)
     }
 
-    fun getCalendarFromISO(datestring: String): Calendar {
+    fun getCalendarFromISO(datestring: String?): Calendar {
         val calendar = Calendar.getInstance(TimeZone.getDefault(), Locale.getDefault())
         val dateformat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
-        try {
-            val date = dateformat.parse(datestring)
-            calendar.time = date
-        } catch (e: ParseException) {
-            e.printStackTrace()
+        if (datestring != null) {
+            try {
+                val date = dateformat.parse(datestring)
+                calendar.time = date
+            } catch (e: ParseException) {
+                e.printStackTrace()
+            }
         }
 
         return calendar

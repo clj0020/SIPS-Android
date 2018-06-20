@@ -83,5 +83,6 @@
     <string name="sport_hint">Sport</string>
     <string name="position_hint">Position</string>
     <string name="birthday_hint">Birthday</string>
+    <string name="hint_birthday">Select Birthday</string>
 
 </resources>

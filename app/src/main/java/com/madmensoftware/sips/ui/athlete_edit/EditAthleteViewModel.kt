@@ -51,7 +51,7 @@ class EditAthleteViewModel(dataManager: DataManager, schedulerProvider: Schedule
                 })
     }
 
-    fun onSelectDOBClick(date_of_birth: String) {
+    fun onSelectDOBClick(date_of_birth: String?) {
         navigator!!.openSelectBirthdayDialog(date_of_birth)
     }
 
@@ -68,6 +68,9 @@ class EditAthleteViewModel(dataManager: DataManager, schedulerProvider: Schedule
                 TextUtils.isEmpty(athlete.email) || TextUtils.isEmpty(athlete.date_of_birth) ||
                 TextUtils.isEmpty(athlete.height.toString()) || TextUtils.isEmpty(athlete.weight.toString()) ||
                 TextUtils.isEmpty(athlete.sport) || TextUtils.isEmpty(athlete.position)) {
+            return false
+        }
+        if (athlete.height == 0 || athlete.weight == 0) {
             return false
         }
         if (!CommonUtils.isEmailValid(athlete.email!!)) {
