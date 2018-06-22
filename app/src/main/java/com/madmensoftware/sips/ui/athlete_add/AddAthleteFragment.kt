@@ -81,8 +81,6 @@ class AddAthleteFragment : BaseFragment<FragmentAddAthleteBinding, AddAthleteVie
         else {
             showError("There was an error!", throwable.message!!)
         }
-
-
     }
 
     /** For handling toolbar_main actions  */
