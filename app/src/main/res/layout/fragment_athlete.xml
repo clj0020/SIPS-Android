@@ -11,6 +11,8 @@
         <import
             type="com.madmensoftware.sips.util.ViewUtils"/>
 
+
+
         <variable
             name="viewModel"
             type="com.madmensoftware.sips.ui.athlete.AthleteViewModel" />
@@ -21,144 +23,540 @@
 
     </data>
 
-    <FrameLayout
+
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/profile_swipe_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!-- TODO: Change this layout to a Collapsing Action View pretty much like Twitters profiles. -->
+<android.support.design.widget.CoordinatorLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:ignore="RtlHardcoded">
+
+
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/profile_app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/profile_collapsing_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
+
+            <ImageView
+                android:id="@+id/profile_bg"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:contentDescription="@string/profile_background_content_description"
+                android:scaleType="centerCrop"
+                android:src="@drawable/profile_bg"
+                android:tint="#11000000"
+                app:layout_collapseMode="parallax"
+                app:layout_collapseParallaxMultiplier="0.9" />
+
+            <FrameLayout
+                android:id="@+id/athlete_name_frame_container"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_gravity="bottom|center_horizontal"
+                android:background="@color/colorPrimaryDark"
+                android:orientation="vertical"
+                app:layout_collapseMode="parallax"
+                app:layout_collapseParallaxMultiplier="0.3">
+
+                <LinearLayout
+                    android:id="@+id/athlete_name_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="bottom|center"
+                        android:text="@{ViewUtils.formatName(athlete.first_name, athlete.last_name) ?? athlete.email}"
+                        android:textColor="@android:color/white"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="4dp"
+                        android:text="@{ViewUtils.formatSportPosition(athlete.sport, athlete.position)}"
+                        android:visibility="@{athlete.sport == null || athlete.position == null ? View.GONE : View.VISIBLE}"
+                        android:textSize="12sp"
+                        android:textColor="@android:color/white" />
+
+                    <TextView
+                        android:id="@+id/athlete_email"
+                        style="@style/TextStyle.Heading"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:textColor="@android:color/white"
+                        android:text="@{athlete.email}"
+                        android:textSize="12sp"
+                        tools:text="clj0020@gmail.com" />
+
+                    <TextView
+                        android:id="@+id/athlete_height_weight"
+                        style="@style/TextStyle.Heading"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:textColor="@android:color/white"
+                        android:text="@{ViewUtils.formatHeightWeight(athlete.height, athlete.weight)}"
+                        android:textSize="12sp"
+                        android:visibility="@{athlete.height == null || athlete.weight == null ? View.GONE : View.VISIBLE}"
+                        tools:text="5'10, 250 lbs" />
+
+
+                </LinearLayout>
+            </FrameLayout>
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:focusableInTouchMode="true">
 
-            <LinearLayout
+            <Button
+                android:id="@+id/test_athlete_button"
+                style="@style/Button.Primary"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:background="@color/colorPrimary">
+                android:layout_height="50dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="40dp"
+                android:background="@color/colorAccentDark"
+                android:onClick="@{() -> viewModel.onTestAthleteButtonClick(athlete._id)}"
+                android:padding="10dp"
+                android:text="@string/test"
+                android:textSize="18sp" />
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/profileImageView"
-                    android:layout_width="200dp"
-                    android:layout_height="200dp"
-                    android:layout_marginTop="10dp"
-                    app:civ_border_color="#FF000000"
-                    app:civ_border_width="2dp"
-                    app:imageUrl='@{athlete.profileImageUrl ?? "http://www.sunshineglobalhospitals.com/xadmin/myaccount/upload/default/profiledefault.png"}'
-                    tools:src="@drawable/ic_rabbit" />
-
-                <TextView
-                    android:id="@+id/athlete_name"
-                    style="@style/TextStyle.Heading"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:text="@{ViewUtils.formatName(athlete.first_name, athlete.last_name) ?? athlete.email}"
-                    android:textSize="32sp"
-                    tools:text="Carson Jones" />
-
-                <TextView
-                    android:id="@+id/athlete_sport_position"
-                    style="@style/TextStyle.Heading"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:visibility="@{athlete.sport == null || athlete.position == null ? View.GONE : View.VISIBLE}"
-                    android:text="@{ViewUtils.formatSportPosition(athlete.sport, athlete.position)}"
-                    android:textSize="15sp"
-                    tools:text="Football (Defensive End)" />
-
-                <TextView
-                    android:id="@+id/athlete_email"
-                    style="@style/TextStyle.Heading"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@{athlete.email}"
-                    android:textSize="15sp"
-                    tools:text="clj0020@gmail.com" />
-
-                <TextView
-                    android:id="@+id/athlete_height_weight"
-                    style="@style/TextStyle.Heading"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:text="@{ViewUtils.formatHeightWeight(athlete.height, athlete.weight)}"
-                    android:textSize="15sp"
-                    android:visibility="@{athlete.height == null || athlete.weight == null ? View.GONE : View.VISIBLE}"
-                    tools:text="5'10, 250 lbs" />
-
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:elevation="2dp"
-                android:background="@color/colorBackground">
-
-                <Button
-                    android:id="@+id/test_athlete_button"
-                    style="@style/Button.Primary"
-                    android:background="@color/colorAccentDark"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_margin="15dp"
-                    android:onClick="@{() -> viewModel.onTestAthleteButtonClick(athlete._id)}"
-                    android:padding="10dp"
-                    android:text="@string/test"
-                    android:textSize="18sp" />
-
-                <Button
-                    android:id="@+id/edit_athlete_button"
-                    style="@style/Button.Secondary"
-                    android:background="@color/colorAccent"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="15dp"
-                    android:layout_weight="1"
-                    android:onClick="@{() -> viewModel.onEditAthleteButtonClick(athlete._id)}"
-                    android:padding="10dp"
-                    android:text="@string/edit"
-                    android:textSize="18sp" />
-
-            </LinearLayout>
 
             <TextView
-                    style="@style/TextStyle.Heading"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:text="@string/testing_data"
-                    android:textSize="20sp"
-                    android:layout_marginBottom="10dp"/>
+                android:id="@+id/profile_testing_data_header"
+                style="@style/TextStyle.Heading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"
+                android:text="@string/testing_data"
+                android:textSize="20sp" />
 
-            <android.support.v4.widget.SwipeRefreshLayout
-                android:id="@+id/testDataListSwipeRefresh"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/testDataListRecyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/testDataListRecyclerView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:adapter="@{viewModel.testDataObservableList}"
-                    tools:listitem="@layout/item_athlete_view" />
-
-            </android.support.v4.widget.SwipeRefreshLayout>
+                android:layout_height="450dp"
+                app:layout_constraintTop_toBottomOf="@+id/profile_testing_data_header"
+                app:adapter="@{viewModel.testDataObservableList}"
+                tools:listitem="@layout/item_athlete_view" />
 
         </LinearLayout>
 
-        <android.support.v4.widget.ContentLoadingProgressBar
-            android:id="@+id/address_looking_up"
-            style="?android:attr/progressBarStyleLarge"
+
+    </android.support.v4.widget.NestedScrollView>
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/profile_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/app_bar_height"
+        android:background="@color/colorPrimaryDark"
+        app:layout_anchor="@id/athlete_name_frame_container"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark"
+        app:title="">
+
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:visibility="@{viewModel.isLoading ? View.VISIBLE : View.GONE}" />
-    </FrameLayout>
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <Space
+                android:layout_width="@dimen/image_final_width"
+                android:layout_height="@dimen/image_final_width" />
+
+            <TextView
+                android:id="@+id/athlete_name"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="8dp"
+                android:gravity="center_vertical"
+                android:text="@{ViewUtils.formatName(athlete.first_name, athlete.last_name) ?? athlete.email}"
+                android:textColor="@android:color/white"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+    </android.support.v7.widget.Toolbar>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="@dimen/image_width"
+        android:layout_height="@dimen/image_width"
+        android:layout_gravity="center_horizontal"
+        app:imageUrl='@{athlete.profileImageUrl ?? "http://www.sunshineglobalhospitals.com/xadmin/myaccount/upload/default/profiledefault.png"}'
+        app:finalHeight="@dimen/image_final_width"
+        app:finalYPosition="2dp"
+        app:layout_behavior="com.madmensoftware.sips.ui.athlete.AvatarImageBehavior"
+        app:startHeight="2dp"
+        app:startToolbarPosition="2dp"
+        app:startXPosition="2dp" />
+
+</android.support.design.widget.CoordinatorLayout>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+
+
+    <!--<android.support.v4.widget.SwipeRefreshLayout-->
+        <!--android:id="@+id/profile_swipe_refresh"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent">-->
+
+        <!--<com.github.ksoichiro.android.observablescrollview.ObservableScrollView-->
+            <!--android:id="@+id/profile_scroll_view"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent">-->
+
+            <!--<android.support.constraint.ConstraintLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content">-->
+
+                <!--<ImageView-->
+                    <!--android:id="@+id/profile_bg"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="@dimen/parallax_image_height"-->
+                    <!--android:background="@color/colorPrimary"-->
+                    <!--app:layout_constraintEnd_toEndOf="parent"-->
+                    <!--app:layout_constraintStart_toStartOf="parent"-->
+                    <!--app:layout_constraintTop_toTopOf="parent" />-->
+
+                <!--<ImageButton-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginEnd="15dp"-->
+                    <!--android:layout_marginRight="15dp"-->
+                    <!--android:layout_marginTop="15dp"-->
+                    <!--android:background="@color/transparent"-->
+                    <!--android:src="@drawable/ic_edit"-->
+                    <!--android:onClick="@{() -> viewModel.onEditAthleteButtonClick(athlete._id)}"-->
+                    <!--app:layout_constraintEnd_toEndOf="parent"-->
+                    <!--app:layout_constraintTop_toTopOf="parent" />-->
+
+                <!--<de.hdodenhof.circleimageview.CircleImageView-->
+                    <!--android:id="@+id/profileImageView"-->
+                    <!--android:layout_width="150dp"-->
+                    <!--android:layout_height="150dp"-->
+                    <!--app:civ_border_color="#FF000000"-->
+                    <!--app:civ_border_width="2dp"-->
+                    <!--app:imageUrl='@{athlete.profileImageUrl ?? "http://www.sunshineglobalhospitals.com/xadmin/myaccount/upload/default/profiledefault.png"}'-->
+                    <!--app:layout_constraintBottom_toBottomOf="@+id/profile_bg"-->
+                    <!--app:layout_constraintLeft_toLeftOf="@+id/profile_bg"-->
+                    <!--app:layout_constraintRight_toRightOf="@+id/profile_bg"-->
+                    <!--app:layout_constraintTop_toBottomOf="@+id/profile_bg"-->
+                    <!--tools:src="@drawable/ic_rabbit" />-->
+
+                <!--<android.support.constraint.ConstraintLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginTop="32dp"-->
+                    <!--app:layout_constraintEnd_toEndOf="parent"-->
+                    <!--app:layout_constraintStart_toStartOf="parent"-->
+                    <!--app:layout_constraintTop_toBottomOf="@+id/profileImageView">-->
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/athlete_name"-->
+                        <!--style="@style/TextStyle.Heading"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginEnd="8dp"-->
+                        <!--android:layout_marginLeft="8dp"-->
+                        <!--android:layout_marginRight="8dp"-->
+                        <!--android:layout_marginStart="8dp"-->
+                        <!--android:text="@{ViewUtils.formatName(athlete.first_name, athlete.last_name) ?? athlete.email}"-->
+                        <!--android:textSize="32sp"-->
+                        <!--app:layout_constraintEnd_toEndOf="parent"-->
+                        <!--app:layout_constraintStart_toStartOf="parent"-->
+                        <!--tools:text="Carson Jones" />-->
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/athlete_sport_position"-->
+                        <!--style="@style/TextStyle.Heading"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginEnd="8dp"-->
+                        <!--android:layout_marginLeft="8dp"-->
+                        <!--android:layout_marginRight="8dp"-->
+                        <!--android:layout_marginStart="8dp"-->
+                        <!--android:text="@{ViewUtils.formatSportPosition(athlete.sport, athlete.position)}"-->
+                        <!--android:textSize="15sp"-->
+                        <!--android:visibility="@{athlete.sport == null || athlete.position == null ? View.GONE : View.VISIBLE}"-->
+                        <!--app:layout_constraintEnd_toEndOf="parent"-->
+                        <!--app:layout_constraintStart_toStartOf="parent"-->
+                        <!--app:layout_constraintTop_toBottomOf="@+id/athlete_name"-->
+                        <!--tools:text="Football (Defensive End)" />-->
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/athlete_email"-->
+                        <!--style="@style/TextStyle.Heading"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginEnd="8dp"-->
+                        <!--android:layout_marginLeft="8dp"-->
+                        <!--android:layout_marginRight="8dp"-->
+                        <!--android:layout_marginStart="8dp"-->
+                        <!--android:text="@{athlete.email}"-->
+                        <!--android:textSize="15sp"-->
+                        <!--app:layout_constraintEnd_toEndOf="parent"-->
+                        <!--app:layout_constraintStart_toStartOf="parent"-->
+                        <!--app:layout_constraintTop_toBottomOf="@+id/athlete_sport_position"-->
+                        <!--tools:text="clj0020@gmail.com" />-->
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/athlete_height_weight"-->
+                        <!--style="@style/TextStyle.Heading"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginEnd="8dp"-->
+                        <!--android:layout_marginLeft="8dp"-->
+                        <!--android:layout_marginRight="8dp"-->
+                        <!--android:layout_marginStart="8dp"-->
+                        <!--android:text="@{ViewUtils.formatHeightWeight(athlete.height, athlete.weight)}"-->
+                        <!--android:textSize="15sp"-->
+                        <!--android:visibility="@{athlete.height == null || athlete.weight == null ? View.GONE : View.VISIBLE}"-->
+                        <!--app:layout_constraintEnd_toEndOf="parent"-->
+                        <!--app:layout_constraintStart_toStartOf="parent"-->
+                        <!--app:layout_constraintTop_toBottomOf="@+id/athlete_email"-->
+                        <!--tools:text="5'10, 250 lbs" />-->
+
+                    <!--<Button-->
+                        <!--android:id="@+id/test_athlete_button"-->
+                        <!--style="@style/Button.Primary"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="50dp"-->
+                        <!--android:layout_marginLeft="20dp"-->
+                        <!--android:layout_marginRight="20dp"-->
+                        <!--android:layout_marginTop="20dp"-->
+                        <!--android:background="@color/colorAccentDark"-->
+                        <!--android:onClick="@{() -> viewModel.onTestAthleteButtonClick(athlete._id)}"-->
+                        <!--android:padding="10dp"-->
+                        <!--android:text="@string/test"-->
+                        <!--android:textSize="18sp"-->
+                        <!--app:layout_constraintTop_toBottomOf="@+id/athlete_height_weight" />-->
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/profile_testing_data_header"-->
+                        <!--style="@style/TextStyle.Heading"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginEnd="8dp"-->
+                        <!--android:layout_marginLeft="8dp"-->
+                        <!--android:layout_marginRight="8dp"-->
+                        <!--android:layout_marginStart="8dp"-->
+                        <!--android:layout_marginTop="20dp"-->
+                        <!--android:text="@string/testing_data"-->
+                        <!--android:textSize="20sp"-->
+                        <!--app:layout_constraintEnd_toEndOf="parent"-->
+                        <!--app:layout_constraintStart_toStartOf="parent"-->
+                        <!--app:layout_constraintTop_toBottomOf="@+id/test_athlete_button" />-->
+
+                    <!--<android.support.v7.widget.RecyclerView-->
+                        <!--android:id="@+id/testDataListRecyclerView"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="350dp"-->
+                        <!--app:layout_constraintTop_toBottomOf="@+id/profile_testing_data_header"-->
+                        <!--app:adapter="@{viewModel.testDataObservableList}"-->
+                        <!--tools:listitem="@layout/item_athlete_view" />-->
+
+                    <!--&lt;!&ndash;<android.support.v4.widget.SwipeRefreshLayout&ndash;&gt;-->
+                        <!--&lt;!&ndash;android:id="@+id/testDataListSwipeRefresh"&ndash;&gt;-->
+                        <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+                        <!--&lt;!&ndash;android:layout_height="350dp"&ndash;&gt;-->
+                        <!--&lt;!&ndash;app:layout_constraintTop_toBottomOf="@+id/profile_testing_data_header">&ndash;&gt;-->
+
+                        <!--&lt;!&ndash;<android.support.v7.widget.RecyclerView&ndash;&gt;-->
+                            <!--&lt;!&ndash;android:id="@+id/testDataListRecyclerView"&ndash;&gt;-->
+                            <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+                            <!--&lt;!&ndash;android:layout_height="match_parent"&ndash;&gt;-->
+                            <!--&lt;!&ndash;app:adapter="@{viewModel.testDataObservableList}"&ndash;&gt;-->
+                            <!--&lt;!&ndash;tools:listitem="@layout/item_athlete_view" />&ndash;&gt;-->
+
+                    <!--&lt;!&ndash;</android.support.v4.widget.SwipeRefreshLayout>&ndash;&gt;-->
+
+                <!--</android.support.constraint.ConstraintLayout>-->
+
+            <!--</android.support.constraint.ConstraintLayout>-->
+
+        <!--</com.github.ksoichiro.android.observablescrollview.ObservableScrollView>-->
+
+        <!--<android.support.v4.widget.ContentLoadingProgressBar-->
+        <!--android:id="@+id/address_looking_up"-->
+        <!--style="?android:attr/progressBarStyleLarge"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:visibility="@{viewModel.isLoading ? View.VISIBLE : View.GONE}" />-->
+
+
+    <!--</android.support.v4.widget.SwipeRefreshLayout>-->
+
+
+
+    <!--<FrameLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent">-->
+
+        <!--&lt;!&ndash; TODO: Change this layout to a Collapsing Action View pretty much like Twitters profiles. &ndash;&gt;-->
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:gravity="center"-->
+            <!--android:orientation="vertical">-->
+
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:gravity="center"-->
+                <!--android:orientation="vertical"-->
+                <!--android:background="@color/colorPrimary">-->
+
+                <!--<de.hdodenhof.circleimageview.CircleImageView-->
+                    <!--android:id="@+id/profileImageView"-->
+                    <!--android:layout_width="200dp"-->
+                    <!--android:layout_height="200dp"-->
+                    <!--android:layout_marginTop="10dp"-->
+                    <!--app:civ_border_color="#FF000000"-->
+                    <!--app:civ_border_width="2dp"-->
+                    <!--app:imageUrl='@{athlete.profileImageUrl ?? "http://www.sunshineglobalhospitals.com/xadmin/myaccount/upload/default/profiledefault.png"}'-->
+                    <!--tools:src="@drawable/ic_rabbit" />-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/athlete_name"-->
+                    <!--style="@style/TextStyle.Heading"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginTop="20dp"-->
+                    <!--android:text="@{ViewUtils.formatName(athlete.first_name, athlete.last_name) ?? athlete.email}"-->
+                    <!--android:textSize="32sp"-->
+                    <!--tools:text="Carson Jones" />-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/athlete_sport_position"-->
+                    <!--style="@style/TextStyle.Heading"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:visibility="@{athlete.sport == null || athlete.position == null ? View.GONE : View.VISIBLE}"-->
+                    <!--android:text="@{ViewUtils.formatSportPosition(athlete.sport, athlete.position)}"-->
+                    <!--android:textSize="15sp"-->
+                    <!--tools:text="Football (Defensive End)" />-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/athlete_email"-->
+                    <!--style="@style/TextStyle.Heading"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text="@{athlete.email}"-->
+                    <!--android:textSize="15sp"-->
+                    <!--tools:text="clj0020@gmail.com" />-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/athlete_height_weight"-->
+                    <!--style="@style/TextStyle.Heading"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginBottom="5dp"-->
+                    <!--android:text="@{ViewUtils.formatHeightWeight(athlete.height, athlete.weight)}"-->
+                    <!--android:textSize="15sp"-->
+                    <!--android:visibility="@{athlete.height == null || athlete.weight == null ? View.GONE : View.VISIBLE}"-->
+                    <!--tools:text="5'10, 250 lbs" />-->
+
+            <!--</LinearLayout>-->
+
+
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:orientation="horizontal"-->
+                <!--android:elevation="2dp"-->
+                <!--android:background="@color/colorBackground">-->
+
+                <!--<Button-->
+                    <!--android:id="@+id/test_athlete_button"-->
+                    <!--style="@style/Button.Primary"-->
+                    <!--android:background="@color/colorAccentDark"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:layout_margin="15dp"-->
+                    <!--android:onClick="@{() -> viewModel.onTestAthleteButtonClick(athlete._id)}"-->
+                    <!--android:padding="10dp"-->
+                    <!--android:text="@string/test"-->
+                    <!--android:textSize="18sp" />-->
+
+                <!--<Button-->
+                    <!--android:id="@+id/edit_athlete_button"-->
+                    <!--style="@style/Button.Secondary"-->
+                    <!--android:background="@color/colorAccent"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_margin="15dp"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:onClick="@{() -> viewModel.onEditAthleteButtonClick(athlete._id)}"-->
+                    <!--android:padding="10dp"-->
+                    <!--android:text="@string/edit"-->
+                    <!--android:textSize="18sp" />-->
+
+            <!--</LinearLayout>-->
+
+            <!--<TextView-->
+                    <!--style="@style/TextStyle.Heading"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginTop="20dp"-->
+                    <!--android:text="@string/testing_data"-->
+                    <!--android:textSize="20sp"-->
+                    <!--android:layout_marginBottom="10dp"/>-->
+
+            <!--<android.support.v4.widget.SwipeRefreshLayout-->
+                <!--android:id="@+id/testDataListSwipeRefresh"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent">-->
+
+                <!--<android.support.v7.widget.RecyclerView-->
+                    <!--android:id="@+id/testDataListRecyclerView"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--app:adapter="@{viewModel.testDataObservableList}"-->
+                    <!--tools:listitem="@layout/item_athlete_view" />-->
+
+            <!--</android.support.v4.widget.SwipeRefreshLayout>-->
+
+        <!--</LinearLayout>-->
+
+        <!--<android.support.v4.widget.ContentLoadingProgressBar-->
+            <!--android:id="@+id/address_looking_up"-->
+            <!--style="?android:attr/progressBarStyleLarge"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:visibility="@{viewModel.isLoading ? View.VISIBLE : View.GONE}" />-->
+    <!--</FrameLayout>-->
 
 </layout>

@@ -1,5 +1,6 @@
 package com.madmensoftware.sips.ui.athlete
 
+import android.animation.ValueAnimator
 import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
@@ -15,12 +16,32 @@ import com.madmensoftware.sips.databinding.FragmentAthleteBinding
 
 import com.madmensoftware.sips.ui.base.BaseFragment
 import com.madmensoftware.sips.ui.main.MainActivity
+import kotlinx.android.synthetic.main.fragment_athlete.*
 import javax.inject.Inject
+import android.view.ViewTreeObserver.OnScrollChangedListener
+import android.view.animation.LinearInterpolator
+import android.animation.ObjectAnimator
+import android.os.Build
+import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks
+import com.github.ksoichiro.android.observablescrollview.ScrollState
+import com.madmensoftware.sips.R.id.scroll
+import kotlinx.android.synthetic.main.activity_main.*
+import android.R.attr.scrollY
+import android.support.v4.view.ViewCompat.setTranslationY
+import com.github.ksoichiro.android.observablescrollview.ScrollUtils
+import android.R.id.primary
+import android.view.animation.AlphaAnimation
+import android.support.design.widget.AppBarLayout
+
+
+
+
+
 
 /**
  * Created by clj00 on 3/4/2018.
  */
-class AthleteFragment : BaseFragment<FragmentAthleteBinding, AthleteViewModel>(), AthleteNavigator, TestDataListAdapter.TestDataAdapterListener {
+class AthleteFragment : BaseFragment<FragmentAthleteBinding, AthleteViewModel>(), AthleteNavigator, TestDataListAdapter.TestDataAdapterListener, AppBarLayout.OnOffsetChangedListener {
 
     @Inject
     lateinit var mTestDataAdapter: TestDataListAdapter
@@ -39,6 +60,7 @@ class AthleteFragment : BaseFragment<FragmentAthleteBinding, AthleteViewModel>()
 
     override val layoutId: Int
         get() = R.layout.fragment_athlete
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,16 +90,17 @@ class AthleteFragment : BaseFragment<FragmentAthleteBinding, AthleteViewModel>()
         mFragmentAthleteBinding!!.testDataListRecyclerView.setLayoutManager(layoutManager)
         mFragmentAthleteBinding!!.testDataListRecyclerView.setItemAnimator(DefaultItemAnimator())
         mFragmentAthleteBinding!!.testDataListRecyclerView.setAdapter(mTestDataAdapter)
-
-        mFragmentAthleteBinding!!.testDataListSwipeRefresh.setOnRefreshListener(
-                SwipeRefreshLayout.OnRefreshListener {
+        mFragmentAthleteBinding!!.profileSwipeRefresh.setOnRefreshListener({
+                    mFragmentAthleteBinding!!.viewModel!!.fetchAthlete()
                     mFragmentAthleteBinding!!.viewModel!!.fetchTestData()
-                }
-        )
+        })
+
+        mFragmentAthleteBinding!!.profileAppBarLayout.addOnOffsetChangedListener(this)
+        startAlphaAnimation(mFragmentAthleteBinding!!.athleteName, 0, View.INVISIBLE)
     }
 
     override fun setRefreshing(isRefreshing: Boolean) {
-        mFragmentAthleteBinding!!.testDataListSwipeRefresh.isRefreshing = isRefreshing
+        mFragmentAthleteBinding!!.profileSwipeRefresh.isRefreshing = isRefreshing
     }
 
     private fun subscribeToAthleteLiveData(athleteId: String) {
@@ -115,20 +138,9 @@ class AthleteFragment : BaseFragment<FragmentAthleteBinding, AthleteViewModel>()
         (activity as MainActivity).viewModel.onEditAthlete(athleteId)
     }
 
-    override fun onStart() {
-        super.onStart()
-        Log.i("AthleteFrag", "onStart")
-    }
-
     override fun onPause() {
         super.onPause()
         mLayoutManager.detachAndScrapAttachedViews(mFragmentAthleteBinding!!.testDataListRecyclerView.Recycler())
-        Log.i("AthleteFrag", "onPause")
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Log.i("AthleteFrag", "onResume")
     }
 
     override fun handleError(throwable: Throwable) {
@@ -145,14 +157,73 @@ class AthleteFragment : BaseFragment<FragmentAthleteBinding, AthleteViewModel>()
             R.id.log_out_button -> {
                 mActivity.viewModel.logout()
             }
+            R.id.edit_athlete_button -> {
+                viewModel.onEditAthleteButtonClick(arguments!!.getString(KEY_ATHLETE_ID))
+            }
         }
         return super.onOptionsItemSelected(item)
     }
 
     /** Simply inflates menu resource file to the toolbar_main  */
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.toolbar_detail, menu)
+        inflater.inflate(R.menu.toolbar_profile, menu)
     }
+
+    override fun onOffsetChanged(appBarLayout: AppBarLayout, offset: Int) {
+        val maxScroll = appBarLayout.totalScrollRange
+        val percentage = Math.abs(offset).toFloat() / maxScroll.toFloat()
+
+        handleAlphaOnTitle(percentage)
+        handleToolbarTitleVisibility(percentage)
+
+        mFragmentAthleteBinding!!.profileSwipeRefresh.setEnabled(offset == 0)
+    }
+
+    private fun handleToolbarTitleVisibility(percentage: Float) {
+        if (percentage >= viewModel.PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR) {
+
+            if (!viewModel.mIsTheTitleVisible) {
+                startAlphaAnimation(mFragmentAthleteBinding!!.athleteName, viewModel.ALPHA_ANIMATIONS_DURATION, View.VISIBLE)
+                viewModel.mIsTheTitleVisible = true
+            }
+
+        } else {
+
+            if (viewModel.mIsTheTitleVisible) {
+                startAlphaAnimation(mFragmentAthleteBinding!!.athleteName, viewModel.ALPHA_ANIMATIONS_DURATION, View.INVISIBLE)
+                viewModel.mIsTheTitleVisible = false
+            }
+        }
+    }
+
+    private fun handleAlphaOnTitle(percentage: Float) {
+        if (percentage >= viewModel.PERCENTAGE_TO_HIDE_TITLE_DETAILS) {
+            if (viewModel.mIsTheTitleContainerVisible) {
+                startAlphaAnimation(mFragmentAthleteBinding!!.athleteNameContainer, viewModel.ALPHA_ANIMATIONS_DURATION, View.INVISIBLE)
+                viewModel.mIsTheTitleContainerVisible = false
+            }
+
+        } else {
+
+            if (!viewModel.mIsTheTitleContainerVisible) {
+                startAlphaAnimation(mFragmentAthleteBinding!!.athleteNameContainer, viewModel.ALPHA_ANIMATIONS_DURATION, View.VISIBLE)
+                viewModel.mIsTheTitleContainerVisible = true
+            }
+        }
+    }
+
+    fun startAlphaAnimation(v: View, duration: Long, visibility: Int) {
+        val alphaAnimation = if (visibility == View.VISIBLE)
+            AlphaAnimation(0f, 1f)
+        else
+            AlphaAnimation(1f, 0f)
+
+        alphaAnimation.duration = duration
+        alphaAnimation.fillAfter = true
+        v.startAnimation(alphaAnimation)
+    }
+
+
 
     companion object {
         val TAG = AthleteFragment::class.java.simpleName

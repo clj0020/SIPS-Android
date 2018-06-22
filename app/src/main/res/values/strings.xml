@@ -84,5 +84,7 @@
     <string name="position_hint">Position</string>
     <string name="birthday_hint">Birthday</string>
     <string name="hint_birthday">Select Birthday</string>
+    <string name="profile_background_content_description">Profile Background</string>
+    <string name="edit_athlete">Edit Athlete</string>
 
 </resources>

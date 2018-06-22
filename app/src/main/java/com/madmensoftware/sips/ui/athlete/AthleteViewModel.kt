@@ -24,6 +24,13 @@ class AthleteViewModel(dataManager: DataManager, schedulerProvider: SchedulerPro
 
     val testDataListLiveData: MutableLiveData<List<TestData>> = MutableLiveData<List<TestData>>()
 
+    val PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR: Float = 0.9f
+    val PERCENTAGE_TO_HIDE_TITLE_DETAILS: Float = 0.3f
+    val ALPHA_ANIMATIONS_DURATION: Long = 200
+
+    var mIsTheTitleVisible = false
+    var mIsTheTitleContainerVisible = true
+
     fun fetchAthlete() {
         setIsLoading(true)
         compositeDisposable.add(dataManager
