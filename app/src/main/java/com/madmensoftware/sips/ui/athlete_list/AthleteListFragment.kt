@@ -170,7 +170,14 @@ class AthleteListFragment : BaseFragment<FragmentAthleteListBinding, AthleteList
         val mQuery = query.toLowerCase()
         val filteredModelList = ArrayList<Athlete>()
         for (model in models) {
-            val text = model.first_name?.toLowerCase() + " " + model.last_name?.toLowerCase()
+            var text = ""
+            if (model.first_name != null) {
+                text = model.first_name?.toLowerCase() + " " + model.last_name?.toLowerCase()
+            }
+            else {
+                text = model.email!!.toLowerCase()
+            }
+
             if (text.contains(mQuery)) {
                 filteredModelList.add(model)
             }

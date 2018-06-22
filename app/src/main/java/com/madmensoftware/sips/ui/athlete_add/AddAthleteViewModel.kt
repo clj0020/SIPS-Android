@@ -2,11 +2,15 @@ package com.madmensoftware.sips.ui.athlete_add
 
 import android.arch.lifecycle.MutableLiveData
 import android.text.TextUtils
+import com.androidnetworking.error.ANError
 import com.madmensoftware.sips.data.DataManager
 import com.madmensoftware.sips.data.models.room.Athlete
 import com.madmensoftware.sips.ui.base.BaseViewModel
 import com.madmensoftware.sips.util.CommonUtils
 import com.madmensoftware.sips.util.SchedulerProvider
+import retrofit2.adapter.rxjava2.Result.response
+
+
 
 
 /**
@@ -19,16 +23,12 @@ class AddAthleteViewModel(dataManager: DataManager, schedulerProvider: Scheduler
         dataManager.saveAthlete(email)
                 .subscribeOn(schedulerProvider.io())
                 .observeOn(schedulerProvider.ui())
-                .doOnComplete({
-                    setIsLoading(false)
-                    navigator!!.athleteAdded()
-                })
-                .doOnError({throwable: Throwable ->
-                    setIsLoading(false)
-                    navigator!!.handleError(throwable)
-                })
                 .subscribe({
                     setIsLoading(false)
+                    navigator!!.athleteAdded()
+                }, {throwable: Throwable ->
+                    setIsLoading(false)
+                    navigator!!.handleError(throwable)
                 })
     }
 

@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.support.annotation.Nullable
 import android.view.*
 import android.widget.Toast
+import com.androidnetworking.error.ANError
+import com.google.gson.Gson
 import com.madmensoftware.sips.BR
 import com.madmensoftware.sips.R
 import com.madmensoftware.sips.data.models.room.Athlete
@@ -11,6 +13,9 @@ import com.madmensoftware.sips.databinding.FragmentAddAthleteBinding
 import javax.inject.Inject
 import com.madmensoftware.sips.ui.base.BaseFragment
 import com.madmensoftware.sips.ui.main.MainActivity
+import org.json.JSONObject
+
+
 
 
 /**
@@ -68,7 +73,16 @@ class AddAthleteFragment : BaseFragment<FragmentAddAthleteBinding, AddAthleteVie
     }
 
     override fun handleError(throwable: Throwable) {
-        showError("There was an error!", throwable.message!!)
+        if (throwable is ANError) {
+            // TODO: Error content for SweetAlertDialog gets cut off.
+            val error = JSONObject(throwable.errorBody.toString()).get("msg").toString()
+            showError("There was an error!", error)
+        }
+        else {
+            showError("There was an error!", throwable.message!!)
+        }
+
+
     }
 
     /** For handling toolbar_main actions  */

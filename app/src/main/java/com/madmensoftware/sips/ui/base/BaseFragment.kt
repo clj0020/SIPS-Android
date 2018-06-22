@@ -11,6 +11,7 @@ import android.support.annotation.LayoutRes
 import android.support.v4.app.Fragment
 import android.view.View
 import cn.pedant.SweetAlert.SweetAlertDialog
+import com.madmensoftware.sips.R
 
 
 /**
