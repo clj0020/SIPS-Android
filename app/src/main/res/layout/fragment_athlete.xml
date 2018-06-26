@@ -215,6 +215,7 @@
         app:finalHeight="@dimen/image_final_width"
         app:finalYPosition="2dp"
         app:layout_behavior="com.madmensoftware.sips.ui.athlete.AvatarImageBehavior"
+        android:onClick="@{() -> viewModel.onProfilePictureClick()}"
         app:startHeight="2dp"
         app:startToolbarPosition="2dp"
         app:startXPosition="2dp" />

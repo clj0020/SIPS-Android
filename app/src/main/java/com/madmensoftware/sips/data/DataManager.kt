@@ -10,6 +10,7 @@ import com.madmensoftware.sips.data.remote.ApiHelper
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Scheduler
+import java.io.File
 import java.util.*
 
 /**
@@ -51,6 +52,9 @@ interface DataManager : DbHelper, ApiHelper, PreferencesHelper {
     fun getAthleteList(): Observable<List<Athlete>?>
 
     fun getAthlete(athleteId: String): Observable<Athlete>
+
+    fun uploadAthleteProfileImage(athleteId: String, profileImage: File): Completable
+
 
     fun getTestDataList(athleteId: String): Observable<List<TestData>?>
 

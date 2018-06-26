@@ -6,6 +6,7 @@ import com.madmensoftware.sips.data.models.room.TestData
 import com.madmensoftware.sips.data.models.room.TestType
 import io.reactivex.Observable
 import io.reactivex.Single
+import java.io.File
 
 /**
  * Created by clj00 on 3/2/2018.
@@ -23,6 +24,8 @@ interface ApiHelper {
     fun editAthleteServer(athlete: Athlete): Single<Athlete>
 
     fun getAthleteByIdServer(athleteId: String): Single<Athlete>
+
+    fun uploadAthleteProfileImageServer(athleteId: String, profileImage: File): Single<Athlete>
 
     fun saveTestDataServer(request: TestDataRequest.UploadTestDataRequest): Single<TestData>
 

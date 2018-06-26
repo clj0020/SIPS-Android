@@ -14,6 +14,7 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.Single
+import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -234,6 +235,19 @@ class AppDataManager @Inject constructor(private val mContext: Context,
 
     override fun saveAthleteDatabase(athlete: Athlete): Completable {
         return mDbHelper.saveAthleteDatabase(athlete)
+    }
+
+    override fun uploadAthleteProfileImage(athleteId: String, profileImage: File): Completable {
+        return mApiHelper.uploadAthleteProfileImageServer(athleteId, profileImage)
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.computation())
+                .flatMapCompletable { edittedAthlete: Athlete ->
+                    mDbHelper.editAthleteDatabase(edittedAthlete)
+                }
+    }
+
+    override fun uploadAthleteProfileImageServer(athleteId: String, profileImage: File): Single<Athlete> {
+        return mApiHelper.uploadAthleteProfileImageServer(athleteId, profileImage)
     }
 
     /**

@@ -1,9 +1,8 @@
 package com.madmensoftware.sips.ui.athlete
 
-import android.animation.ValueAnimator
+import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.os.Bundle
-import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
@@ -16,26 +15,23 @@ import com.madmensoftware.sips.databinding.FragmentAthleteBinding
 
 import com.madmensoftware.sips.ui.base.BaseFragment
 import com.madmensoftware.sips.ui.main.MainActivity
-import kotlinx.android.synthetic.main.fragment_athlete.*
 import javax.inject.Inject
-import android.view.ViewTreeObserver.OnScrollChangedListener
-import android.view.animation.LinearInterpolator
-import android.animation.ObjectAnimator
-import android.os.Build
-import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks
-import com.github.ksoichiro.android.observablescrollview.ScrollState
-import com.madmensoftware.sips.R.id.scroll
-import kotlinx.android.synthetic.main.activity_main.*
-import android.R.attr.scrollY
-import android.support.v4.view.ViewCompat.setTranslationY
-import com.github.ksoichiro.android.observablescrollview.ScrollUtils
-import android.R.id.primary
+import android.content.Intent
+import android.net.Uri
+import android.provider.MediaStore
 import android.view.animation.AlphaAnimation
 import android.support.design.widget.AppBarLayout
-
-
-
-
+import android.support.v7.app.AlertDialog
+import java.io.File
+import android.graphics.Bitmap
+import android.R.attr.data
+import android.os.Environment
+import android.support.v4.app.NotificationCompat.getExtras
+import android.os.Environment.DIRECTORY_PICTURES
+import android.support.v4.content.FileProvider
+import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 /**
@@ -138,6 +134,104 @@ class AthleteFragment : BaseFragment<FragmentAthleteBinding, AthleteViewModel>()
         (activity as MainActivity).viewModel.onEditAthlete(athleteId)
     }
 
+    override fun showChangeProfilePictureDialog() {
+        // setup the alert builder
+        val builder = AlertDialog.Builder(context!!)
+        builder.setTitle("Profile Picture")
+        builder.setMessage("Would you like to change your profile picture?")
+
+        // Take Photo
+        builder.setPositiveButton("Take Picture", { dialog, which ->
+            openCameraIntent()
+        })
+        // Choose Photo
+        builder.setNeutralButton("Choose Picture", { dialog, which ->
+            // TODO: Fix uploading of pictures from gallery. Lots of problems!!
+//            openGalleryIntent()
+        })
+        builder.setNegativeButton("Cancel", null)
+
+        // create and show the alert dialog
+        val dialog = builder.create()
+        dialog.show()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, imageReturnedIntent: Intent?) {
+        super.onActivityResult(requestCode, resultCode, imageReturnedIntent)
+
+        // When sending to activity and back, the activity changes the request code. This changes it back.
+        val originalRequestCode = requestCode and 0xffff
+
+        when (originalRequestCode) {
+            // take picture chosen and camera app opens then comes back with a selected image.
+            KEY_TAKE_PICTURE -> if (resultCode == Activity.RESULT_OK) {
+                // Upload new picture and replace last picture
+                viewModel.uploadProfileImage(File(viewModel.imageFilePath))
+            }
+            // select photo from gallery chosen and gallery app opens then comes back with a selected image.
+            KEY_CHOOSE_PICTURE -> if (resultCode == Activity.RESULT_OK) {
+//                viewModel.uploadProfileImage(File(viewModel.imageFilePath))
+            }
+        }
+    }
+
+    @Throws(IOException::class)
+    private fun createImageFile(): File {
+        // Create an image file name
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
+        val imageFileName = "JPEG_" + timeStamp + "_"
+        val storageDir = activity?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val image = File.createTempFile(
+                imageFileName, /* prefix */
+                ".jpg", /* suffix */
+                storageDir      /* directory */
+        )
+
+        viewModel.imageFilePath = image.getAbsolutePath();
+        return image
+    }
+
+    private fun openCameraIntent() {
+        val pictureIntent = Intent(
+                MediaStore.ACTION_IMAGE_CAPTURE)
+        if (pictureIntent.resolveActivity(activity?.getPackageManager()) != null) {
+            //Create a file to store the image
+            var photoFile: File?  = null
+            try {
+                photoFile = createImageFile()
+            }
+            catch (ex:IOException) {
+                // Error occurred while creating the File
+            }
+            if (photoFile != null && context != null) {
+                val photoURI = FileProvider.getUriForFile(context!!, "com.madmensoftware.sips.android.provider", photoFile)
+                pictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                startActivityForResult(pictureIntent, KEY_TAKE_PICTURE)
+            }
+        }
+    }
+
+    private fun openGalleryIntent() {
+        val chooseImageIntent = Intent(Intent.ACTION_GET_CONTENT)
+        chooseImageIntent.setType("image/*")
+        if (chooseImageIntent.resolveActivity(activity?.getPackageManager()) != null) {
+            //Create a file to store the image
+            var photoFile: File?  = null
+            try {
+                photoFile = createImageFile()
+            }
+            catch (ex:IOException) {
+                // Error occurred while creating the File
+            }
+            if (photoFile != null && context != null) {
+                val photoURI = FileProvider.getUriForFile(context!!, "com.madmensoftware.sips.android.provider", photoFile)
+                chooseImageIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                startActivityForResult(chooseImageIntent, KEY_CHOOSE_PICTURE)
+            }
+        }
+    }
+
+
     override fun onPause() {
         super.onPause()
         mLayoutManager.detachAndScrapAttachedViews(mFragmentAthleteBinding!!.testDataListRecyclerView.Recycler())
@@ -145,6 +239,7 @@ class AthleteFragment : BaseFragment<FragmentAthleteBinding, AthleteViewModel>()
 
     override fun handleError(throwable: Throwable) {
         // TODO: handle error
+        showError("Oh No!", throwable.message!!)
     }
 
     /** For handling toolbar_main actions  */
@@ -223,11 +318,12 @@ class AthleteFragment : BaseFragment<FragmentAthleteBinding, AthleteViewModel>()
         v.startAnimation(alphaAnimation)
     }
 
-
-
     companion object {
         val TAG = AthleteFragment::class.java.simpleName
         val KEY_ATHLETE_ID = "athleteId"
+        val KEY_TAKE_PICTURE = 0
+        val KEY_CHOOSE_PICTURE = 1
+
 
         fun newInstance(athleteId: String): AthleteFragment {
             val args = Bundle()

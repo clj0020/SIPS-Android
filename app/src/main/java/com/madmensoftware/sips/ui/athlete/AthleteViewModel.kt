@@ -10,6 +10,7 @@ import com.madmensoftware.sips.data.models.room.Athlete
 import com.madmensoftware.sips.data.models.room.TestData
 import com.madmensoftware.sips.ui.base.BaseViewModel
 import com.madmensoftware.sips.util.SchedulerProvider
+import java.io.File
 
 /**
  * Created by clj00 on 3/4/2018.
@@ -23,6 +24,8 @@ class AthleteViewModel(dataManager: DataManager, schedulerProvider: SchedulerPro
     val testDataObservableList: ObservableList<TestData>?= ObservableArrayList<TestData>()
 
     val testDataListLiveData: MutableLiveData<List<TestData>> = MutableLiveData<List<TestData>>()
+
+    lateinit var imageFilePath: String
 
     val PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR: Float = 0.9f
     val PERCENTAGE_TO_HIDE_TITLE_DETAILS: Float = 0.3f
@@ -68,6 +71,25 @@ class AthleteViewModel(dataManager: DataManager, schedulerProvider: SchedulerPro
                     navigator!!.setRefreshing(false)
                     navigator!!.handleError(throwable)
                 }))
+    }
+
+    fun uploadProfileImage(profileImage: File) {
+        navigator!!.setRefreshing(true)
+        compositeDisposable.add(dataManager.uploadAthleteProfileImage(this.athleteId, profileImage)
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.ui())
+                .subscribe({
+                    navigator!!.setRefreshing(false)
+                    fetchAthlete()
+                }, {throwable: Throwable ->
+                    navigator!!.setRefreshing(false)
+                    navigator!!.handleError(throwable)
+                })
+        )
+    }
+
+    fun onProfilePictureClick() {
+        navigator!!.showChangeProfilePictureDialog()
     }
 
     fun onTestAthleteButtonClick(athleteId: String) {

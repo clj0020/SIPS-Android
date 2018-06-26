@@ -17,6 +17,8 @@ object ApiEndPoint {
 
     val ENDPOINT_GET_ATHLETE_BY_ID = BuildConfig.BASE_URL + "/athletes/{athleteId}"
 
+    val ENDPOINT_UPLOAD_PROFILE_IMAGE_FOR_ATHLETE = BuildConfig.BASE_URL + "/athletes/upload-profile-image"
+
     val ENDPOINT_ADD_TEST_DATA = BuildConfig.BASE_URL + "/testingData/add"
 
     val ENDPOINT_GET_TEST_DATA_FOR_ATHLETE = BuildConfig.BASE_URL + "/testingData/get-athlete-test-data/{athleteId}"

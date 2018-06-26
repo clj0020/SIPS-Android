@@ -45,11 +45,12 @@ class SIPSApplication : Application(), HasActivityInjector {
                 .build()
 
         AndroidNetworking.initialize(applicationContext, okHttpClient)
+
         Stetho.initializeWithDefaults(applicationContext)
 
-        if (BuildConfig.DEBUG) {
-            AndroidNetworking.enableLogging(com.androidnetworking.interceptors.HttpLoggingInterceptor.Level.BODY)
-        }
+//        if (BuildConfig.DEBUG) {
+//            AndroidNetworking.enableLogging(com.androidnetworking.interceptors.HttpLoggingInterceptor.Level.BASIC)
+//        }
 
         CalligraphyConfig.initDefault(mCalligraphyConfig)
     }

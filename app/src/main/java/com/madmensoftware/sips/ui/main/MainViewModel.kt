@@ -9,6 +9,7 @@ import com.madmensoftware.sips.data.DataManager
 import com.madmensoftware.sips.data.models.api.LogoutResponse
 import com.madmensoftware.sips.data.models.room.Athlete
 import com.madmensoftware.sips.util.SchedulerProvider
+import java.io.File
 
 
 /**
@@ -31,10 +32,6 @@ class MainViewModel(dataManager: DataManager, schedulerProvider: SchedulerProvid
     init {
         backStackLiveData.value = Data.AthletesData
     }
-
-//    fun onSaveAthlete(athlete: Athlete) {
-//        backStackLiveData.value = Data.AthletesData
-//    }
 
     fun onAthleteDetails(athleteId: String) {
         backStackLiveData.value = Data.AthleteData(athleteId)

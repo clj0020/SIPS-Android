@@ -12,6 +12,7 @@ import io.reactivex.functions.Function
 import io.reactivex.schedulers.Schedulers
 import android.content.ContentValues.TAG
 import android.util.Log
+import com.androidnetworking.common.Priority
 import com.google.gson.Gson
 import com.madmensoftware.sips.data.models.SensorData
 import com.madmensoftware.sips.data.models.room.TestData
@@ -19,10 +20,7 @@ import com.madmensoftware.sips.data.models.room.TestType
 import io.reactivex.Observer
 import org.json.JSONObject
 import org.json.JSONException
-
-
-
-
+import java.io.File
 
 
 /**
@@ -92,6 +90,20 @@ class AppApiHelper @Inject constructor(override val apiHeader: ApiHeader) : ApiH
                 .addBodyParameter("weight", athlete.weight.toString())
                 .addBodyParameter("sport", athlete.sport)
                 .addBodyParameter("position", athlete.position)
+                .build()
+                .getObjectSingle<AthleteResponse.EditAthlete>(AthleteResponse.EditAthlete::class.java)
+                .map{ apiAthleteResponse: AthleteResponse.EditAthlete ->
+                    mapEditAthleteResponseToAthleteModel(apiAthleteResponse.athlete!!)
+                }
+    }
+
+    // TODO: Change mapping to own
+    override fun uploadAthleteProfileImageServer(athleteId: String, profileImage: File): Single<Athlete> {
+        return Rx2AndroidNetworking.upload(ApiEndPoint.ENDPOINT_UPLOAD_PROFILE_IMAGE_FOR_ATHLETE)
+                .addHeaders(apiHeader.protectedApiHeader)
+                .addMultipartFile("profileImage", profileImage)
+                .addMultipartParameter("id", athleteId)
+                .setPriority(Priority.HIGH)
                 .build()
                 .getObjectSingle<AthleteResponse.EditAthlete>(AthleteResponse.EditAthlete::class.java)
                 .map{ apiAthleteResponse: AthleteResponse.EditAthlete ->

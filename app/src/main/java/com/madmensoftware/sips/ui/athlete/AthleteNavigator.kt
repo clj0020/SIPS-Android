@@ -17,5 +17,8 @@ interface AthleteNavigator {
 
     fun showEditAthleteFragment(athleteId: String)
 
+    fun showChangeProfilePictureDialog()
+
     fun setRefreshing(refreshing: Boolean)
+
 }

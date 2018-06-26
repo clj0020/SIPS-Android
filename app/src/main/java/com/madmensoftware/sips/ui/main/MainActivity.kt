@@ -1,12 +1,15 @@
 package com.madmensoftware.sips.ui.main
 
+import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.os.Bundle
 import com.madmensoftware.sips.R
 import dagger.android.AndroidInjector
 import android.content.Intent
 import android.content.Context
+import android.content.DialogInterface
 import android.support.v4.app.Fragment
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.Toolbar
 import com.madmensoftware.sips.BR
 import com.madmensoftware.sips.BuildConfig
@@ -23,7 +26,9 @@ import dagger.android.support.HasSupportFragmentInjector
 import com.madmensoftware.sips.ui.base.BaseActivity
 import com.madmensoftware.sips.ui.login.LoginActivity
 import java.util.*
-
+import android.provider.MediaStore
+import android.util.Log
+import java.io.File
 
 
 class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), MainNavigator, HasSupportFragmentInjector {
@@ -167,6 +172,11 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), MainNav
     fun hideBackButton() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(false)
     }
+
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+//        val fragment = supportFragmentManager.findFragmentByTag(mFragmentStack.peek())
+//        fragment.onActivityResult(requestCode, resultCode, data)
+//    }
 
     companion object {
 
