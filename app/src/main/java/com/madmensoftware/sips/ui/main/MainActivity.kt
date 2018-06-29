@@ -30,7 +30,9 @@ import android.provider.MediaStore
 import android.util.Log
 import java.io.File
 
-
+/** This is the Main Activity that holds all of the different Fragments.
+ *  Handles Fragment Navigation mostly.
+ */
 class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), MainNavigator, HasSupportFragmentInjector {
 
     @Inject
@@ -48,9 +50,11 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), MainNav
     override val bindingVariable: Int
         get() = BR.viewModel
 
+    /** Sets Layout File **/
     override val layoutId: Int
         get() = R.layout.activity_main
 
+    /** Sets up navigator, viewBinding, and other UI elements. **/
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mActivityMainBinding = viewDataBinding
@@ -58,19 +62,23 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), MainNav
         setUp()
     }
 
+    /** Sets up Fragment Injector for Dependency Injection. **/
     override fun supportFragmentInjector(): AndroidInjector<Fragment>? {
         return fragmentDispatchingAndroidInjector
     }
 
+    /** Handles errors. **/
     override fun handleError(throwable: Throwable) {
         // handle error
     }
 
+    /** Opens Login Activity **/
     override fun openLoginActivity() {
         startActivity(LoginActivity.newIntent(this))
         finish()
     }
 
+    /** Sets up UI and Fragment Navigation **/
     private fun setUp() {
         mToolbar = mActivityMainBinding!!.toolbar
 
@@ -85,6 +93,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), MainNav
         })
     }
 
+    /** Shows a fragment and adds last fragment to back stack. **/
     private fun setupViewFragment(fragment: Fragment) {
         if (supportFragmentManager.findFragmentByTag(fragment.javaClass.name) == null) {
             // Create the fragment
@@ -102,6 +111,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), MainNav
         }
     }
 
+    /** Handles Fragment Navigation. **/
     private fun handleViewData(data: MainViewModel.Data) {
         when (data) {
             MainViewModel.Data.AthletesData -> {
@@ -133,6 +143,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), MainNav
         }
     }
 
+    /** Handles Fragments when Back Button is pressed. **/
     override fun onBackPressed() {
         if (viewModel.onBackPress()) {
             // remove the current fragment from the stack.
@@ -173,13 +184,8 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), MainNav
         supportActionBar!!.setDisplayHomeAsUpEnabled(false)
     }
 
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
-//        val fragment = supportFragmentManager.findFragmentByTag(mFragmentStack.peek())
-//        fragment.onActivityResult(requestCode, resultCode, data)
-//    }
-
+    /** Initializes Activity. **/
     companion object {
-
         fun newIntent(context: Context): Intent {
             return Intent(context, MainActivity::class.java)
         }
