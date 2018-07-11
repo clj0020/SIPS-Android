@@ -104,7 +104,4 @@ class MainViewModel(dataManager: DataManager, schedulerProvider: SchedulerProvid
         data class EditAthleteData(val athleteId: String) : Data
     }
 
-
-
-
 }

@@ -97,7 +97,6 @@ class AppApiHelper @Inject constructor(override val apiHeader: ApiHeader) : ApiH
                 }
     }
 
-    // TODO: Change mapping to own
     override fun uploadAthleteProfileImageServer(athleteId: String, profileImage: File): Single<Athlete> {
         return Rx2AndroidNetworking.upload(ApiEndPoint.ENDPOINT_UPLOAD_PROFILE_IMAGE_FOR_ATHLETE)
                 .addHeaders(apiHeader.protectedApiHeader)
@@ -119,10 +118,10 @@ class AppApiHelper @Inject constructor(override val apiHeader: ApiHeader) : ApiH
      * Saves test data to server
      */
     override fun saveTestDataServer(request: TestDataRequest.UploadTestDataRequest): Single<TestData> {
-        var gson = Gson()
-        var accelerometer_data = gson.toJson(request.accelerometer_data)
-        var gyroscope_data = gson.toJson(request.gyroscope_data)
-        var magnometer_data = gson.toJson(request.magnometer_data)
+        val gson = Gson()
+        val accelerometer_data = gson.toJson(request.accelerometer_data)
+        val gyroscope_data = gson.toJson(request.gyroscope_data)
+        val magnometer_data = gson.toJson(request.magnometer_data)
 
         return Rx2AndroidNetworking.post(ApiEndPoint.ENDPOINT_ADD_TEST_DATA)
                 .addHeaders(apiHeader.protectedApiHeader)
