@@ -95,6 +95,10 @@ class MainViewModel(dataManager: DataManager, schedulerProvider: SchedulerProvid
         appVersion.set(version)
     }
 
+    fun onAthleteActivityRecognized(any: Any) {
+
+    }
+
 
     interface Data {
         object AthletesData : Data

@@ -9,4 +9,6 @@ interface MainNavigator {
 
     fun openLoginActivity()
 
+    fun onAthleteActivityRecognitionServiceRequested()
+
 }

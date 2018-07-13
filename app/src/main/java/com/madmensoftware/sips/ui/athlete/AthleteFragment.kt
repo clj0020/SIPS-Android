@@ -243,7 +243,7 @@ class AthleteFragment : BaseFragment<FragmentAthleteBinding, AthleteViewModel>()
                 storageDir      /* directory */
         )
 
-        viewModel.imageFilePath = image.getAbsolutePath();
+        viewModel.imageFilePath = image.getAbsolutePath()
         return image
     }
 
@@ -256,6 +256,9 @@ class AthleteFragment : BaseFragment<FragmentAthleteBinding, AthleteViewModel>()
             }
             R.id.log_out_button -> {
                 mActivity.viewModel.logout()
+            }
+            R.id.start_athlete_workout_tracking -> {
+                mActivity.onAthleteActivityRecognitionServiceRequested()
             }
             R.id.edit_athlete_button -> {
                 viewModel.onEditAthleteButtonClick(arguments!!.getString(KEY_ATHLETE_ID))

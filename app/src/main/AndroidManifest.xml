@@ -19,6 +19,9 @@
         android:supportsRtl="true"
         tools:replace="android:icon"
         android:theme="@style/AppTheme">
+
+        <service android:name="com.madmensoftware.sips.data.services.AthleteActivityRecognitionService" android:process=":activityrecognitionprocess" />
+
         <activity android:name="com.madmensoftware.sips.ui.splash.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -48,7 +51,6 @@
                 android:resource="@xml/file_paths">
             </meta-data>
         </provider>
-
 
     </application>
 

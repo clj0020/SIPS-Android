@@ -5,11 +5,13 @@ import dagger.android.DispatchingAndroidInjector
 import javax.inject.Inject
 import dagger.android.HasActivityInjector
 import android.app.Application
+import android.app.Service
 import com.androidnetworking.AndroidNetworking
 import com.facebook.stetho.Stetho
 import com.madmensoftware.sips.di.DaggerAppComponent
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig
 import com.facebook.stetho.okhttp3.StethoInterceptor
+import dagger.android.HasServiceInjector
 import okhttp3.OkHttpClient
 
 
@@ -18,10 +20,13 @@ import okhttp3.OkHttpClient
 /**
  * Created by clj00 on 3/2/2018.
  */
-class SIPSApplication : Application(), HasActivityInjector {
+class SIPSApplication : Application(), HasActivityInjector, HasServiceInjector {
 
     @Inject
     internal lateinit var activityDispatchingAndroidInjector: DispatchingAndroidInjector<Activity>
+
+    @Inject
+    internal lateinit var serviceDispatchingAndroidInjector: DispatchingAndroidInjector<Service>
 
     @Inject
     internal lateinit var mCalligraphyConfig: CalligraphyConfig
@@ -29,6 +34,10 @@ class SIPSApplication : Application(), HasActivityInjector {
 
     override fun activityInjector(): DispatchingAndroidInjector<Activity>? {
         return activityDispatchingAndroidInjector
+    }
+
+    override fun serviceInjector(): DispatchingAndroidInjector<Service>? {
+        return serviceDispatchingAndroidInjector
     }
 
     override fun onCreate() {
@@ -47,10 +56,6 @@ class SIPSApplication : Application(), HasActivityInjector {
         AndroidNetworking.initialize(applicationContext, okHttpClient)
 
         Stetho.initializeWithDefaults(applicationContext)
-
-//        if (BuildConfig.DEBUG) {
-//            AndroidNetworking.enableLogging(com.androidnetworking.interceptors.HttpLoggingInterceptor.Level.BASIC)
-//        }
 
         CalligraphyConfig.initDefault(mCalligraphyConfig)
     }

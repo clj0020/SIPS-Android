@@ -1,19 +1,13 @@
 package com.madmensoftware.sips.ui.main
 
-import android.app.Activity
 import android.arch.lifecycle.Observer
-import android.os.Bundle
+import android.content.*
 import com.madmensoftware.sips.R
 import dagger.android.AndroidInjector
-import android.content.Intent
-import android.content.Context
-import android.content.DialogInterface
 import android.support.v4.app.Fragment
-import android.support.v7.app.AlertDialog
 import android.support.v7.widget.Toolbar
 import com.madmensoftware.sips.BR
 import com.madmensoftware.sips.BuildConfig
-import com.madmensoftware.sips.data.models.room.Athlete
 import com.madmensoftware.sips.databinding.ActivityMainBinding
 import com.madmensoftware.sips.ui.athlete.AthleteFragment
 import com.madmensoftware.sips.ui.athlete_add.AddAthleteFragment
@@ -26,14 +20,17 @@ import dagger.android.support.HasSupportFragmentInjector
 import com.madmensoftware.sips.ui.base.BaseActivity
 import com.madmensoftware.sips.ui.login.LoginActivity
 import java.util.*
-import android.provider.MediaStore
 import android.util.Log
-import java.io.File
+import com.madmensoftware.sips.data.services.MainActivityHandler
+import android.content.Intent
+import android.os.*
+import com.madmensoftware.sips.data.services.AthleteActivityRecognitionService
+
 
 /** This is the Main Activity that holds all of the different Fragments.
  *  Handles Fragment Navigation mostly.
  */
-class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), MainNavigator, HasSupportFragmentInjector {
+class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), MainNavigator, HasSupportFragmentInjector, ServiceConnection {
 
     @Inject
     internal lateinit var fragmentDispatchingAndroidInjector: DispatchingAndroidInjector<Fragment>
@@ -46,6 +43,18 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), MainNav
     private var mToolbar: Toolbar? = null
 
     var mFragmentStack: Stack<String> = Stack<String>()
+
+    // Two messengers, one for service and one for activity.
+    lateinit var mAthleteActivityRecognitionServiceMessenger: Messenger
+    private val mActivityMessenger = Messenger(MainActivityHandler(this@MainActivity))
+    var mAthleteActivityRecognitionServiceBound: Boolean = false
+
+
+    // We need to create a ServiceConnection in order to bind the player service to the activity.
+    // In the onServiceConnected method that we override, we can get the binder object that the service
+    // returns from its onBind method and use our custom Binder's getService method to get the instance of
+    // the service.
+
 
     override val bindingVariable: Int
         get() = BR.viewModel
@@ -174,6 +183,85 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), MainNav
         }
     }
 
+    override fun onAthleteActivityRecognitionServiceRequested() {
+        // Bind the service
+        val intent = Intent(this@MainActivity, AthleteActivityRecognitionService::class.java)
+        bindService(intent, this, Context.BIND_AUTO_CREATE)
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        if (mAthleteActivityRecognitionServiceBound) {
+            // Unbind from the service.
+            unbindService(this)
+            mAthleteActivityRecognitionServiceBound = false
+        }
+    }
+
+    override fun onServiceConnected(componentName: ComponentName?, binder: IBinder?) {
+        // We have to manually declare a boolean bound field and keep track of it ourselves,
+        // so that we don't try to do things with an unbound service. Because onServiceConnected
+        // is called, we know that the service is bound.
+        Log.i(TAG,"Service connected. Retrieving service messenger.")
+
+        mAthleteActivityRecognitionServiceBound = true
+
+        // Get the service's messenger using the binder
+        mAthleteActivityRecognitionServiceMessenger = Messenger(binder)
+
+        // Start the athlete activity recognition service
+        startAthleteActivityRecognitionService(mAthleteActivityRecognitionServiceMessenger, mActivityMessenger)
+    }
+
+    override fun onServiceDisconnected(p0: ComponentName?) {
+        Log.i(TAG,"Service disconnected.")
+        mAthleteActivityRecognitionServiceBound = false
+    }
+
+    private fun startAthleteActivityRecognitionService(athleteActivityRecognitionServiceMessenger: Messenger, mainActivityMessenger: Messenger) {
+        val intent = Intent(this@MainActivity, AthleteActivityRecognitionService::class.java)
+        intent.putExtra(EXTRA_ACTIVITY_MESSENGER, mActivityMessenger)
+        startService(intent)
+
+        val message: Message = Message.obtain()
+        message.arg1 = ACTIVITY_CONNECTING_TO_SERVICE_MESSAGE
+
+        // set this message's messenger to the activity messenger of this class
+        message.replyTo = mainActivityMessenger
+
+        // use the service's messenger to send the message to our service
+        try {
+            athleteActivityRecognitionServiceMessenger.send(message)
+
+            Log.i(TAG,"Sending message to the Service using the service's messenger and it's replyto as the activity's messenger.")
+        }
+        catch (e: RemoteException) {
+            Log.e(TAG,"RemoteException! " + e.message)
+        }
+    }
+
+    private fun stopAthleteActivityRecognitionService(athleteActivityRecognitionServiceMessenger: Messenger, mainActivityMessenger: Messenger) {
+
+        val message: Message = Message.obtain()
+        message.arg1 = TURN_OFF_SERVICE_MESSAGE
+
+        // set this message's messenger to the activity messenger of this class
+        message.replyTo = mainActivityMessenger
+
+        // use the service's messenger to send the message to our service
+        try {
+            athleteActivityRecognitionServiceMessenger.send(message)
+            Log.i(TAG,"Sending message to turn off the AthleteActivityRecognitionService using the its messenger.")
+        }
+        catch (e: RemoteException) {
+            Log.e(TAG,"RemoteException! " + e.message)
+        }
+
+
+    }
+
+
     /** Shows the back button on the toolbar_main */
     fun showBackButton() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
@@ -186,6 +274,11 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), MainNav
 
     /** Initializes Activity. **/
     companion object {
+        val TAG = MainActivity::class.java.simpleName
+        val EXTRA_ACTIVITY_MESSENGER = "extra_activity_messenger"
+        val ACTIVITY_CONNECTING_TO_SERVICE_MESSAGE = 0
+        val TURN_OFF_SERVICE_MESSAGE = 1
+
         fun newIntent(context: Context): Intent {
             return Intent(context, MainActivity::class.java)
         }

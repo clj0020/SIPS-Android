@@ -86,5 +86,6 @@
     <string name="hint_birthday">Select Birthday</string>
     <string name="profile_background_content_description">Profile Background</string>
     <string name="edit_athlete">Edit Athlete</string>
+    <string name="start_athlete_workout_tracking">Start Workout Tracking</string>
 
 </resources>
