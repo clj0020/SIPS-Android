@@ -25,6 +25,8 @@ class AthleteViewModel(dataManager: DataManager, schedulerProvider: SchedulerPro
 
     val testDataListLiveData: MutableLiveData<List<TestData>> = MutableLiveData<List<TestData>>()
 
+    var trackingAthleteWorkout: ObservableField<Boolean> = ObservableField<Boolean>()
+
     lateinit var imageFilePath: String
 
     val PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR: Float = 0.9f
@@ -33,6 +35,7 @@ class AthleteViewModel(dataManager: DataManager, schedulerProvider: SchedulerPro
 
     var mIsTheTitleVisible = false
     var mIsTheTitleContainerVisible = true
+
 
     fun fetchAthlete() {
         setIsLoading(true)
@@ -94,6 +97,16 @@ class AthleteViewModel(dataManager: DataManager, schedulerProvider: SchedulerPro
 
     fun onTestAthleteButtonClick(athleteId: String) {
         navigator!!.showTestAthleteFragment(athleteId)
+    }
+
+    fun onStartTrackingAthleteWorkoutButtonClick(athleteId: String, athleteName: String) {
+        navigator!!.startTrackingAthleteWorkout(athleteId, athleteName)
+        trackingAthleteWorkout.set(true)
+    }
+
+    fun onStopTrackingAthleteWorkoutButtonClick(athleteId: String) {
+        navigator!!.stopTrackingAthleteWorkout(athleteId)
+        trackingAthleteWorkout.set(false)
     }
 
     fun onEditAthleteButtonClick(athleteId: String) {

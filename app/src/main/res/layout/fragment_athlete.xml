@@ -152,6 +152,37 @@
                 android:text="@string/test"
                 android:textSize="18sp" />
 
+            <Button
+                android:id="@+id/start_tracking_athlete_workout_button"
+                style="@style/Button.Secondary"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="40dp"
+                android:background="@color/colorAccent"
+                android:onClick="@{() -> viewModel.onStartTrackingAthleteWorkoutButtonClick(athlete._id, (ViewUtils.formatName(athlete.first_name, athlete.last_name) ?? athlete.email))}"
+                android:padding="10dp"
+                android:text="@string/start_athlete_workout_tracking"
+                android:visibility="@{viewModel.trackingAthleteWorkout == true ? View.GONE : View.VISIBLE}"
+                tools:visibility="visible"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/stop_tracking_athlete_workout_button"
+                style="@style/Button.Secondary"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="40dp"
+                android:background="@color/colorAccent"
+                android:onClick="@{() -> viewModel.onStopTrackingAthleteWorkoutButtonClick(athlete._id)}"
+                android:padding="10dp"
+                android:text="@string/stop_athlete_workout_tracking"
+                android:visibility="@{viewModel.trackingAthleteWorkout == false ? View.GONE : View.VISIBLE}"
+                tools:visibility="gone"
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/profile_testing_data_header"

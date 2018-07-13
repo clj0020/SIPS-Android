@@ -13,6 +13,10 @@ interface AthleteNavigator {
 
     fun updateTestDataList(testDataList: List<TestData>)
 
+    fun startTrackingAthleteWorkout(athleteId: String, athleteName: String)
+
+    fun stopTrackingAthleteWorkout(athleteId: String)
+
     fun showTestAthleteFragment(athleteId: String)
 
     fun showEditAthleteFragment(athleteId: String)

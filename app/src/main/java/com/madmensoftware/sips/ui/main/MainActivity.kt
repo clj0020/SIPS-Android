@@ -25,6 +25,9 @@ import com.madmensoftware.sips.data.services.MainActivityHandler
 import android.content.Intent
 import android.os.*
 import com.madmensoftware.sips.data.services.AthleteActivityRecognitionService
+import android.app.ActivityManager
+
+
 
 
 /** This is the Main Activity that holds all of the different Fragments.
@@ -183,10 +186,15 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), MainNav
         }
     }
 
-    override fun onAthleteActivityRecognitionServiceRequested() {
-        // Bind the service
-        val intent = Intent(this@MainActivity, AthleteActivityRecognitionService::class.java)
-        bindService(intent, this, Context.BIND_AUTO_CREATE)
+
+    override fun onStart() {
+        super.onStart()
+
+        if (!mAthleteActivityRecognitionServiceBound) {
+            // Bind the service
+            val intent = Intent(this@MainActivity, com.madmensoftware.sips.data.services.AthleteActivityRecognitionService::class.java)
+            bindService(intent, this, 0)
+        }
     }
 
     override fun onStop() {
@@ -197,6 +205,20 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), MainNav
             unbindService(this)
             mAthleteActivityRecognitionServiceBound = false
         }
+    }
+
+    // TODO: Maybe we should bind and start the service from the athlete fragment instead.
+    override fun onAthleteActivityRecognitionServiceRequested(athleteId: String, athleteName: String) {
+        // Start the service and send the athlete's id and the activity's messenger to the service.
+        val startingIntent = Intent(this@MainActivity, com.madmensoftware.sips.data.services.AthleteActivityRecognitionService::class.java)
+        startingIntent.putExtra(EXTRA_WORKOUT_TRACKING_ATHLETE_ID, athleteId)
+        startingIntent.putExtra(EXTRA_WORKOUT_TRACKING_ATHLETE_NAME, athleteName)
+        startingIntent.putExtra(EXTRA_ACTIVITY_MESSENGER, mActivityMessenger)
+        startService(startingIntent)
+
+        // Then bind to the service, we will have to rebind if activity has been stopped and started again.
+        val bindingIntent = Intent(this@MainActivity, com.madmensoftware.sips.data.services.AthleteActivityRecognitionService::class.java)
+        bindService(bindingIntent, this, 0)
     }
 
     override fun onServiceConnected(componentName: ComponentName?, binder: IBinder?) {
@@ -210,29 +232,15 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), MainNav
         // Get the service's messenger using the binder
         mAthleteActivityRecognitionServiceMessenger = Messenger(binder)
 
-        // Start the athlete activity recognition service
-        startAthleteActivityRecognitionService(mAthleteActivityRecognitionServiceMessenger, mActivityMessenger)
-    }
-
-    override fun onServiceDisconnected(p0: ComponentName?) {
-        Log.i(TAG,"Service disconnected.")
-        mAthleteActivityRecognitionServiceBound = false
-    }
-
-    private fun startAthleteActivityRecognitionService(athleteActivityRecognitionServiceMessenger: Messenger, mainActivityMessenger: Messenger) {
-        val intent = Intent(this@MainActivity, AthleteActivityRecognitionService::class.java)
-        intent.putExtra(EXTRA_ACTIVITY_MESSENGER, mActivityMessenger)
-        startService(intent)
-
         val message: Message = Message.obtain()
         message.arg1 = ACTIVITY_CONNECTING_TO_SERVICE_MESSAGE
 
-        // set this message's messenger to the activity messenger of this class
-        message.replyTo = mainActivityMessenger
+        // set this message's messenger to the activity messenger of this class just in case the service doesn't have it from when it started.
+        message.replyTo = mActivityMessenger
 
         // use the service's messenger to send the message to our service
         try {
-            athleteActivityRecognitionServiceMessenger.send(message)
+            mAthleteActivityRecognitionServiceMessenger.send(message)
 
             Log.i(TAG,"Sending message to the Service using the service's messenger and it's replyto as the activity's messenger.")
         }
@@ -241,24 +249,26 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), MainNav
         }
     }
 
-    private fun stopAthleteActivityRecognitionService(athleteActivityRecognitionServiceMessenger: Messenger, mainActivityMessenger: Messenger) {
+    override fun onServiceDisconnected(p0: ComponentName?) {
+        Log.i(TAG,"Service disconnected.")
+        mAthleteActivityRecognitionServiceBound = false
+    }
 
+    fun stopAthleteActivityRecognitionService() {
         val message: Message = Message.obtain()
         message.arg1 = TURN_OFF_SERVICE_MESSAGE
 
         // set this message's messenger to the activity messenger of this class
-        message.replyTo = mainActivityMessenger
+        message.replyTo = mActivityMessenger
 
         // use the service's messenger to send the message to our service
         try {
-            athleteActivityRecognitionServiceMessenger.send(message)
-            Log.i(TAG,"Sending message to turn off the AthleteActivityRecognitionService using the its messenger.")
+            mAthleteActivityRecognitionServiceMessenger.send(message)
+            Log.i(TAG,"Sending message to turn off the AthleteActivityRecognitionService using its messenger. Also unbinding.")
         }
         catch (e: RemoteException) {
             Log.e(TAG,"RemoteException! " + e.message)
         }
-
-
     }
 
 
@@ -276,6 +286,8 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), MainNav
     companion object {
         val TAG = MainActivity::class.java.simpleName
         val EXTRA_ACTIVITY_MESSENGER = "extra_activity_messenger"
+        val EXTRA_WORKOUT_TRACKING_ATHLETE_ID = "workout_tracking_athlete_id"
+        val EXTRA_WORKOUT_TRACKING_ATHLETE_NAME = "workout_tracking_athlete_name"
         val ACTIVITY_CONNECTING_TO_SERVICE_MESSAGE = 0
         val TURN_OFF_SERVICE_MESSAGE = 1
 

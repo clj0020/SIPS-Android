@@ -99,6 +99,13 @@ class AthleteFragment : BaseFragment<FragmentAthleteBinding, AthleteViewModel>()
 
         mFragmentAthleteBinding!!.profileAppBarLayout.addOnOffsetChangedListener(this)
         startAlphaAnimation(mFragmentAthleteBinding!!.athleteName, 0, View.INVISIBLE)
+
+        if ((activity as MainActivity).mAthleteActivityRecognitionServiceBound) {
+            mFragmentAthleteBinding!!.viewModel!!.trackingAthleteWorkout.set(true)
+        }
+        else {
+            mFragmentAthleteBinding!!.viewModel!!.trackingAthleteWorkout.set(false)
+        }
     }
 
     /** Subscribes to athlete retrieval call. **/
@@ -247,6 +254,17 @@ class AthleteFragment : BaseFragment<FragmentAthleteBinding, AthleteViewModel>()
         return image
     }
 
+    /** Start tracking athlete workout by connecting the main activity to the service. **/
+    override fun startTrackingAthleteWorkout(athleteId: String, athleteName: String) {
+        (activity as MainActivity).onAthleteActivityRecognitionServiceRequested(athleteId, athleteName)
+    }
+
+    /** Stop tracking athlete workout. **/
+    override fun stopTrackingAthleteWorkout(athleteId: String) {
+        (activity as MainActivity).stopAthleteActivityRecognitionService()
+    }
+
+
     /** For handling toolbar_main actions  */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val mActivity = activity as MainActivity
@@ -256,9 +274,6 @@ class AthleteFragment : BaseFragment<FragmentAthleteBinding, AthleteViewModel>()
             }
             R.id.log_out_button -> {
                 mActivity.viewModel.logout()
-            }
-            R.id.start_athlete_workout_tracking -> {
-                mActivity.onAthleteActivityRecognitionServiceRequested()
             }
             R.id.edit_athlete_button -> {
                 viewModel.onEditAthleteButtonClick(arguments!!.getString(KEY_ATHLETE_ID))

@@ -9,6 +9,6 @@ interface MainNavigator {
 
     fun openLoginActivity()
 
-    fun onAthleteActivityRecognitionServiceRequested()
+    fun onAthleteActivityRecognitionServiceRequested(athleteId: String, athleteName: String)
 
 }

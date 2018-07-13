@@ -27,14 +27,12 @@ import kotlin.concurrent.timer
 
 /**
  * Created by clj00 on 3/5/2018.
+ * TODO: We really need to move most of this to a service so that athlete tests work even when app has been exited.
  */
 class TestAthleteViewModel(dataManager: DataManager, schedulerProvider: SchedulerProvider) : BaseViewModel<TestAthleteNavigator>(dataManager, schedulerProvider) {
 
-    private val ONE_LEG_SQUAT_HOLD = 0
-    private val SINGLE_LEG_JUMP = 1
-
+    // For displaying test types to pick from.
     val testTypeObservableList: ObservableList<TestType>?= ObservableArrayList<TestType>()
-
     val testTypeListLiveData: MutableLiveData<List<TestType>> = MutableLiveData<List<TestType>>()
 
     var athleteId: String ?= null
